@@ -19,12 +19,15 @@ gem 'mysql2'
 gem 'mongo'
 
 # layout
+gem 'therubyracer'
+gem 'less-rails'
 gem 'twitter-bootstrap-rails'
 gem 'haml'
 
 # authentication
 gem 'devise'
 gem 'devise-async'
+gem 'bson_ext'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-twitter'
