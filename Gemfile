@@ -43,7 +43,6 @@ gem 'dalli'
 
 group :development, :test do
   gem 'faker'
-  gem 'ruby_parser'
   gem 'pry'
   gem 'pry-remote'
   gem 'debugger-pry'
@@ -56,6 +55,7 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'pry-rails'
+  gem 'html2haml'
 end
 
 group :test do
