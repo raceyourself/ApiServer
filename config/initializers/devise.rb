@@ -2,6 +2,8 @@
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
 
+  require 'omniauth-facebook'
+  require 'omniauth-twitter'
   OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE if Rails.env.development? 
 
   config.omniauth :facebook, "667205069970184", "c353ef6e2322a6342b349933651193ab", {
