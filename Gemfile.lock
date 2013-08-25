@@ -315,7 +315,7 @@ DEPENDENCIES
   debugger-pry
   devise
   devise-async
-  doorkeeper
+  doorkeeper (~> 0.7.0)
   email_spec
   factory_girl_rails
   faker

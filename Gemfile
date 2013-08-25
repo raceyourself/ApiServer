@@ -33,7 +33,7 @@ gem 'omniauth-facebook'
 gem 'omniauth-twitter'
 gem 'omniauth-linkedin'
 gem 'omniauth-google'
-gem 'doorkeeper'
+gem 'doorkeeper', '~> 0.7.0'
 
 # forms
 gem 'simple_form'
