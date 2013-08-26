@@ -29,7 +29,9 @@
           %a.brand(href="#") GfAuthenticate
           .container.nav-collapse
             %ul.nav
-              %li= link_to "My Account", "/users/edit" if signed_in?
+              - if signed_in?
+                %li= link_to "My Account", edit_user_registration_path
+                %li= link_to 'Manage Apps', '/oauth/applications'
 
     .container-fluid
       .row-fluid
