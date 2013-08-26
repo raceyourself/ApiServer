@@ -31,8 +31,8 @@ gem 'bson_ext'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-twitter'
-gem 'omniauth-linkedin'
-gem 'omniauth-google'
+# gem 'omniauth-linkedin'
+# gem 'omniauth-google'
 gem 'doorkeeper', '~> 0.7.0'
 
 # forms
