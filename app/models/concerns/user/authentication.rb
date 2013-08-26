@@ -2,7 +2,6 @@ class User
   module Authentication
     extend ActiveSupport::Concern
 
-
     module ClassMethods
   
       def find_for_provider_oauth(auth, signed_in_resource=nil)

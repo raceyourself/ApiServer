@@ -9,4 +9,13 @@ class User < ActiveRecord::Base
          omniauth_providers: [:facebook, :twitter, :linkedin, :google]
 
 
+  # associations
+  has_and_belongs_to_many :roles
+
+
+  def has_role?(role)
+    role = role.to_s.downcase.to_sym
+    roles.any?{|r| r.name.to_s.downcase.to_sym == role}
+  end
+
 end
