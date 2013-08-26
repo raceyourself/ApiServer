@@ -21,8 +21,12 @@ class User
       def new_with_session(params, session)
         super.tap do |user|
           
-          if data = session["devise.facebook_data"] && session["devise.facebook_data"]["extra"]["raw_info"]
-            user.email = data["email"] if user.email.blank?
+          if data = session["devise.facebook_data"]
+            user.email = data['info']["email"] if user.email.blank?
+            user.username = data['info']['nickname'] if user.username.blank?
+            user.provider = 'facebook'
+            user.uid = data['uid']
+            user.token = data['credentials']['token']
           end
 
           if data = session['devise.linkedin_data'] && session['devise.linkedin_data']['user_info']

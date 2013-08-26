@@ -1,6 +1,4 @@
 class User < ActiveRecord::Base
-  include Authentication
-
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
@@ -8,6 +6,8 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :confirmable, :lockable, :timeoutable, :omniauthable,
          omniauth_providers: [:facebook, :twitter, :linkedin, :google]
 
+  # must be below devise
+  include Authentication
 
   # associations
   has_and_belongs_to_many :roles
