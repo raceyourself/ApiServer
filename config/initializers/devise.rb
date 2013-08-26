@@ -9,7 +9,6 @@ Devise.setup do |config|
   config.omniauth :facebook, "667205069970184", "c353ef6e2322a6342b349933651193ab", {
     scope: 'email, offline_access'
   }
-
   config.omniauth :twitter, "7l2GOzjpGLlTj2SUF0Zww", "fXXPPLt60SQAM7lUpZeqoJ07jYHaNNi1kpPwAsrMew"
   # config.omniauth :linkedin, "APP_ID", "APP_SECRET"
   # config.omniauth :github, "APP_ID", "APP_SECRET"
