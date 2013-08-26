@@ -4,8 +4,13 @@ Doorkeeper.configure do
   orm :active_record
 
   # This block will be called to check whether the resource owner is authenticated or not.
-  resource_owner_authenticator do
-    User.find(session[:user_id]) || redirect_to(new_user_session_url)
+  resource_owner_authenticator do |routes|
+    current_user || warden.authenticate!(scope: :user)    # Put your resource owner authentication logic here.
+  end
+
+  resource_owner_from_credentials do
+    u = User.find_for_database_authentication(email: params[:username])
+    u if u && u.valid_password?(params[:password])
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
