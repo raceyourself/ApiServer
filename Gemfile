@@ -41,6 +41,9 @@ gem 'simple_form', '~> 3.0.0.beta1'
 #caching
 gem 'dalli'
 
+#api
+gem 'rocket_pants'
+
 group :development, :test do
   gem 'faker'
   gem 'pry'
