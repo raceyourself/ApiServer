@@ -1,0 +1,10 @@
+"basePath": "<%= @base %>",
+"swaggerVersion": "1.0",
+"apiVersion": "1.0",
+"models": {
+"<%= @model.to_s %>": {
+    "id": "<%= @model.to_s %>",
+    "properties":
+      <%= raw(@info.to_json) %>
+  }
+}
