@@ -35,11 +35,7 @@ module Oauth
 
     def load_application
       begin
-        if params[:uid]
-          @application = relation.find_by_uid(params[:uid])
-        else
-          @application = relation.find(params[:application_id])
-        end
+        @application = relation.where('id = :id or uid = :id', { id: params[:application_id] }).first
       rescue Exception => ex
         # No location given because no resource created
         respond_with({ error: 'Application not found' }, status: 404, location: nil)

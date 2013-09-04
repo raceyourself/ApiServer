@@ -9,6 +9,14 @@ GfAuthenticate::Application.routes.draw do
     end
   end
 
+  namespace 'oauth' do
+    
+    resources :applications do
+      resources :access_tokens, only: [:create, :destroy]
+    end
+
+  end
+
   get '/api_docs/:version/:action.json', controller: 'api_docs'
   # FIXME: Any better way to redirect local calls (/api_dos/images/throbber.gif)
   get '/api_docs/:any/:resource.:ext', to: redirect('/api/%{any}/%{resource}.%{ext}')
