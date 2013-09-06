@@ -1,8 +1,8 @@
 class Device < UserDocument
   # fields
-  field :manufacturer, type: String
-  field :model, type: String
-  field :glassfit_version, type: String
+  field :manufacturer,      type: String
+  field :model,             type: String
+  field :glassfit_version,  type: String
   # indexes
 
   # validations
