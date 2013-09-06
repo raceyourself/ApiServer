@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  #include RocketPants::Cacheable
+  include RocketPants::Cacheable
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
          omniauth_providers: [:facebook, :twitter, :linkedin, :google]
 
   # must be below devise
-  include Authentication
+  include Concerns::Authentication
 
   # associations
   has_and_belongs_to_many :roles

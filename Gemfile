@@ -19,7 +19,7 @@ gem 'bson_ext'
 
 # data
 gem 'mysql2'
-gem 'mongoid_rails4'
+gem 'mongoid_rails4', require: 'mongoid'
 
 # layout
 gem 'therubyracer'
@@ -45,6 +45,9 @@ gem 'dalli'
 
 #api
 gem 'rocket_pants'
+
+# admin
+gem 'rails_admin'
 
 group :development, :test do
   gem 'faker'

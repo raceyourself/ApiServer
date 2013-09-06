@@ -1,5 +1,5 @@
 class UserDocument
-  include Mongoid::Document
+  include ::Mongoid::Document
   # fields
   field :user_id, type: Integer
   # indexes

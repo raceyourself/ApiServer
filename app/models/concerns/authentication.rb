@@ -1,9 +1,9 @@
-class User
+module Concerns
   module Authentication
     extend ActiveSupport::Concern
 
     module ClassMethods
-  
+
       def find_for_provider_oauth(auth, signed_in_resource=nil)
         user = where(provider: auth.provider, uid: auth.uid).first
         unless user
@@ -32,6 +32,6 @@ class User
         end
       end
 
-    end #ClassMethods
-  end #Oauth
-end #User
+    end # ClassMethods
+  end # Authentication
+end # Concerns

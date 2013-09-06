@@ -1,7 +1,8 @@
 GfAuthenticate::Application.routes.draw do
   use_doorkeeper
-  
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
+
+  mount RailsAdmin::Engine => 'admin', as: 'rails_admin'
 
   namespace :api do
     api version: 1 do
@@ -9,12 +10,10 @@ GfAuthenticate::Application.routes.draw do
     end
   end
 
-  namespace 'oauth' do
-    
+  namespace :oauth do
     resources :applications do
       resources :access_tokens, only: [:create, :destroy]
     end
-
   end
 
   get '/api_docs/:version/:action.json', controller: 'api_docs'
