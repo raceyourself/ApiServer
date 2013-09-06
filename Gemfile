@@ -14,9 +14,12 @@ group :doc do
   gem 'sdoc', require: false
 end
 
+# util
+gem 'bson_ext'
+
 # data
 gem 'mysql2'
-gem 'mongo'
+gem 'mongoid_rails4'
 
 # layout
 gem 'therubyracer'
@@ -27,7 +30,6 @@ gem 'haml'
 # authentication
 gem 'devise'
 gem 'devise-async'
-gem 'bson_ext'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-twitter'
@@ -64,6 +66,7 @@ end
 group :test do
   gem 'turnip'
   gem 'rspec-rails'
+  #gem 'mongoid-rspec', '~> 1.4.5'
   gem 'capybara'
   gem 'capybara-webkit', '0.12.1'
   gem 'cucumber-rails', require: false
