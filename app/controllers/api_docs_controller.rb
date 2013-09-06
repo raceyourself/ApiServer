@@ -16,6 +16,14 @@ class ApiDocsController < AuthedController
     render "api_docs/#{params[:version]}/account", formats: :json
   end
 
+  def devices
+    @base = root_url
+    @model = Device # Is the model th User???
+    @info = attributes_and_types(@model)
+    render "api_docs/#{params[:version]}/devices", formats: :json
+  end
+
+
   protected
     def attributes_and_types(model)
       # Get the AR columns information
