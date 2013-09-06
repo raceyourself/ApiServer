@@ -29,3 +29,4 @@ MySQL
 - Get mongoid-rspec working
 - Is best structure flat or embeded for future retreival?
 - Would it be better to store gyro [x,y,z] as hash
+- Support Enumerable (<<) style assignment in document associations

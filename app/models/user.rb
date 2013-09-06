@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
 
   # must be below devise
   include Concerns::Authentication
+  include Concerns::DocumentAssociations
 
   # associations
   has_and_belongs_to_many :roles
