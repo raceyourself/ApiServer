@@ -8,10 +8,10 @@
       %a.brand(href="#") GlassFit API Server
       .container.nav-collapse
         %ul.nav
-          / - if signed_in?
-          %li= link_to 'My Account', '/users/edit'
-          %li= link_to 'Manage Apps', '/oauth/applications'
-          %li= link_to 'API Docs', '/api_docs/'
-          / - if current_user.admin?
-          /   %li= link_to 'Administration', '/admin'
-          %li= link_to 'Sign Out', '/users/sign_out', method: 'delete'
+          - if signed_in?
+            %li= link_to 'My Account', '/users/edit'
+            %li= link_to 'Manage Apps', '/oauth/applications'
+            %li= link_to 'API Docs', '/api_docs/'
+            / - if current_user.admin?
+            /   %li= link_to 'Administration', '/admin'
+            %li= link_to 'Sign Out', '/users/sign_out', method: 'delete'
