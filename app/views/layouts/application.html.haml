@@ -30,11 +30,11 @@
           .container.nav-collapse
             %ul.nav
               - if signed_in?
-                %li= link_to 'My Account', edit_user_registration_path
+                %li= link_to 'My Account', '/users/edit'
                 %li= link_to 'Manage Apps', '/oauth/applications'
                 %li= link_to 'Administration', '/admin'
                 %li= link_to 'API Docs', '/api_docs/'
-                %li= link_to 'Sign Out', destroy_user_session_path, method: 'delete'
+                %li= link_to 'Sign Out', '/users/sign_out', method: 'delete'
 
     .container-fluid
       .row-fluid
