@@ -54,6 +54,9 @@ gem 'rails_admin'
 gem 'capistrano'
 gem 'rvm-capistrano'
 
+# worker
+gem 'sidekiq'
+
 group :development, :test do
   gem 'faker'
   gem 'pry'

@@ -2,7 +2,16 @@ GfAuthenticate::Application.routes.draw do
   use_doorkeeper
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 
+  #TODO: should use authenticate blocks
+
   mount RailsAdmin::Engine => 'admin', as: 'rails_admin', constraints: lambda { |request|
+    request.env['warden'].authenticated? # are we authenticated?
+    request.env['warden'].authenticate! # authenticate if not already
+    request.env['warden'].user.admin?
+  }
+
+  require 'sidekiq/web'
+  mount Sidekiq::Web => 'sidekiq', constraints: lambda { |request|
     request.env['warden'].authenticated? # are we authenticated?
     request.env['warden'].authenticate! # authenticate if not already
     request.env['warden'].user.admin?
