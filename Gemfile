@@ -55,6 +55,7 @@ gem 'capistrano'
 gem 'rvm-capistrano'
 
 # worker
+gem 'sinatra'
 gem 'sidekiq'
 
 group :development, :test do

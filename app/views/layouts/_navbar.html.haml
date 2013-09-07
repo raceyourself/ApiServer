@@ -14,4 +14,5 @@
             %li= link_to 'API Docs', '/api_docs/'
             - if current_user.admin?
               %li= link_to 'Administration', '/admin'
+              %li= link_to 'Workers', '/sidekiq'
             %li= link_to 'Sign Out', '/users/sign_out', method: 'delete'
