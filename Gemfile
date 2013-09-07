@@ -49,6 +49,10 @@ gem 'rocket_pants'
 # admin
 gem 'rails_admin'
 
+# deployer
+gem 'capistrano'
+gem 'rvm-capistrano'
+
 group :development, :test do
   gem 'faker'
   gem 'pry'
@@ -60,8 +64,6 @@ group :development, :test do
 end
 
 group :development do
-  gem 'capistrano'
-  gem 'rvm-capistrano'
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'pry-rails'
