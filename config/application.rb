@@ -49,4 +49,18 @@ module GfAuthenticate
       g.template_engine     :haml
     end
   end
+
+  config.after_initialize do
+    OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+  end
+
+  ActionMailer::Base.delivery_method = :smtp
+  ActionMailer::Base.smtp_settings = {  
+    address:              'localhost', 
+    port:                 25,  
+    domain:               'dannyhawkins.me.uk',  
+    enable_starttls_auto: true,
+    openssl_verify_mode:  'none'
+  }
+
 end
