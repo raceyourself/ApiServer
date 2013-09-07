@@ -7,7 +7,7 @@ GfAuthenticate::Application.routes.draw do
   namespace :api do
     api version: 1 do
       resource :credentials, only: [:show]
-      resource :devices
+      resources :devices
     end
   end
 

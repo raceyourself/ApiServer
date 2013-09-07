@@ -18,8 +18,6 @@ class ApiDocsController < AuthedController
 
   def devices
     @base = root_url
-    @model = Device # Is the model th User???
-    @info = attributes_and_types(@model)
     render "api_docs/#{params[:version]}/devices", formats: :json
   end
 
