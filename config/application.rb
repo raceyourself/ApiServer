@@ -13,6 +13,20 @@ Bundler.require(:default, Rails.env)
 
 module GfAuthenticate
   class Application < Rails::Application
+
+    # This can probably come out
+    mem_config = YAML.load_file("#{Rails.root}/config/memcached.yml") || {}
+    mem_config = mem_config[Rails.env]
+    mem_servers = mem_config['host'].split(' ').map{|h| "#{h}:#{mem_config['port']}"}
+
+    config.cache_store = :dalli_store, mem_servers, { expires_in: 1.day, compress: true }
+
+    config.action_dispatch.rack_cache = {
+      metastore:   Dalli::Client.new,
+      entitystore: Dalli::Client.new,
+      verbose: false
+    }
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
