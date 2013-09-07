@@ -39,20 +39,22 @@ module GfAuthenticate
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-  config.action_mailer.default_url_options = { host: 'glassfit.dev'}
+    config.action_mailer.default_url_options = { host: 'glassfit.dev'}
 
 
-  config.generators do |g|
+    config.generators do |g|
       g.orm                 :active_record
       g.stylesheets         false
       g.test_framework      :rspec
       g.template_engine     :haml
     end
+
+    config.after_initialize do
+      OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+    end
+
   end
 
-  config.after_initialize do
-    OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
-  end
 
   ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {  
