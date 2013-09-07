@@ -15,3 +15,4 @@ production:
   database: gf_core
   host: localhost
   username: root
+  password: ex171aY555
