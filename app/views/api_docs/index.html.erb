@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Swagger UI</title>
+
+    <link href='/assets/bootstrap_and_overrides.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css' />
+    <link href='/swagger/css/highlight.default.css' media='screen' rel='stylesheet' type='text/css' />
+    <link href='/swagger/css/screen.css' media='screen' rel='stylesheet' type='text/css' />
+    
+    <script src='/assets/jquery.js' type='text/javascript' ></script>
+
+    <script src='/assets/twitter/bootstrap.js' type='text/javascript' ></script>
+    <script src='/swagger/lib/shred.bundle.js' type='text/javascript'></script>  
+    <script src='/swagger/lib/jquery-1.8.0.min.js' type='text/javascript'></script>
+    <script src='/swagger/lib/jquery.slideto.min.js' type='text/javascript'></script>
+    <script src='/swagger/lib/jquery.wiggle.min.js' type='text/javascript'></script>
+    <script src='/swagger/lib/jquery.ba-bbq.min.js' type='text/javascript'></script>
+    <script src='/swagger/lib/handlebars-1.0.0.js' type='text/javascript'></script>
+    <script src='/swagger/lib/underscore-min.js' type='text/javascript'></script>
+    <script src='/swagger/lib/backbone-min.js' type='text/javascript'></script>
+    <script src='/swagger/lib/swagger.js' type='text/javascript'></script>
+    <script src='/swagger/swagger-ui.min.js' type='text/javascript'></script>
+    <script src='/swagger/lib/highlight.7.3.pack.js' type='text/javascript'></script>
+
+
+    <style type="text/css">
+      .swagger-ui-wrap {
+        max-width: 960px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .icon-btn {
+        cursor: pointer;
+      }
+
+      #message-bar {
+        min-height: 30px;
+        text-align: center;
+        padding-top: 10px;
+      }
+
+      .message-success {
+        color: #89BF04;
+      }
+
+      .message-fail {
+        color: #cc0000;
+      }
+
+      .dropdown-menu .sub-menu {
+        left: 100%;
+        position: absolute;
+        top: 0;
+        visibility: hidden;
+        margin-top: -1px;
+        width: 250px;
+      }
+
+      .dropdown-menu li:hover .sub-menu {
+        visibility: visible;
+        display: block;
+      }
+  
+      .dropdown-menu > li {
+        position: relative;
+      }
+ 
+    </style>
+    <script type="text/javascript">
+      $(function () {
+        window.swaggerUi = new SwaggerUi({
+          url: "/api_docs/v1/glassfit.json",
+          apiKey:"",
+          dom_id:"swagger-ui-container",
+          supportHeaderParams: true,
+          headers: {
+            "authorization": 'Bearer ' + $('#input_apiKey').val(),
+          },
+          apiKeyName: 'access_token',
+          supportedSubmitMethods: ['get', 'post', 'put'],
+          onComplete: function(swaggerApi, swaggerUi){
+            if(console) {
+              console.log("Loaded SwaggerUI")
+            }
+            $('pre code').each(function(i, e) {hljs.highlightBlock(e)});
+          },
+          onFailure: function(data) {
+            if(console) {
+              console.log("Unable to Load SwaggerUI");
+              console.log(data);
+            }
+          },
+          docExpansion: "none"
+        });
+
+        window.swaggerUi.load();
+
+        $('a.app').on('click',function(el){
+          elm = $(this);
+
+          postdata = {
+            authenticity_token: '<%= form_authenticity_token %>',
+            uid: elm.attr('id'),
+            commit: 'Get Token',
+            access_grant: { scopes: elm.data('scope') }
+          };
+
+          $.post('/oauth/applications/' + postdata['uid'] + '/access_tokens.json',postdata, function(data,status) {
+            $('#input_apiKey').val(data.token);
+            key = data.token;
+
+            if(key && key.trim() != "") {
+              window.authorizations.add("key", new ApiKeyAuthorization("Authorization", 'Bearer '+ key, "header"));
+            }
+
+            $('#explore').trigger('click');
+          });
+          return false;
+        });
+
+      });
+
+    </script>
+  </head>
+
+  <body>
+    <div id='header'>
+      <div class="swagger-ui-wrap">
+        <a id="logo" href="http://swagger.wordnik.com">swagger</a>
+
+        <form id='api_selector'>
+          <div class='input'><input placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl"
+            type="text"/></div>
+          <div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div>
+          <%= render partial: 'application' %>
+          <div class='input'><a id="explore" href="#">Explore</a></div>
+        </form>
+      </div>
+    </div>
+
+
+    <div id="nav">
+      <ul>
+        <li><a href="/api/">API</a></li>
+      </ul>
+    </div>
+
+    <div id="message-bar" class="swagger-ui-wrap">
+      &nbsp;
+    </div>
+
+    <div id="swagger-ui-container" class="swagger-ui-wrap">
+
+    </div>
+
+  </body>
+
+</html>

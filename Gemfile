@@ -6,7 +6,7 @@ gem 'sass-rails', '~> 4.0.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.0.0'
 gem 'jquery-rails'
-gem 'turbolinks'
+#gem 'turbolinks'
 gem 'jbuilder', '~> 1.2'
 
 group :doc do
@@ -14,9 +14,12 @@ group :doc do
   gem 'sdoc', require: false
 end
 
+# util
+gem 'bson_ext'
+
 # data
 gem 'mysql2'
-gem 'mongo'
+gem 'mongoid_rails4', require: 'mongoid'
 
 # layout
 gem 'therubyracer'
@@ -27,19 +30,24 @@ gem 'haml'
 # authentication
 gem 'devise'
 gem 'devise-async'
-gem 'bson_ext'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-twitter'
-gem 'omniauth-linkedin'
-gem 'omniauth-google'
-gem 'doorkeeper'
+# gem 'omniauth-linkedin'
+# gem 'omniauth-google'
+gem 'doorkeeper', '~> 0.7.0'
 
 # forms
-gem 'simple_form'
+gem 'simple_form', '~> 3.0.0.beta1'
 
 #caching
 gem 'dalli'
+
+#api
+gem 'rocket_pants'
+
+# admin
+gem 'rails_admin'
 
 group :development, :test do
   gem 'faker'
@@ -61,6 +69,7 @@ end
 group :test do
   gem 'turnip'
   gem 'rspec-rails'
+  #gem 'mongoid-rspec', '~> 1.4.5'
   gem 'capybara'
   gem 'capybara-webkit', '0.12.1'
   gem 'cucumber-rails', require: false

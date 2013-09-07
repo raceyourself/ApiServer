@@ -1,0 +1,16 @@
+{
+  <%= render partial: 'api_docs/v1/info.json', format: :json  %>
+  ,
+  "apis":[
+    {
+    "path": "/api/1/credentials",
+    "description": "Credentials hash",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return the current users account details",
+      "responseClass": "User",
+      "nickname": "get_me"
+    }]
+  }]
+}
