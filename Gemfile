@@ -42,6 +42,7 @@ gem 'simple_form', '~> 3.0.0.beta1'
 
 #caching
 gem 'dalli'
+gem 'rack-cache'
 
 #api
 gem 'rocket_pants'
