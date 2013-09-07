@@ -10,8 +10,11 @@ GfAuthenticate::Application.routes.draw do
 
   namespace :api do
     api version: 1 do
+      match 'me', to: 'credentials#show', via: 'get'
       resource :credentials, only: [:show]
       resources :devices
+      resources :transactions
+      resources :tracks
     end
   end
 

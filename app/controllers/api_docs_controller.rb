@@ -21,6 +21,15 @@ class ApiDocsController < AuthedController
     render "api_docs/#{params[:version]}/devices", formats: :json
   end
 
+  def transactions
+    @base = root_url
+    render "api_docs/#{params[:version]}/transactions", formats: :json
+  end
+
+  def tracks
+    @base = root_url
+    render "api_docs/#{params[:version]}/tracks", formats: :json
+  end
 
   protected
     def attributes_and_types(model)

@@ -1,0 +1,31 @@
+{
+  "apis":[
+  {
+    "path": "api/1/tracks",
+    "description": "Track Index",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a list of tracks",
+      "nickname": "get_tracks"
+    }]
+  },{
+    "path": "api/1/tracks/{track_id}",
+    "description": "Track Item",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a specific track",
+      "nickname": "get_track",
+      "parameters":[
+      {
+        "name": "track_id",
+        "description": "The track id",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      }]
+    }]
+  }]
+}

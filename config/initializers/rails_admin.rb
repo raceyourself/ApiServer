@@ -285,7 +285,7 @@ RailsAdmin.config do |config|
 
   ###  Track  ###
 
-  config.model 'Track' do
+  config.model Track do
 
     # You can copy this to a 'rails_admin do ... end' block inside your track.rb model definition
 
@@ -377,7 +377,7 @@ RailsAdmin.config do |config|
 
   ###  User  ###
 
-  config.model 'User' do
+  config.model User do
 
     # You can copy this to a 'rails_admin do ... end' block inside your user.rb model definition
 
@@ -391,8 +391,12 @@ RailsAdmin.config do |config|
       configure :username, :string 
       configure :email, :string 
       configure :password, :password         # Hidden 
-      configure :name, :string 
-      configure :uid, :string 
+      configure :name, :string
+      configure :last_sign_in_at, :datetime
+      configure :last_sign_in_ip, :string
+      configure :sign_in_count, :integer
+      configure :created_at, :datetime
+      configure :updated_at, :datetime
 
     # Cross-section configuration:
 
@@ -406,13 +410,39 @@ RailsAdmin.config do |config|
     # Section specific configuration:
 
       list do
-        # filters [:id, :name]  # Array of field names which filters should be shown by default in the table header
-        # items_per_page 100    # Override default_items_per_page
-        # sort_by :id           # Sort column (default is primary key)
-        # sort_reverse true     # Sort direction (default is true for primary key, last created first)
+        field :id
+        field :name
+        field :username
+        field :email
+        field :last_sign_in_at
+        field :last_sign_in_ip
+        field :sign_in_count
+        field :created_at
+        field :updated_at
+
+        filters [:id,:name, :username, :email, :last_sign_in_at, :last_sign_in_ip, :sign_in_count, :created_at, :updated_at]  # Array of field names which filters should be shown by default in the table header
+        sort_by :id           # Sort column (default is primary key)
+        sort_reverse true     # Sort direction (default is true for primary key, last created first)
       end
-      show do; end
-      edit do; end
+
+      show do
+        field :name
+        field :username
+        field :email
+        field :last_sign_in_at
+        field :last_sign_in_ip
+        field :sign_in_count
+        field :created_at
+        field :updated_at
+      end
+
+      edit do
+        field :name
+        field :username
+        field :email
+        field :password
+      end
+
       export do; end
       # also see the create, update, modal and nested sections, which override edit in specific cases (resp. when creating, updating, modifying from another model in a popup modal or modifying from another model nested form)
       # you can override a cross-section field configuration in any section with the same syntax `configure :field_name do ... end`

@@ -1,13 +1,31 @@
 {
   "apis":[
   {
-    "path": "/api/1/devices",
+    "path": "api/1/devices",
     "description": "Device Operations",
     "operations":[
     {
       "httpMethod": "GET",
       "summary": "Return a list of devices for the current token user",
       "nickname": "get_devices"
+    }]
+  },{
+    "path": "api/1/devices/{device_id}",
+    "description": "Device Item",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a specific device",
+      "nickname": "get_device",
+      "parameters":[
+      {
+        "name": "device_id",
+        "description": "The device id",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      }]
     }]
   }]
 }

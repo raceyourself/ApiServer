@@ -20,4 +20,8 @@ class User < ActiveRecord::Base
     roles.any?{|r| r.name.to_s.downcase.to_sym == role}
   end
 
+  def to_s
+    username || email
+  end
+
 end
