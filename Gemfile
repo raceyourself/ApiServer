@@ -60,6 +60,8 @@ group :development, :test do
 end
 
 group :development do
+  gem 'capistrano'
+  gem 'rvm-capistrano'
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'pry-rails'
