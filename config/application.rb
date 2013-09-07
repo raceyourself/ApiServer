@@ -58,7 +58,7 @@ module GfAuthenticate
   ActionMailer::Base.smtp_settings = {  
     address:              'localhost', 
     port:                 25,  
-    domain:               'dannyhawkins.me.uk',  
+    domain:               'dannyhawkins.co.uk',  
     enable_starttls_auto: true,
     openssl_verify_mode:  'none'
   }
