@@ -19,8 +19,8 @@ module Concerns
       end #find_for_facebook_oauth
 
       def new_with_session(params, session)
+        
         super.tap do |user|
-          
           if data = session["devise.provider_data"]
             user.email = data['info']["email"] if data['info']["email"] && user.email.blank?
             user.username = data['info']['nickname'] if user.username.blank?
@@ -28,8 +28,8 @@ module Concerns
             user.uid = data['uid']
             user.token = data['credentials']['token']
           end
-
         end
+
       end
 
     end # ClassMethods
