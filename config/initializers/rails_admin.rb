@@ -421,7 +421,7 @@ RailsAdmin.config do |config|
         field :created_at
         field :updated_at
 
-        filters [:id,:name, :username, :email, :last_sign_in_at, :last_sign_in_ip, :sign_in_count, :created_at, :updated_at, :admin]  # Array of field names which filters should be shown by default in the table header
+        filters [:id,:name, :username, :email, :last_sign_in_at, :last_sign_in_ip, :sign_in_count, :created_at, :updated_at]  # Array of field names which filters should be shown by default in the table header
         sort_by :id           # Sort column (default is primary key)
         sort_reverse true     # Sort direction (default is true for primary key, last created first)
       end
