@@ -397,6 +397,7 @@ RailsAdmin.config do |config|
       configure :sign_in_count, :integer
       configure :created_at, :datetime
       configure :updated_at, :datetime
+      configure :admin, :boolean
 
     # Cross-section configuration:
 
@@ -420,7 +421,7 @@ RailsAdmin.config do |config|
         field :created_at
         field :updated_at
 
-        filters [:id,:name, :username, :email, :last_sign_in_at, :last_sign_in_ip, :sign_in_count, :created_at, :updated_at]  # Array of field names which filters should be shown by default in the table header
+        filters [:id,:name, :username, :email, :last_sign_in_at, :last_sign_in_ip, :sign_in_count, :created_at, :updated_at, :admin]  # Array of field names which filters should be shown by default in the table header
         sort_by :id           # Sort column (default is primary key)
         sort_reverse true     # Sort direction (default is true for primary key, last created first)
       end
@@ -434,6 +435,7 @@ RailsAdmin.config do |config|
         field :sign_in_count
         field :created_at
         field :updated_at
+        field :admin
       end
 
       edit do
@@ -441,6 +443,7 @@ RailsAdmin.config do |config|
         field :username
         field :email
         field :password
+        field :admin
       end
 
       export do; end
