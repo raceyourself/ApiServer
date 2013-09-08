@@ -21,6 +21,9 @@ gem 'bson_ext'
 gem 'mysql2'
 gem 'mongoid_rails4', require: 'mongoid'
 
+# pagination
+gem 'kaminari'
+
 # layout
 gem 'therubyracer'
 gem 'less-rails'

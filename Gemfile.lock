@@ -408,6 +408,7 @@ DEPENDENCIES
   html2haml
   jbuilder (~> 1.2)
   jquery-rails
+  kaminari
   less-rails
   letter_opener
   mongoid_rails4
