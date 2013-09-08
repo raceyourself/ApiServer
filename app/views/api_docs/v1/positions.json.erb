@@ -1,0 +1,31 @@
+{
+  "apis":[
+  {
+    "path": "api/1/positions",
+    "description": "position Operations",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a list of positions for the current token user",
+      "nickname": "get_positions"
+    }]
+  },{
+    "path": "api/1/positions/{position_id}",
+    "description": "position Item",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a specific position",
+      "nickname": "get_position",
+      "parameters":[
+      {
+        "name": "position_id",
+        "description": "The position id",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      }]
+    }]
+  }]
+}

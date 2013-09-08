@@ -4,7 +4,7 @@ module Concerns
 
     included do
       # has many associations
-      [:devices, :friends, :orientations, :position, :tracks, :transactions].each do |assoc|
+      [:devices, :friends, :orientations, :positions, :tracks, :transactions].each do |assoc|
 
         # association getter
         define_method assoc do

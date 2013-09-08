@@ -1,0 +1,31 @@
+{
+  "apis":[
+  {
+    "path": "api/1/friends",
+    "description": "Friend Operations",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a list of friends for the current token user",
+      "nickname": "get_friends"
+    }]
+  },{
+    "path": "api/1/friends/{friend_id}",
+    "description": "Friend Item",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a specific friend",
+      "nickname": "get_friend",
+      "parameters":[
+      {
+        "name": "friend_id",
+        "description": "The friend id",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      }]
+    }]
+  }]
+}

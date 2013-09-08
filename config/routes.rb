@@ -24,6 +24,9 @@ GfAuthenticate::Application.routes.draw do
       resources :devices
       resources :transactions
       resources :tracks
+      resources :friends
+      resources :orientations
+      resources :positions
     end
   end
 

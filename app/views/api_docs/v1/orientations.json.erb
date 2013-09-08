@@ -1,0 +1,31 @@
+{
+  "apis":[
+  {
+    "path": "api/1/orientations",
+    "description": "Orientation Operations",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a list of orientations for the current token user",
+      "nickname": "get_orientations"
+    }]
+  },{
+    "path": "api/1/orientations/{orientation_id}",
+    "description": "Orientation Item",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a specific orientation",
+      "nickname": "get_orientation",
+      "parameters":[
+      {
+        "name": "orientation_id",
+        "description": "The Orientation id",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      }]
+    }]
+  }]
+}
