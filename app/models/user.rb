@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable, :confirmable, :lockable, :timeoutable, :omniauthable,
+         :recoverable, :rememberable, :trackable, :validatable, :confirmable, :timeoutable, :omniauthable,
          omniauth_providers: [:facebook, :twitter]
 
   # must be below devise
