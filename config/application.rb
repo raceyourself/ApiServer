@@ -41,6 +41,7 @@ module GfAuthenticate
 
     config.action_mailer.default_url_options = { host: 'glassfit.dannyhawkins.co.uk' }
 
+    config.autoload_paths += %W(#{config.root}/app/workers)
 
     config.generators do |g|
       g.orm                 :active_record
