@@ -291,15 +291,15 @@ RailsAdmin.config do |config|
 
     # Found associations:
 
-      configure :user, :belongs_to_association
-      configure :type, :belongs_to_association
+      # configure :user, :belongs_to_association
+      # configure :type, :belongs_to_association
     # Found columns:
 
       configure :_id, :bson_object_id 
       configure :user_id, :integer 
-      #configure :_type, :text         # Hidden 
+      configure :_type, :text         # Hidden 
       configure :name, :string 
-      #configure :type_id, :integer 
+      configure :type_id, :integer 
 
     # Cross-section configuration:
 
