@@ -39,7 +39,7 @@ module GfAuthenticate
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-    config.action_mailer.default_url_options = { host: 'glassfit.dev'}
+    config.action_mailer.default_url_options = { host: 'glassfit.dannyhawkins.me.uk' }
 
 
     config.generators do |g|
