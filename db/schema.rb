@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130906212026) do
+ActiveRecord::Schema.define(version: 20130908232755) do
 
   create_table "oauth_access_grants", force: true do |t|
     t.integer  "resource_owner_id", null: false
@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(version: 20130906212026) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "admin",                  default: false, null: false
+    t.integer  "sync_key",               default: 0,     null: false
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
@@ -112,6 +113,7 @@ ActiveRecord::Schema.define(version: 20130906212026) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["provider", "uid"], name: "index_users_on_provider_and_uid", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["sync_key"], name: "index_users_on_sync_key", using: :btree
   add_index "users", ["token"], name: "index_users_on_token", using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
   add_index "users", ["username"], name: "username", using: :btree

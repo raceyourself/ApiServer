@@ -27,6 +27,10 @@ GfAuthenticate::Application.routes.draw do
       resources :friends
       resources :orientations
       resources :positions
+
+      get 'data', to: 'data#index'
+      post 'data', to: 'data#create'
+      post 'delayed_data', to: 'data#delayed_create'
     end
   end
 
