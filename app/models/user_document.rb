@@ -7,4 +7,9 @@ class UserDocument
   index user_id: 1
   # validations
   validates :user_id, presence: true
+
+  def user
+    User.where(id: user_id).first
+  end
+
 end

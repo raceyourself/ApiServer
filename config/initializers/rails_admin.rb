@@ -313,13 +313,30 @@ RailsAdmin.config do |config|
     # Section specific configuration:
 
       list do
+        # configure :user_id do
+        #   pretty_value do
+        #     User.find(bindings[:object].user_id).to_s
+        #   end
+        # end
         # filters [:id, :name]  # Array of field names which filters should be shown by default in the table header
         # items_per_page 100    # Override default_items_per_page
         # sort_by :id           # Sort column (default is primary key)
         # sort_reverse true     # Sort direction (default is true for primary key, last created first)
       end
+      
       show do; end
-      edit do; end
+
+      edit do
+        field :user_id, :enum do
+          enum do
+            User.all.map{|u| [u.to_s, u.id]}
+          end
+        end
+
+        field :type_id
+        field :name
+
+      end
       export do; end
       # also see the create, update, modal and nested sections, which override edit in specific cases (resp. when creating, updating, modifying from another model in a popup modal or modifying from another model nested form)
       # you can override a cross-section field configuration in any section with the same syntax `configure :field_name do ... end`
