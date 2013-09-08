@@ -2,7 +2,7 @@
 require 'oauth2'
 
 puts
-puts "============================== Glassfit client application token tester =============================="
+puts "============================== Server client application token tester =============================="
 puts
 puts
 
@@ -15,13 +15,13 @@ end
 
 client_id = default_value_or_input("Application's client ID", ARGV[0])
 secret = default_value_or_input("Application's client secret", ARGV[1])
-url = default_value_or_input("Databank url", "http://glassfit.dev")
+url = default_value_or_input("Server url", "http://glassfit.dev")
 redirect_uri = default_value_or_input("Redirect URI", 'urn:ietf:wg:oauth:2.0:oob')
 puts 
 puts "Setting up client with following data: "
 puts "Client ID:       #{client_id}"
 puts "Client Secret:   #{secret}"
-puts "Glassfit URL:    #{url}"
+puts "Server URL:    #{url}"
 puts "Redirect URI:    #{redirect_uri}"
 puts 
 
