@@ -46,6 +46,12 @@ class ApiDocsController < AuthedController
     render "api_docs/#{params[:version]}/friends", formats: :json
   end
 
+  def data
+    @base = root_url
+    render "api_docs/#{params[:version]}/data", formats: :json
+  end
+
+
 
   protected
     def attributes_and_types(model)

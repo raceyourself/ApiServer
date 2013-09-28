@@ -1,6 +1,6 @@
 class UserDocument
   include ::Mongoid::Document
-  include Mongoid::Timestamps
+  include ::Mongoid::Timestamps
   # fields
   field :user_id, type: Integer
   field :sync_key, type: Integer

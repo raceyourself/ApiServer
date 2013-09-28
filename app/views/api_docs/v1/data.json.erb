@@ -1,0 +1,22 @@
+{
+  "apis":[
+  {
+    "path": "api/1/sync/{timestamp}",
+    "description": "Sync",
+    "operations":[
+    {
+      "httpMethod": "POST",
+      "summary": "Sync data",
+      "nickname": "sync_data",
+      "parameters":[
+      {
+        "name": "timestamp",
+        "description": "The sync timestamp",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      }]
+    }]
+  }]
+}
