@@ -33,6 +33,7 @@ GfAuthenticate::Application.routes.draw do
       post 'delayed_data', to: 'data#delayed_create'
 
       post 'sync/:ts', to: 'data#sync'
+      get 'sync/:ts', to: 'data#sync'
     end
   end
 
