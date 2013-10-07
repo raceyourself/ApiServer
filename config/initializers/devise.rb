@@ -6,10 +6,11 @@ Devise.setup do |config|
   require 'omniauth-twitter'
   OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE if Rails.env.development? 
 
-  config.omniauth :facebook, "667205069970184", "c353ef6e2322a6342b349933651193ab", {
-    scope: 'email, offline_access'
+  config.omniauth :facebook, CONFIG[:facebook][:client_id], CONFIG[:facebook][:client_secret], {
+    scope: CONFIG[:facebook][:scope]
   }
-  config.omniauth :twitter, "7l2GOzjpGLlTj2SUF0Zww", "fXXPPLt60SQAM7lUpZeqoJ07jYHaNNi1kpPwAsrMew"
+  config.omniauth :twitter, CONFIG[:twitter][:client_id], CONFIG[:twitter][:client_secret]
+  
   # config.omniauth :linkedin, "APP_ID", "APP_SECRET"
   # config.omniauth :github, "APP_ID", "APP_SECRET"
 

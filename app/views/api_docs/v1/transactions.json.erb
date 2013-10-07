@@ -1,0 +1,31 @@
+{
+  "apis":[
+  {
+    "path": "api/1/transactions",
+    "description": "Transaction Index",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a list of transactions",
+      "nickname": "get_transactions"
+    }]
+  },{
+    "path": "api/1/transactions/{transaction_id}",
+    "description": "Transaction Item",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a specific transaction",
+      "nickname": "get_transaction",
+      "parameters":[
+      {
+        "name": "transaction_id",
+        "description": "The transaction id",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      }]
+    }]
+  }]
+}

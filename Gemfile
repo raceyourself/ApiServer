@@ -21,6 +21,9 @@ gem 'bson_ext'
 gem 'mysql2'
 gem 'mongoid_rails4', require: 'mongoid'
 
+# pagination
+gem 'kaminari'
+
 # layout
 gem 'therubyracer'
 gem 'less-rails'
@@ -42,12 +45,21 @@ gem 'simple_form', '~> 3.0.0.beta1'
 
 #caching
 gem 'dalli'
+gem 'rack-cache'
 
 #api
 gem 'rocket_pants'
 
 # admin
 gem 'rails_admin'
+
+# deployer
+gem 'capistrano'
+gem 'rvm-capistrano'
+
+# worker
+gem 'sinatra'
+gem 'sidekiq'
 
 group :development, :test do
   gem 'faker'

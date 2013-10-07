@@ -13,6 +13,20 @@ Bundler.require(:default, Rails.env)
 
 module GfAuthenticate
   class Application < Rails::Application
+
+    # This can probably come out
+    mem_config = YAML.load_file("#{Rails.root}/config/memcached.yml") || {}
+    mem_config = mem_config[Rails.env]
+    mem_servers = mem_config['host'].split(' ').map{|h| "#{h}:#{mem_config['port']}"}
+
+    config.cache_store = :dalli_store, mem_servers, { expires_in: 1.day, compress: true }
+
+    config.action_dispatch.rack_cache = {
+      metastore:   Dalli::Client.new,
+      entitystore: Dalli::Client.new,
+      verbose: false
+    }
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -25,14 +39,31 @@ module GfAuthenticate
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-  config.action_mailer.default_url_options = { host: 'glassfit.dev'}
+    config.action_mailer.default_url_options = { host: 'glassfit.dannyhawkins.co.uk' }
 
+    config.autoload_paths += %W(#{config.root}/app/workers)
 
-  config.generators do |g|
+    config.generators do |g|
       g.orm                 :active_record
       g.stylesheets         false
       g.test_framework      :rspec
       g.template_engine     :haml
     end
+
+    config.after_initialize do
+      OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+    end
+
   end
+
+
+  ActionMailer::Base.delivery_method = :smtp
+  ActionMailer::Base.smtp_settings = {  
+    address:              'localhost', 
+    port:                 25,  
+    domain:               'dannyhawkins.co.uk',  
+    enable_starttls_auto: true,
+    openssl_verify_mode:  'none'
+  }
+
 end
