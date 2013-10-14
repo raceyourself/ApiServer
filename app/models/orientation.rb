@@ -1,18 +1,29 @@
 class Orientation < UserDocument
   # fields
-  field :id,         type: Integer
   field :track_id,   type: Integer
-  field :ts,         type: DateTime
+  field :ts,         type: Integer
   field :roll,       type: Float
   field :pitch,      type: Float
   field :yaw,        type: Float
      
-  field :mag,        type: Array # [x,y,z] device co-ords
-  field :acc,        type: Array # [x,y,z] device co-ords
-  field :gyro,       type: Array # [x,y,z] device co-ords
-  field :rot,        type: Array # [a,b,c,d] rotation vector
-  field :linacc,     type: Array # [x,y,z] real-world co-ords
+  field :mag_x,        type: Float # [x,y,z] device co-ords
+  field :mag_y,        type: Float # [x,y,z] device co-ords
+  field :mag_z,        type: Float # [x,y,z] device co-ords
+  field :acc_x,        type: Float # [x,y,z] device co-ords
+  field :acc_y,        type: Float # [x,y,z] device co-ords
+  field :acc_z,        type: Float # [x,y,z] device co-ords
+  field :gyro_x,       type: Float # [x,y,z] device co-ords
+  field :gyro_y,       type: Float # [x,y,z] device co-ords
+  field :gyro_z,       type: Float # [x,y,z] device co-ords
+  field :rot_a,        type: Float # [a,b,c,d] rotation vector
+  field :rot_b,        type: Float # [a,b,c,d] rotation vector
+  field :rot_c,        type: Float # [a,b,c,d] rotation vector
+  field :rot_d,        type: Float # [a,b,c,d] rotation vector
+  field :linacc_x,     type: Float # [x,y,z] real-world co-ords
+  field :linacc_y,     type: Float # [x,y,z] real-world co-ords
+  field :linacc_z,     type: Float # [x,y,z] real-world co-ords
   # indexes
-  index id: 1
+  index track_id: 1
+  index ts: 1
   # validations
 end
