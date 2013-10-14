@@ -3,11 +3,11 @@ module Api
     doorkeeper_for :all
 
     def index
-      expose current_resource_owner.friends
+      expose user.friends
     end
 
     def show
-      expose current_resource_owner.friends.find(params[:id])
+      expose user.friends.find(params[:id])
     end
 
   end

@@ -1,7 +1,7 @@
 {
   "apis":[
   {
-    "path": "api/1/tracks",
+  "path": "api/1/tracks",
     "description": "Track Index",
     "operations":[
     {
@@ -10,7 +10,7 @@
       "nickname": "get_tracks"
     }]
   },{
-    "path": "api/1/tracks/{track_id}",
+  "path": "api/1/tracks{track_id}",
     "description": "Track Item",
     "operations":[
     {
@@ -19,6 +19,49 @@
       "nickname": "get_track",
       "parameters":[
       {
+        "name": "track_id",
+        "description": "The track id",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      }]
+    }]
+  },{
+  "path": "api/1/users/{user_id}/tracks",
+    "description": "Track Index",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a list of tracks",
+      "nickname": "get_tracks",
+      "parameters":[
+      {
+        "name": "user_id",
+        "description": "The user id",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      }]
+    }]
+  },{
+  "path": "api/1/users/{user_id}/tracks/{track_id}",
+    "description": "Track Item",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a specific track",
+      "nickname": "get_track",
+      "parameters":[
+      {
+        "name": "user_id",
+        "description": "The user id",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      },{
         "name": "track_id",
         "description": "The track id",
         "dataType": "string",

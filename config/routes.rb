@@ -34,6 +34,17 @@ GfAuthenticate::Application.routes.draw do
 
       post 'sync/:ts', to: 'data#sync'
       get 'sync/:ts', to: 'data#sync'
+      
+      resources :users do
+        resource :credentials, only: [:show]
+        resources :devices
+        resources :transactions
+        resources :tracks
+        resources :friends
+        resources :orientations
+        resources :positions
+      end
+
     end
   end
 

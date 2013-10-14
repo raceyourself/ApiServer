@@ -3,15 +3,6 @@
   ,
   "apis":[
   {
-    "path": "api/1/credentials",
-    "description": "Credentials hash",
-    "operations":[
-    {
-      "httpMethod": "GET",
-      "summary": "Return the current users account details",
-      "nickname": "get_credentials"
-    }]
-  },{
     "path": "api/1/me",
     "description": "Credentials hash",
     "operations":[
@@ -19,6 +10,24 @@
       "httpMethod": "GET",
       "summary": "Return the current users account details",
       "nickname": "get_me"
+    }]
+  },{
+    "path": "api/1/users/{user_id}/credentials",
+    "description": "Credentials hash",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return the users account details",
+      "nickname": "get_credentials",
+      "parameters":[
+      {
+        "name": "user_id",
+        "description": "The user id",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      }]
     }]
   }]
 }
