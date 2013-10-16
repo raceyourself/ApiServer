@@ -2,6 +2,11 @@ module Concerns
   module Authentication
     extend ActiveSupport::Concern
 
+    included do
+      has_many :authentications
+
+    end
+
     module ClassMethods
 
       def find_for_provider_oauth(auth, signed_in_resource=nil)
