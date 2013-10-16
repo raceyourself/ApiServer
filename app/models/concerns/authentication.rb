@@ -2,20 +2,43 @@ module Concerns
   module Authentication
     extend ActiveSupport::Concern
 
+    included do
+      has_many :authentications
+
+    end
+
     module ClassMethods
 
-      def find_for_provider_oauth(auth, signed_in_resource=nil)
-        user = where(provider: auth.provider, uid: auth.uid).first
-        unless user
-          user = create(
-            name:auth.extra.raw_info.name,
-            provider:auth.provider,
-            uid:auth.uid,
-            email:auth.info.email,
-            password:Devise.friendly_token[0,20]
-          )
+      def find_for_provider_oauth(omniauth, signed_in_resource=nil)
+        
+        auth = ::Authentication.where(provider: omniauth.provider, uid: omniauth.uid).first
+
+        if auth
+          redirect_to root_path, notice: "This account as already been used by another system user" and return if signed_in_resource && signed_in_resource != auth.user
+          auth.update_from_omniauth(omniauth)
+          auth.save
+          return auth.user
+        else
+          user = signed_in_resource
+
+          if user.nil?
+            # create a new user
+            user = User.create(
+              name: omniauth.extra.raw_info.name,
+              password: Devise.friendly_token[0,20],
+              email: omniauth.info.email
+            )
+          else
+            auth = user.authentications.build.tap do |a|
+              a.provider  = omniauth.provider
+              a.uid       = omniauth.uid
+            end
+            auth.update_from_omniauth(omniauth)
+            auth.save
+          end
+          logger.debug("User is: #{user}")
+          return user
         end
-        user
       end #find_for_facebook_oauth
 
       def new_with_session(params, session)
@@ -23,12 +46,9 @@ module Concerns
         super.tap do |user|
           
           if data = session["devise.provider_data"]
-            user.email = data['info']["email"] if data['info']["email"] && user.email.blank?
-            user.username = data['info']['nickname'] if user.username.blank?
-            user.provider = data['provider']
-            user.uid = data['uid']
+            user.email =    data.info.email     if data.info && data.info.email && user.email.blank?
+            user.username = data.info.nickname  if user.username.blank?
             user.confirmed_at = Time.now
-            user.token = data['credentials']['token']
           end
 
         end
