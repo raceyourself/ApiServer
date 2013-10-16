@@ -40,10 +40,14 @@ module Api
           if data[collection_key]
             data[collection_key].each do |record|
               relation = current_resource_owner.send(collection_key)
-              if record[:id] && current_record = relation.find(record[:id])
-                current_record.update(record)
-              else
-                relation.create(record)
+              begin
+                if record[:id] && current_record = relation.find(record[:id])
+                  current_record.update(record)
+                else
+                 relation.create(record)
+                end
+              rescue => e
+                Rails.logger.debug(e.class.name + ": " + e.message)
               end
             end
           end

@@ -11,7 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130928162139) do
+ActiveRecord::Schema.define(version: 20131016203202) do
+
+  create_table "authentications", force: true do |t|
+    t.integer  "user_id"
+    t.string   "provider"
+    t.string   "uid"
+    t.text     "provider_data"
+    t.string   "email"
+    t.string   "token"
+    t.string   "token_secret"
+    t.boolean  "token_expires"
+    t.datetime "token_expires_at"
+    t.string   "refresh_token"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "oauth_access_grants", force: true do |t|
     t.integer  "resource_owner_id", null: false
@@ -99,9 +114,7 @@ ActiveRecord::Schema.define(version: 20130928162139) do
     t.datetime "locked_at"
     t.string   "authentication_token"
     t.string   "token"
-    t.string   "provider"
     t.string   "name"
-    t.string   "uid"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "admin",                  default: false, null: false
@@ -112,7 +125,6 @@ ActiveRecord::Schema.define(version: 20130928162139) do
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
-  add_index "users", ["provider", "uid"], name: "index_users_on_provider_and_uid", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["sync_key"], name: "index_users_on_sync_key", using: :btree
   add_index "users", ["token"], name: "index_users_on_token", using: :btree

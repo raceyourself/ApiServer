@@ -5,7 +5,7 @@ development:
     scope: 'email, offline_access'
 
   twitter:
-    client_id: 7l2GOzjpGLlTj2SUF0Zww'
+    client_id: '7l2GOzjpGLlTj2SUF0Zww'
     client_secret: 'fXXPPLt60SQAM7lUpZeqoJ07jYHaNNi1kpPwAsrMew'
 
 production:

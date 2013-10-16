@@ -27,5 +27,48 @@
         "paramType": "path"
       }]
     }]
+  },{
+    "path": "api/1/users/{user_id}/orientations",
+    "description": "Orientation Operations",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a list of orientations for the current token user",
+      "nickname": "get_orientations",
+      "parameters":[
+      {
+        "name": "user_id",
+        "description": "The user id",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      }]
+    }]
+  },{
+    "path": "api/1/users/{user_id}/orientations/{orientation_id}",
+    "description": "Orientation Item",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a specific orientation",
+      "nickname": "get_orientation",
+      "parameters":[
+      {
+        "name": "user_id",
+        "description": "The user id",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      },{
+        "name": "orientation_id",
+        "description": "The Orientation id",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      }]
+    }]
   }]
 }
