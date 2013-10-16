@@ -117,6 +117,6 @@ ActiveRecord::Schema.define(version: 20130928162139) do
   add_index "users", ["sync_key"], name: "index_users_on_sync_key", using: :btree
   add_index "users", ["token"], name: "index_users_on_token", using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
-  add_index "users", ["username"], name: "username", using: :btree
+  add_index "users", ["username"], name: "index_users_on_username", using: :btree
 
 end

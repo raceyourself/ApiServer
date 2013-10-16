@@ -5,7 +5,7 @@ module Api
     caches :show, caches_for: 5.minutes
 
     def show
-      expose current_resource_owner
+      expose user
     end
     
   end

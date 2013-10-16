@@ -9,6 +9,11 @@ class ApiDocsController < AuthedController
     render "api_docs/#{params[:version]}/glassfit", formats: :json
   end
 
+  def users
+    @base = root_url
+    render "api_docs/#{params[:version]}/users", formats: :json
+  end
+
   def account
     @base = root_url
     @model = User # Is the model th User???
