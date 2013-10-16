@@ -5,8 +5,8 @@ development:
     scope: 'email, offline_access'
 
   twitter:
-    client_id: '7l2GOzjpGLlTj2SUF0Zww'
-    client_secret: 'fXXPPLt60SQAM7lUpZeqoJ07jYHaNNi1kpPwAsrMew'
+    client_id: 7l2GOzjpGLlTj2SUF0Zww
+    client_secret: fXXPPLt60SQAM7lUpZeqoJ07jYHaNNi1kpPwAsrMew
 
 production:
   facebook:
@@ -15,8 +15,8 @@ production:
     scope: 'email, offline_access'
 
   twitter:
-    client_id: NAs6Vh3PtN7Pv7ULG7eCyA'
-    client_secret: '3E8RgvAGjCrnqynkrCPfBI6KVdIK4u9iXt8WGPVyLq0'
+    client_id: NAs6Vh3PtN7Pv7ULG7eCyA
+    client_secret: 3E8RgvAGjCrnqynkrCPfBI6KVdIK4u9iXt8WGPVyLq0
     
 test:
   facebook:
