@@ -4,12 +4,18 @@ Devise.setup do |config|
 
   require 'omniauth-facebook'
   require 'omniauth-twitter'
+  require File.expand_path('lib/omniauth/strategies/gplus', Rails.root)
   OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE if Rails.env.development? 
 
   config.omniauth :facebook, CONFIG[:facebook][:client_id], CONFIG[:facebook][:client_secret], {
     scope: CONFIG[:facebook][:scope]
   }
   config.omniauth :twitter, CONFIG[:twitter][:client_id], CONFIG[:twitter][:client_secret]
+  config.omniauth :gplus, CONFIG[:gplus][:client_id], CONFIG[:gplus][:client_secret], {
+    scope: CONFIG[:gplus][:scope],
+    request_visible_actions: CONFIG[:gplus][:request_visible_actions],
+    access_type: 'offline'
+  }
   
   # config.omniauth :linkedin, "APP_ID", "APP_SECRET"
   # config.omniauth :github, "APP_ID", "APP_SECRET"

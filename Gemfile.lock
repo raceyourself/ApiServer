@@ -31,6 +31,10 @@ GEM
       httparty
     arel (4.0.0)
     atomic (1.1.13)
+    autoparse (0.3.3)
+      addressable (>= 2.3.1)
+      extlib (>= 0.9.15)
+      multi_json (>= 1.0.0)
     bcrypt-ruby (3.1.1)
     better_errors (0.9.0)
       coderay (>= 1.0.0)
@@ -115,6 +119,7 @@ GEM
       mail (~> 2.2)
     erubis (2.7.0)
     execjs (2.0.0)
+    extlib (0.9.16)
     factory_girl (4.2.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.2.1)
@@ -130,6 +135,16 @@ GEM
       railties (>= 3.2, < 5.0)
     gherkin (2.12.1)
       multi_json (~> 1.3)
+    google-api-client (0.6.4)
+      addressable (>= 2.3.2)
+      autoparse (>= 0.3.3)
+      extlib (>= 0.9.15)
+      faraday (~> 0.8.4)
+      jwt (>= 0.1.5)
+      launchy (>= 2.1.1)
+      multi_json (>= 1.0.0)
+      signet (~> 0.4.5)
+      uuidtools (>= 2.1.0)
     haml (4.0.3)
       tilt
     hashie (1.2.0)
@@ -162,6 +177,10 @@ GEM
     kaminari (0.14.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
+    koala (1.6.0)
+      addressable (~> 2.2)
+      faraday (~> 0.8)
+      multi_json (~> 1.3)
     launchy (2.3.0)
       addressable (~> 2.3)
     less (2.3.2)
@@ -330,9 +349,15 @@ GEM
       json
       redis (>= 3.0.4)
       redis-namespace
+    signet (0.4.5)
+      addressable (>= 2.2.3)
+      faraday (~> 0.8.1)
+      jwt (>= 0.1.5)
+      multi_json (>= 1.0.0)
     simple_form (3.0.0.rc)
       actionpack (>= 4.0.0.rc1, < 4.1)
       activemodel (>= 4.0.0.rc1, < 4.1)
+    simple_oauth (0.2.0)
     sinatra (1.4.3)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -362,6 +387,10 @@ GEM
     turnip (1.1.0)
       gherkin (>= 2.5)
       rspec (~> 2.0)
+    twitter (4.8.1)
+      faraday (~> 0.8, < 0.10)
+      multi_json (~> 1.0)
+      simple_oauth (~> 0.2)
     twitter-bootstrap-rails (2.2.8)
       actionpack (>= 3.1)
       execjs
@@ -371,6 +400,7 @@ GEM
     uglifier (2.1.2)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
+    uuidtools (2.1.4)
     warden (1.2.3)
       rack (>= 1.0)
     webmock (1.13.0)
@@ -403,12 +433,14 @@ DEPENDENCIES
   factory_girl_rails
   faker
   fakeweb
+  google-api-client
   haml
   headless
   html2haml
   jbuilder (~> 1.2)
   jquery-rails
   kaminari
+  koala
   less-rails
   letter_opener
   mongoid_rails4
@@ -434,6 +466,7 @@ DEPENDENCIES
   therubyracer
   timecop
   turnip
+  twitter
   twitter-bootstrap-rails
   uglifier (>= 1.3.0)
   webmock

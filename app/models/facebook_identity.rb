@@ -1,0 +1,16 @@
+class FacebookIdentity < Identity
+  field :uid, type: String
+  field :name, type: String
+
+  validates :uid, presence: true
+
+  def generate_id
+    uid
+  end
+
+  def update_from_facebook(data)
+    self.uid = data['id']
+    self.name = data['name']
+    self
+  end
+end

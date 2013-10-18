@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable, :timeoutable, :omniauthable,
-         omniauth_providers: [:facebook, :twitter]
+         omniauth_providers: [:facebook, :twitter, :gplus]
 
   # must be below devise
   include Concerns::Authentication

@@ -36,6 +36,8 @@ gem 'devise-async'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-twitter'
+# gem 'omniauth-google-oauth2'
+# gem 'omniauth-gplus'
 # gem 'omniauth-linkedin'
 # gem 'omniauth-google'
 gem 'doorkeeper', '~> 0.7.0'
@@ -60,6 +62,11 @@ gem 'rvm-capistrano'
 # worker
 gem 'sinatra'
 gem 'sidekiq'
+
+# social
+gem 'koala'
+gem 'twitter'
+gem 'google-api-client'
 
 group :development, :test do
   gem 'faker'
