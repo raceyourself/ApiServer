@@ -19,7 +19,9 @@ gem 'bson_ext'
 
 # data
 gem 'mysql2'
-gem 'mongoid_rails4', require: 'mongoid'
+gem 'mongoid', github: 'mongoid'
+gem 'mongoid-paranoia', github: 'simi/mongoid-paranoia'
+gem 'mongoid_auto_increment'
 
 # pagination
 gem 'kaminari'

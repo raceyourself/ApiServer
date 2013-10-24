@@ -7,7 +7,7 @@ module Api
     end
 
     def show
-      expose user.friends.find(params[:id])
+      expose Friendship.find(params[:id])
     end
 
   end

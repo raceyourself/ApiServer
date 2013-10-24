@@ -47,7 +47,8 @@ module Api
                  relation.create(record)
                 end
               rescue => e
-                Rails.logger.debug(e.class.name + ": " + e.message)
+                logger.error(e.class.name + ": " + e.message)
+                logger.debug e.backtrace.join("\n")
               end
             end
           end
@@ -58,7 +59,8 @@ module Api
         data = {sync_timestamp: date.to_i}
 
         User::COLLECTIONS.each do |collection_key|
-          data[collection_key] = current_resource_owner.send(collection_key).where(:updated_at.gt => date)
+          data[collection_key] = current_resource_owner.send(collection_key).any_of({:updated_at.gt => date},
+                                                                                    {:deleted_at.gt => date})
         end
 
         data

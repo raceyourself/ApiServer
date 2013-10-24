@@ -1,6 +1,7 @@
 class UserDocument
   include ::Mongoid::Document
-  include ::Mongoid::Timestamps
+  include ::Mongoid::Timestamps::Updated
+  include ::Mongoid::Paranoia
   # fields
   field :user_id, type: Integer
   # indexes

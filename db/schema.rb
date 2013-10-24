@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131016203202) do
+ActiveRecord::Schema.define(version: 20131024112141) do
 
   create_table "authentications", force: true do |t|
     t.integer  "user_id"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20131016203202) do
     t.string   "refresh_token"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "permissions"
   end
 
   create_table "oauth_access_grants", force: true do |t|

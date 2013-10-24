@@ -1,30 +1,48 @@
 development:
   facebook:
-    client_id: '667205069970184'
-    client_secret: 'c353ef6e2322a6342b349933651193ab'
-    scope: 'email, offline_access'
+    client_id: '625999614089605'
+    client_secret: '27f0dbfd392ef841809a22854a30f73b'
+    scope: 'email, publish_actions'
 
   twitter:
-    client_id: 7l2GOzjpGLlTj2SUF0Zww
-    client_secret: fXXPPLt60SQAM7lUpZeqoJ07jYHaNNi1kpPwAsrMew
+    client_id: 3JdKxHWh0IWQTHd8mc56aA 
+    client_secret: z3bWSVwCUQT02GSvPfBWPGjoWTAikhwgo9ogBOjbco
+
+  gplus:
+    client_id: '892619514273.apps.googleusercontent.com'
+    client_secret: 'GYOUnQiHC8R8IMyb9iIbI2Nb'
+    scope: 'plus.login'
+    request_visible_actions: 'AddActivity'
 
 production:
   facebook:
     client_id: '1384077758490171'
     client_secret: '49cc428daa785a71e8d8b163a9210f8d'
-    scope: 'email, offline_access'
+    scope: 'email, public_actions'
 
   twitter:
     client_id: NAs6Vh3PtN7Pv7ULG7eCyA
     client_secret: 3E8RgvAGjCrnqynkrCPfBI6KVdIK4u9iXt8WGPVyLq0
     
+  gplus:
+    client_id: 'TODO'
+    client_secret: 'TODO'
+    scope: 'plus.login'
+    request_visible_actions: 'AddActivity'
+
 test:
   facebook:
     client_id: 'dummyid'
     client_secret: 'dummysecret'
-    scope: 'email, offline_access'
+    scope: 'email, publish_actions'
 
   twitter:
     client_id: 'dummyid'
     client_secret: 'dummysecret'
+
+  gplus:
+    client_id: 'dummyid'
+    client_secret: 'dummysecret'
+    scope: 'plus.login'
+    request_visible_actions: 'AddActivity'
 

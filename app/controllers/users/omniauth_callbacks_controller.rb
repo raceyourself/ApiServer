@@ -1,3 +1,4 @@
+require 'google/api_client'
 module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
@@ -10,10 +11,13 @@ module Users
         me = FacebookIdentity.new().update_from_facebook(profile)
         me.user_id = @user.id
         me.upsert if me.valid?
+        # Race condition
+        me.friendships.destroy_all(friend_type: 'FacebookIdentity')
         graph.get_connections("me", "friends").each do |friend|
           fid = FacebookIdentity.new().update_from_facebook(friend)
-          fid.save!
-          me.friendships << Friendship.new( friend: fid )
+          fid.upsert if fid.valid?
+          fs = Friendship.new( identity: me, friend: fid )
+          fs.upsert if fs.valid?
         end
       end
     end
@@ -29,10 +33,13 @@ module Users
         me = TwitterIdentity.new().update_from_twitter(client.verify_credentials)
         me.user_id = @user.id
         me.upsert if me.valid?
+        # Race condition
+        me.friendships.destroy_all(friend_type: 'TwitterIdentity')
         client.friends.all.each do |friend|
           fid = TwitterIdentity.new().update_from_twitter(friend)
-          fid.save!
-          me.friendships << Friendship.new( friend: fid )
+          fid.upsert if fid.valid?
+          fs = Friendship.new( identity: me, friend: fid )
+          fs.upsert if fs.valid?
         end
       end
     end
@@ -58,10 +65,13 @@ module Users
           :api_method => plus.people.list, 
           :parameters => {'collection' => 'visible', 'userId' => 'me'}
         )
+        # Race condition
+        me.friendships.destroy_all(friend_type: 'GplusIdentity')
         result.data.items.each do |person|
           fid = GplusIdentity.new().update_from_gplus(person)
-          fid.save!
-          me.friendships << Friendship.new( friend: fid )
+          fid.upsert if fid.valid?
+          fs = Friendship.new( identity: me, friend: fid )
+          fs.upsert if fs.valid?
         end
       end
     end

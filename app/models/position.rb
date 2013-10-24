@@ -1,5 +1,7 @@
 class Position < UserDocument
   # fields
+  field :position_id, type: Integer
+  field :device_id, type: Integer
   field :track_id,  type: Integer
   field :state_id,  type: Integer
   field :gps_ts,    type: Integer 
@@ -15,9 +17,7 @@ class Position < UserDocument
   field :epe,       type: Float
   field :nmea,      type: String
   # indexes
-  index track_id: 1
-  index state_id: 1
-  index nmea: 1
+  index({device_id: 1, track_id: 1, position_id: 1}, {unique: true})
   # validations
-  validates :track_id, :state_id, :gps_ts, :lng, :lat, :alt, :bearing, presence: true
+  validates :device_id, :track_id, :position_id, :state_id, :gps_ts, :lng, :lat, :alt, :bearing, presence: true
 end

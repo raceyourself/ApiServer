@@ -1,5 +1,7 @@
 class Orientation < UserDocument
   # fields
+  field :orientation_id, type: Integer
+  field :device_id,  type: Integer
   field :track_id,   type: Integer
   field :ts,         type: Integer
   field :roll,       type: Float
@@ -23,7 +25,8 @@ class Orientation < UserDocument
   field :linacc_y,     type: Float # [x,y,z] real-world co-ords
   field :linacc_z,     type: Float # [x,y,z] real-world co-ords
   # indexes
-  index track_id: 1
+  index({device_id: 1, track_id: 1, orientation_id: 1}, {unique: true})
   index ts: 1
   # validations
+
 end
