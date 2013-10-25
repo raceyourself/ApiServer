@@ -9,6 +9,8 @@ class UserDocument
   # validations
   validates :user_id, presence: true
 
+  before_upsert :set_updated_at
+
   def user
     User.where(id: user_id).first
   end

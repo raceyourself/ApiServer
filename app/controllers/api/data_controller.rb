@@ -19,17 +19,16 @@ module Api
     def sync
       timestamp = params[:ts]
       raise Exception.new("You must send ts in the query") unless timestamp
-
-      date = Time.at(timestamp.to_i)
-      
+  
       if params[:data]
         data = params[:data] 
         import_data(data)
       end
-      # update the user record
-      current_resource_owner.update_attribute(:sync_timestamp, date)
+      # update the user record with last sync time (now)
+      current_resource_owner.update_attribute(:sync_timestamp, Time.now)
 
-      # return the sync data
+      # return the sync data from the requested time forward
+      date = Time.at(timestamp.to_i)
       expose export_data(date)
     end
 
@@ -41,11 +40,8 @@ module Api
             data[collection_key].each do |record|
               relation = current_resource_owner.send(collection_key)
               begin
-                if record[:id] && current_record = relation.find(record[:id])
-                  current_record.update(record)
-                else
-                 relation.create(record)
-                end
+                d = relation.new(record)
+                d.upsert if d.valid?
               rescue => e
                 logger.error(e.class.name + ": " + e.message)
                 logger.debug e.backtrace.join("\n")
@@ -56,7 +52,7 @@ module Api
       end
 
       def export_data(date)
-        data = {sync_timestamp: date.to_i}
+        data = {sync_timestamp: Time.now.to_i}
 
         User::COLLECTIONS.each do |collection_key|
           data[collection_key] = current_resource_owner.send(collection_key).any_of({:updated_at.gt => date},

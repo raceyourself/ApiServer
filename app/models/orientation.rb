@@ -1,4 +1,7 @@
 class Orientation < UserDocument
+  # key
+  field :_id,        type: String
+  before_validation :generate_key
   # fields
   field :orientation_id, type: Integer
   field :device_id,  type: Integer
@@ -29,4 +32,8 @@ class Orientation < UserDocument
   index ts: 1
   # validations
 
+  def generate_key
+    composite = [device_id, orientation_id]
+    self._id ||= composite.pack("L*").unpack("h*").first
+  end
 end
