@@ -25,8 +25,8 @@ production:
     client_secret: 3E8RgvAGjCrnqynkrCPfBI6KVdIK4u9iXt8WGPVyLq0
     
   gplus:
-    client_id: 'TODO'
-    client_secret: 'TODO'
+    client_id: '892619514273.apps.googleusercontent.com'
+    client_secret: 'GYOUnQiHC8R8IMyb9iIbI2Nb'
     scope: 'plus.login'
     request_visible_actions: 'AddActivity'
 

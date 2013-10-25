@@ -40,8 +40,10 @@ module Api
             data[collection_key].each do |record|
               relation = current_resource_owner.send(collection_key)
               begin
+                deleted = record[:deleted_at]
                 d = relation.new(record)
                 d.upsert if d.valid?
+                d.delete if deleted
               rescue => e
                 logger.error(e.class.name + ": " + e.message)
                 logger.debug e.backtrace.join("\n")

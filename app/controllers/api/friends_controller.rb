@@ -3,13 +3,11 @@ module Api
     doorkeeper_for :all
 
     def index
-      # TODO: Include friend identity, filter out foreign keys
-      expose user.friends
+      expose user.friends, { include: :friend, except: [:friend_id, :friend_type] }
     end
 
     def show
-      # TODO: Look up identity, filter away if not in friendship
-      expose Friendship.find(params[:id])
+      expose Friendship.find(params[:id]), { include: :friend, except: [:friend_id, :friend_type] }
     end
 
   end
