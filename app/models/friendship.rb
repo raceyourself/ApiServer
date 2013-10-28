@@ -17,4 +17,12 @@ class Friendship
     self._id ||= self.identity_id + self.friend_id
   end
 
+  def serializable_hash(options = {})
+    options = {
+       include: :friend, 
+       except: [:friend_id, :friend_type] 
+    }.update(options)
+    super(options)
+  end
+
 end

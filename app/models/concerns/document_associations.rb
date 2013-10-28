@@ -7,7 +7,6 @@ module Concerns
     included do
       define_method :friends do
         identities = Identity.where(user_id: id)
-        # TODO: Include friend identities, filter out foreign keys
         Friendship.where(:identity_id.in => identities.flat_map { |id| id.id })
       end
 

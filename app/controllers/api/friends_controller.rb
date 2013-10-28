@@ -3,11 +3,11 @@ module Api
     doorkeeper_for :all
 
     def index
-      expose user.friends, { include: :friend, except: [:friend_id, :friend_type] }
+      expose user.friends
     end
 
     def show
-      expose Friendship.find(params[:id]), { include: :friend, except: [:friend_id, :friend_type] }
+      expose Friendship.find(params[:id])
     end
 
   end
