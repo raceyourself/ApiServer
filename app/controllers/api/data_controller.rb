@@ -55,7 +55,7 @@ module Api
         end
         if data[:actions]
           data[:actions].each do |action|
-            EchoWorker.perform_async(current_resource_owner.id, action.to_s)
+            EchoWorker.perform_async(current_resource_owner.id, action)
           end
         end
       end
