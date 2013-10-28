@@ -65,6 +65,7 @@ module Users
           :api_method => plus.people.list, 
           :parameters => {'collection' => 'visible', 'userId' => 'me'}
         )
+        # TODO: De-paginate
         # Race condition
         me.friendships.destroy_all(friend_type: 'GplusIdentity')
         result.data.items.each do |person|

@@ -51,6 +51,11 @@ module Api
             end
           end
         end
+        if data[:actions]
+          data[:actions].each do |action|
+            EchoWorker.perform_async(current_resource_owner.id, action.to_s)
+          end
+        end
       end
 
       def export_data(date)
