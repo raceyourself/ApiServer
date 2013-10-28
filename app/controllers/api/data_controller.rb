@@ -40,6 +40,8 @@ module Api
             data[collection_key].each do |record|
               relation = current_resource_owner.send(collection_key)
               begin
+                # Dirty hack to fix broken mongoid
+                record[:_id] = record[:_id][:$oid] if record[:_id][:$oid]
                 deleted = record[:deleted_at]
                 d = relation.new(record)
                 d.upsert if d.valid?
