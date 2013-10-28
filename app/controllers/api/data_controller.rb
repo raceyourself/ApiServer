@@ -64,8 +64,9 @@ module Api
         data = {sync_timestamp: Time.now.to_i}
 
         User::COLLECTIONS.each do |collection_key|
-          data[collection_key] = current_resource_owner.send(collection_key).any_of({:updated_at.gt => date},
-                                                                                    {:deleted_at.gt => date})
+          data[collection_key] = current_resource_owner.send(collection_key)
+                                                       .unscoped.any_of({:updated_at.gt => date},
+                                                                        {:deleted_at.gt => date})
         end
 
         data
