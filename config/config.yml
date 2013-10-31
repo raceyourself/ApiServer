@@ -18,7 +18,7 @@ production:
   facebook:
     client_id: '1384077758490171'
     client_secret: '49cc428daa785a71e8d8b163a9210f8d'
-    scope: 'email, public_actions'
+    scope: 'email, publish_actions'
 
   twitter:
     client_id: NAs6Vh3PtN7Pv7ULG7eCyA

@@ -5,17 +5,17 @@ module Concerns
     COLLECTIONS = [:devices, :friends, :orientations, :positions, :tracks, :transactions, :notifications]
 
     included do
-      define_method :friends do
-        identities = Identity.where(user_id: id)
-        Friendship.where(:identity_id.in => identities.flat_map { |id| id.id })
+      define_method :friends do |scope=:all|
+        identities = Identity.send(scope).where(user_id: id)
+        Friendship.send(scope).where(:identity_id.in => identities.flat_map { |id| id.id })
       end
 
       # has many associations
       COLLECTIONS.each do |assoc|
         # association getter
-        define_method assoc do
+        define_method assoc do |scope=:all|
           klass = "#{assoc.to_s}".classify.constantize
-          klass.where(user_id: id)
+          klass.send(scope).where(user_id: id)
         end unless method_defined? assoc
       end
 

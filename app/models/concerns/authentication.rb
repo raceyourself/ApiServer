@@ -3,7 +3,7 @@ module Concerns
     extend ActiveSupport::Concern
 
     included do
-      has_many :authentications
+      has_many :authentications, dependent: :destroy
 
     end
 
@@ -14,7 +14,7 @@ module Concerns
         auth = ::Authentication.where(provider: omniauth.provider, uid: omniauth.uid).first
 
         if auth
-          redirect_to root_path, notice: "This account as already been used by another system user" and return if signed_in_resource && signed_in_resource != auth.user
+          raise "This account has already been used by another system user" if signed_in_resource && signed_in_resource != auth.user
           auth.update_from_omniauth(omniauth)
           auth.save
           return auth.user
@@ -23,19 +23,21 @@ module Concerns
 
           if user.nil?
             # create a new user
-            user = User.create(
+            user = User.new(
               name: omniauth.extra.raw_info.name,
               password: Devise.friendly_token[0,20],
               email: omniauth.info.email
             )
-          else
-            auth = user.authentications.build.tap do |a|
-              a.provider  = omniauth.provider
-              a.uid       = omniauth.uid
-            end
-            auth.update_from_omniauth(omniauth)
-            auth.save
+            # Skip confirmation for third-party identity providers
+            user.skip_confirmation!
+            user.save
           end
+          auth = user.authentications.build.tap do |a|
+            a.provider  = omniauth.provider
+            a.uid       = omniauth.uid
+          end
+          auth.update_from_omniauth(omniauth)
+          auth.save
           logger.debug("User is: #{user}")
           return user
         end
