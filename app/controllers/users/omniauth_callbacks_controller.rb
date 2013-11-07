@@ -61,19 +61,26 @@ module Users
         me = GplusIdentity.new().update_from_gplus(result.data)
         me.user_id = @user.id
         me.upsert if me.valid?
-        result = client.execute(
-          :api_method => plus.people.list, 
-          :parameters => {'collection' => 'visible', 'userId' => 'me'}
-        )
-        # TODO: De-paginate
         # Race condition
         me.friendships.destroy_all(friend_type: 'GplusIdentity')
-        result.data.items.each do |person|
-          fid = GplusIdentity.new().update_from_gplus(person)
-          fid.upsert if fid.valid?
-          fs = Friendship.new( identity: me, friend: fid )
-          fs.upsert if fs.valid?
-        end
+        req = {
+            :api_method => plus.people.list, 
+            :parameters => {'collection' => 'visible', 'userId' => 'me'}
+        }
+        begin
+          result = client.execute(req)
+          result.data.items.each do |person|
+            fid = GplusIdentity.new().update_from_gplus(person)
+            fid.upsert if fid.valid?
+            fs = Friendship.new( identity: me, friend: fid )
+            fs.upsert if fs.valid?
+          end
+          if result.next_page_token
+            req = result.next_page
+          else
+            req = nil
+          end
+        end while not req.nil?
       end
     end
 
