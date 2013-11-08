@@ -1,6 +1,7 @@
 class FacebookIdentity < Identity
   field :uid, type: String
   field :name, type: String
+  field :photo, type: String
 
   validates :uid, presence: true
 
@@ -11,6 +12,7 @@ class FacebookIdentity < Identity
   def update_from_facebook(data)
     self.uid = data['id']
     self.name = data['name']
+    self.photo = data['picture']['data']['url'] if data['picture']
     self
   end
 end

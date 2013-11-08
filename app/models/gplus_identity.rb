@@ -1,6 +1,7 @@
 class GplusIdentity < Identity
   field :uid, type: String
   field :name, type: String
+  field :image, type: String
 
   validates :uid, presence: true
 
@@ -11,6 +12,7 @@ class GplusIdentity < Identity
   def update_from_gplus(data)
     self.uid = data.id
     self.name = data.displayName
+    self.image = data.image.url
     self
   end
 end

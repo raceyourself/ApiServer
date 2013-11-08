@@ -1,6 +1,9 @@
 class Identity 
   include ::Mongoid::Document
-  
+ 
+  # Fields
+  field :has_glass, type: Boolean, default: false
+
   # Bidirectional friend graph
   has_many :friendships
   # May be linked to a registered user (nullable)
