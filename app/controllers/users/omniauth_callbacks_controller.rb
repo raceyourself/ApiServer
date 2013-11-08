@@ -34,12 +34,19 @@ module Users
                                      :consumer_secret => CONFIG[:twitter][:client_secret],
                                      :oauth_token => auth.token,
                                      :oauth_token_secret => auth.token_secret)
-        me = TwitterIdentity.new().update_from_twitter(client.verify_credentials)
+        begin
+          credentials = client.verify_credentials
+        rescue Twitter::Error::TooManyRequests => error
+          logger.warn "Rate limit error, sleeping for #{error.rate_limit.reset_in} seconds..."
+          sleep error.rate_limit.reset_in
+          retry
+        end
+        me = TwitterIdentity.new().update_from_twitter(credentials)
         me.user_id = @user.id
         me.upsert if me.valid?
         # Race condition
         me.friendships.destroy_all(friend_type: 'TwitterIdentity')
-        client.friends.all.each do |friend|
+        get_twitter_friends_with_cursor(client).each do |friend|
           fid = TwitterIdentity.new().update_from_twitter(friend)
           fid.upsert if fid.valid?
           fs = Friendship.new( identity: me, friend: fid )
@@ -48,7 +55,24 @@ module Users
       end
     end
 
-    def gplus
+    def get_twitter_friends_with_cursor(client, cursor=-1, list=[])
+      # Base case
+      if cursor == 0
+        return list
+      else
+        begin
+          hashie = client.friends(:cursor => cursor)                      
+        rescue Twitter::Error::TooManyRequests => error
+          logger.warn "Rate limit error, sleeping for #{error.rate_limit.reset_in} seconds..."
+          sleep error.rate_limit.reset_in
+          retry
+        end
+        hashie.users.each {|u| list << u }                              # Concat users to list
+        get_twitter_friends_with_cursor(client,hashie.next_cursor,list) # Recursive step using the next cursor
+      end
+    end
+
+    def gplus 
       standard_provider
       if @user.persisted?
         auth = Authentication.where(provider: 'gplus', user_id: @user.id).first
@@ -102,7 +126,9 @@ module Users
             set_flash_message(:notice, :success, :kind => request.env["omniauth.auth"]["provider"].humanize) if is_navigational_format?
           end
         else
-          session["devise.provider_data"] = request.env["omniauth.auth"]
+          data = request.env["omniauth.auth"].except("extra")
+          data.extra_headers = request.env["omniauth.auth"].extra.access_token.response.header
+          session["devise.provider_data"] = data
           redirect_to new_user_registration_url
         end
       end #standard_provider
