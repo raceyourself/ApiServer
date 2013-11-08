@@ -1,6 +1,7 @@
 require 'google/api_client'
 module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  @@FAIL_FAST = true
 
     def facebook
       standard_provider
@@ -63,6 +64,8 @@ module Users
         begin
           hashie = client.friends(:count => 200, :skip_status => true, :cursor => cursor)                      
         rescue Twitter::Error::TooManyRequests => error
+          logger.warn "Twitter rate limited and fail-fast enabled, aborting!" if @@FAIL_FAST
+          return list if @@FAIL_FAST
           logger.warn "Rate limit error, sleeping for #{error.rate_limit.reset_in} seconds..."
           sleep error.rate_limit.reset_in
           retry
@@ -127,7 +130,7 @@ module Users
           end
         else
           data = request.env["omniauth.auth"].except("extra")
-          data.extra_headers = request.env["omniauth.auth"].extra.access_token.response.header
+          data["x-access-level"] = request.env["omniauth.auth"].extra.access_token.response.header["x-access-level"] if request.env["omniauth.auth"].extra
           session["devise.provider_data"] = data
           redirect_to new_user_registration_url
         end

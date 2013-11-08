@@ -15,9 +15,9 @@ class Authentication < ActiveRecord::Base
       self.token_expires_at   = Time.at(creds.expires_at) if creds.expires_at
     end
 
-    if self.provider == 'twitter' && headers = data.extra_headers
-      self.permissions = 'login' if headers['x-access-level'] == 'read'
-      self.permissions = 'login,share' if headers['x-access-level'] == 'read-write'
+    if self.provider == 'twitter'
+      self.permissions = 'login'
+      self.permissions = 'login,share' if data['x-access-level'] == 'read-write'
     else
       update_permissions_from_provider()  
     end
