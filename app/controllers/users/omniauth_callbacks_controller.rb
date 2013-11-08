@@ -61,7 +61,7 @@ module Users
         return list
       else
         begin
-          hashie = client.friends(:cursor => cursor)                      
+          hashie = client.friends(:count => 200, :skip_status => true, :cursor => cursor)                      
         rescue Twitter::Error::TooManyRequests => error
           logger.warn "Rate limit error, sleeping for #{error.rate_limit.reset_in} seconds..."
           sleep error.rate_limit.reset_in
