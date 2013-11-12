@@ -25,4 +25,13 @@ class Challenge
   def creator
     User.where(id: creator_id).first
   end
+  
+  def type
+    self._type.downcase.sub('challenge', '')
+  end
+
+  def self.build(challenge)
+    Mongoid::Factory.build((challenge[:type].capitalize + 'Challenge').constantize, challenge.except(:type))
+  end
+
 end

@@ -9,6 +9,8 @@ class UserDocument
   # validations
   validates :user_id, presence: true
 
+  # TODO: Only set_updated_at if values changed
+  #       (in friendship's case, also when friend changes)
   before_upsert :set_updated_at
 
   def user

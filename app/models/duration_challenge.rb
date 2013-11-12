@@ -5,7 +5,4 @@ class DurationChallenge < Challenge
 
   validates :duration, :distance, presence: true
 
-  def type
-    "duration"
-  end
 end

@@ -5,7 +5,4 @@ class DistanceChallenge < Challenge
 
   validates :distance, :time, presence: true
 
-  def type
-    "distance"
-  end
 end

@@ -55,7 +55,47 @@ module Api
         end
         if data[:actions]
           data[:actions].each do |action|
-            EchoWorker.perform_async(current_resource_owner.id, action)
+            type = action[:action]
+            case type
+            when 'challenge'
+              deleted = action[:challenge][:deleted_at]
+              c = Challenge.build(action[:challenge])
+              c.creator_id = current_resource_owner.id
+              c.upsert if c.valid?
+              c.delete if deleted
+            
+              # Notify target of challenge if registered (unregistered are notified client-side)
+              if action[:target] && target = User.where(id: action[:target]).first
+                message = { 
+                  :type => 'challenge', 
+                  :from => current_resource_owner.id, 
+                  :challenge => c.serializable_hash(:methods => :type), 
+                  :taunt => action[:taunt] 
+                }
+                target.notifications.create( 
+                    :message => message
+                ) 
+              end
+            when 'share'
+              provider = action[:provider]
+              case provider
+              when 'facebook'
+                FacebookShareTrackWorker.perform_async(current_resource_owner.id,
+                                                       action[:track], action[:message])
+              when 'twitter'
+                TwitterShareTrackWorker.perform_async(current_resource_owner.id,
+                                                      action[:track], action[:message])
+              when 'google+'
+                GplusShareTrackWorker.perform_async(current_resource_owner.id,
+                                                    action[:track], action[:message])
+              end
+            when 'link'
+              LinkTrackWorker.perform_async(current_resource_owner.id,
+                                            action[:friend_id],
+                                            action[:track], action[:message])
+            else
+              EchoWorker.perform_async(current_resource_owner.id, action)
+            end
           end
         end
       end
@@ -64,9 +104,9 @@ module Api
         data = {sync_timestamp: Time.now.to_i}
 
         User::COLLECTIONS.each do |collection_key|
-          data[collection_key] = current_resource_owner.send(collection_key)
-                                                       .unscoped.any_of({:updated_at.gt => date},
-                                                                        {:deleted_at.gt => date})
+          data[collection_key] = current_resource_owner.send(collection_key, :unscoped)
+                                                       .any_of({:updated_at.gt => date},
+                                                               {:deleted_at.gt => date})
         end
 
         data
