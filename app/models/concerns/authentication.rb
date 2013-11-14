@@ -26,19 +26,18 @@ module Concerns
             user = User.new(
               name: omniauth.extra.raw_info.name,
               password: Devise.friendly_token[0,20],
-              email: omniauth.info.email
+              email: omniauth.info.email || omniauth.uid+'-'+omniauth.provider+'@glassfitgames.com'
             )
             # Skip confirmation for third-party identity providers
             user.skip_confirmation!
-            user.save
+            user.save!
           end
           auth = user.authentications.build.tap do |a|
             a.provider  = omniauth.provider
             a.uid       = omniauth.uid
           end
           auth.update_from_omniauth(omniauth)
-          auth.save
-          logger.debug("User is: #{user}")
+          auth.save!
           return user
         end
       end #find_for_facebook_oauth

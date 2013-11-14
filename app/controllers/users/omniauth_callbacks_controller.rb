@@ -18,7 +18,7 @@ module Users
         begin
           result.each do |friend|
             fid = FacebookIdentity.new().update_from_facebook(friend)
-            fid.upsert if fid.valid?
+            fid.merge
             fs = Friendship.new( identity: me, friend: fid )
             fs.upsert if fs.valid?
           end
@@ -49,7 +49,7 @@ module Users
         me.friendships.destroy_all(friend_type: 'TwitterIdentity')
         get_twitter_friends_with_cursor(client).each do |friend|
           fid = TwitterIdentity.new().update_from_twitter(friend)
-          fid.upsert if fid.valid?
+          fid.merge
           fs = Friendship.new( identity: me, friend: fid )
           fs.upsert if fs.valid?
         end
@@ -102,7 +102,7 @@ module Users
           result = client.execute(req)
           result.data.items.each do |person|
             fid = GplusIdentity.new().update_from_gplus(person)
-            fid.upsert if fid.valid?
+            fid.merge
             fs = Friendship.new( identity: me, friend: fid )
             fs.upsert if fs.valid?
           end
