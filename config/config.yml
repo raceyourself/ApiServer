@@ -16,8 +16,8 @@ development:
 
 production:
   facebook:
-    client_id: '1384077758490171'
-    client_secret: '49cc428daa785a71e8d8b163a9210f8d'
+    client_id: '625999614089605'
+    client_secret: '27f0dbfd392ef841809a22854a30f73b'
     scope: 'email, publish_actions'
 
   twitter:
