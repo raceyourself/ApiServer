@@ -22,4 +22,8 @@ class Track < UserDocument
     composite = [device_id, track_id]
     self._id ||= composite.pack("L*").unpack("h*").first
   end
+
+  def positions
+     Position.where(device_id: device_id, track_id: track_id)
+  end
 end
