@@ -6,13 +6,15 @@ class FacebookShareTrackWorker < ShareTrackWorker
     raise "User has not authorized share permissions for facebook" if auth.permissions !~ /share/
     url = @@external_web_url + 'tracks/' + track.id
     graph = Koala::Facebook::API.new(auth.token)
-    course = graph.put_connections("me", "objects/fitness.course", :object => {
-        'app_id' =>  CONFIG[:facebook][:client_id],
-        'type' => 'fitness.course',
-        'title' => track.track_name,
-        'url' => url
-    }.to_json)
-    # TODO: Store course id in case we need to update it
+    if (false)
+      course = graph.put_connections("me", "objects/fitness.course", :object => {
+          'app_id' =>  CONFIG[:facebook][:client_id],
+          'type' => 'fitness.course',
+          'title' => track.track_name,
+          'url' => url
+      }.to_json)
+      # TODO: Store course id in case we need to update it
+    end
     graph.put_connections("me", "fitness.runs", :course => url)
     # TODO: Catch errors and remove share permission when needed
   end
