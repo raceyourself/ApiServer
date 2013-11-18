@@ -14,7 +14,7 @@ module Users
         me.upsert if me.valid?
         # Race condition
         me.friendships.destroy_all(friend_type: 'FacebookIdentity')
-        result = graph.get_connections("me", "friends", :fields=>"name,id,picture")
+        result = graph.get_connections("me", "friends", :fields=>"name,id,picture") || []
         begin
           result.each do |friend|
             fid = FacebookIdentity.new().update_from_facebook(friend)
@@ -22,7 +22,7 @@ module Users
             fs = Friendship.new( identity: me, friend: fid )
             fs.upsert if fs.valid?
           end
-          result = result.next_page
+          result = result.next_page || []
         end while not result.empty?
       end
     end
