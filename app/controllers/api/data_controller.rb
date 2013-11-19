@@ -45,7 +45,7 @@ module Api
                 deleted = record[:deleted_at]
                 d = relation.new(record)
                 d.upsert if d.valid?
-                d.delete if deleted
+                d.delete if deleted && deleted != 0
               rescue => e
                 logger.error(e.class.name + ": " + e.message)
                 logger.debug e.backtrace.join("\n")
