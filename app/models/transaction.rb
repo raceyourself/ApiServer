@@ -7,7 +7,7 @@ class Transaction < UserDocument
   # fields
   field :device_id,    type: Integer
   field :transaction_id,    type: Integer
-  field :ts,           type: DateTime
+  field :ts,           type: Integer
   field :transaction_type,  type: String
   field :transaction_calc,  type: String
   field :source_id,    type: String
