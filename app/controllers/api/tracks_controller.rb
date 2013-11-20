@@ -7,7 +7,7 @@ module Api
     end
 
     def show
-      expose user.tracks.find(params[:id])
+      expose Track.find(params[:id]), methods: :positions
     end
 
   end

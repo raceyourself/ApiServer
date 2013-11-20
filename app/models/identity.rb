@@ -24,9 +24,20 @@ class Identity
      User.where(id: user_id).first
   end
 
+  def provider
+    self._type.downcase.sub('identity', '')
+  end
+
+  def serializable_hash(options = {})
+    options = {
+      methods: :provider
+    }.update(options)
+    super(options)
+  end
+
   def merge
     return unless self.valid?
-    existing = TwitterIdentity.where(id: self.id).first
+    existing = Identity.where(id: self.id).first
     unless existing.nil?
       self.user_id = existing.user_id
       self.has_glass = existing.has_glass
