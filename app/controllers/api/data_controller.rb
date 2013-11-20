@@ -41,7 +41,7 @@ module Api
               relation = current_resource_owner.send(collection_key)
               begin
                 # Dirty hack to fix broken mongoid
-                record[:_id] = record[:_id][:$oid] if record[:_id] && record[:_id][:$oid]
+                record[:_id] = record[:_id][:$oid] if record[:_id] && record[:_id].is_a?(Hash) && record[:_id][:$oid]
                 deleted = record[:deleted_at]
                 d = relation.new(record)
                 d.upsert if d.valid?
