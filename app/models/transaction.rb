@@ -1,14 +1,30 @@
 class Transaction < UserDocument
+
+  # key
+  field :_id,           type: String 
+  before_validation :generate_key
+  
   # fields
+  field :device_id,    type: Integer
+  field :transaction_id,    type: Integer
   field :ts,           type: DateTime
-  field :source_id,    type: Integer
-  field :product_id,   type: Integer
+  field :transaction_type,  type: String
+  field :transaction_calc,  type: String
+  field :source_id,    type: String
   field :points_delta, type: Integer
+  field :points_balance, type: Integer
   field :cash_delta,   type: Float
   field :currency,     type: String
+  
   # indexes
-  index source_id: 1
-  index product_id: 1
+  index({device_id: 1, transaction_id: 1}, {unique: true})
+  
   # validations
-  validates :source_id, :product_id, presence: true
+  validates :device_id, :transaction_id, :transaction_type, :source_id, :points_balance, presence: true
+  
+  def generate_key
+    composite = [device_id, transaction_id]
+    self._id ||= composite.pack("L*").unpack("h*").first
+  end
+  
 end
