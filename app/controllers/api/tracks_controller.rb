@@ -7,7 +7,14 @@ module Api
     end
 
     def show
-      expose Track.find(params[:id]), methods: :positions
+      id = params[:id]
+      composite = id.split('-')
+      if composite.length == 2
+        track = Track.where({device_id: composite[0], track_id: composite[1]})
+      else
+        track = Track.find(id)
+      end
+      expose track, methods: :positions
     end
 
   end
