@@ -11,7 +11,7 @@ module Concerns
       end
 
       define_method :challenges do |scope=:all|
-        Challenge.send(scope).where(creator_id: id)
+        Challenge.send(scope).in(subscribers: [id])
       end
 
       # has many associations

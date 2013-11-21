@@ -17,4 +17,8 @@ class UserDocument
     User.where(id: user_id).first
   end
 
+  def merge
+    self.upsert if self.valid?
+  end
+
 end

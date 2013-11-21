@@ -44,7 +44,7 @@ module Api
                 record[:_id] = record[:_id][:$oid] if record[:_id] && record[:_id].is_a?(Hash) && record[:_id][:$oid]
                 deleted = record[:deleted_at]
                 d = relation.new(record)
-                d.upsert if d.valid?
+                d.merge
                 d.delete if deleted && deleted != 0
               rescue => e
                 logger.error(e.class.name + ": " + e.message)
@@ -58,24 +58,30 @@ module Api
             type = action[:action]
             case type
             when 'challenge'
-              deleted = action[:challenge][:deleted_at]
               c = Challenge.build(action[:challenge])
               c.creator_id = current_resource_owner.id
-              c.upsert if c.valid?
-              c.delete if deleted
+              c.add_to_set({:subscribers => c.creator_id})
+              c.save!
             
               # Notify target of challenge if registered (unregistered are notified client-side)
               if action[:target] && target = User.where(id: action[:target]).first
+                c.add_to_set({:subscribers => target.id})
                 message = { 
                   :type => 'challenge', 
                   :from => current_resource_owner.id, 
-                  :challenge => c.serializable_hash(:methods => :type), 
+                  :challenge_id => c.id, 
                   :taunt => action[:taunt] 
                 }
                 target.notifications.create( 
                     :message => message
                 ) 
               end
+            when 'challenge_attempt'
+              challenge = Challenge.find(action[:challenge_id])
+              track_cid = action[:track_id]
+              track = Track.where(device_id: track_cid[0], track_id: track_cid[1]).first
+              challenge.attempts << track
+              challenge.save!
             when 'share'
               provider = action[:provider]
               case provider

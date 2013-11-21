@@ -9,6 +9,8 @@ class Challenge
   # Embed foreign keys 
   has_and_belongs_to_many :attempts, class_name: "Track", inverse_of: nil
 
+  field :subscribers, type: Array, default: []
+
   # fields
   field :start_time,    type: DateTime, default: nil
   field :stop_time,     type: DateTime, default: nil
@@ -34,4 +36,11 @@ class Challenge
     Mongoid::Factory.build((challenge[:type].capitalize + 'Challenge').constantize, challenge.except(:type))
   end
 
+  def merge
+    existing = Challenge.where(id: self.id).first
+    unless existing.nil?
+      # Add subscriber?
+      # Change details if current_user == creator_id  
+    end
+ end
 end
