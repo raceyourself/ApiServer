@@ -10,7 +10,7 @@ module Api
       id = params[:id]
       composite = id.split('-')
       if composite.length == 2
-        track = Track.where({device_id: composite[0], track_id: composite[1]})
+        track = Track.where({device_id: composite[0], track_id: composite[1]}).first
       else
         track = Track.find(id)
       end
