@@ -77,7 +77,10 @@ module Api
                 ) 
               end
             when 'challenge_attempt'
-              challenge = Challenge.find(action[:challenge_id])
+              challenge_id = action[:challenge_id]
+              # Dirty hack to fix broken mongoid
+              challenge_id = action[:challenge_id][:$oid] if action[:challenge_id].is_a?(Hash) && action[:challenge_id][:$oid]
+              challenge = Challenge.find(challenge_id)
               track_cid = action[:track_id]
               track = Track.where(device_id: track_cid[0], track_id: track_cid[1]).first
               challenge.attempts << track
