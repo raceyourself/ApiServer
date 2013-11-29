@@ -33,7 +33,15 @@ class Challenge
   end
 
   def self.build(challenge)
-    Mongoid::Factory.build((challenge[:type].capitalize + 'Challenge').constantize, challenge.except(:type))
+    c = Mongoid::Factory.build((challenge[:type].capitalize + 'Challenge').constantize, challenge.except(:type, :attempts))
+    if challenge[:attempts]
+      attempts = challenge[:attempts]
+      attempts.each do |attempt|
+        track = Track.where(device_id: attempt[:device_id], track_id: attempt[:track_id]).first
+        c.attempts << track
+      end
+    end
+    return c
   end
 
   def merge

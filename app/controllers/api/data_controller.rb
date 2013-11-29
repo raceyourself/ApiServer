@@ -39,6 +39,8 @@ module Api
           if data[collection_key]
             data[collection_key].each do |record|
               relation = current_resource_owner.send(collection_key)
+              # Ignore bad data and continue
+              # TODO: Notify admin?
               begin
                 # Dirty hack to fix broken mongoid
                 record[:_id] = record[:_id][:$oid] if record[:_id] && record[:_id].is_a?(Hash) && record[:_id][:$oid]
@@ -53,57 +55,65 @@ module Api
             end
           end
         end
+        # Note: Actions must be handled after sync, as they may refer to synced items
         if data[:actions]
           data[:actions].each do |action|
-            type = action[:action]
-            case type
-            when 'challenge'
-              c = Challenge.build(action[:challenge])
-              c.creator_id = current_resource_owner.id
-              c.add_to_set({:subscribers => c.creator_id})
-              c.save!
-            
-              # Notify target of challenge if registered (unregistered are notified client-side)
-              if action[:target] && target = User.where(id: action[:target]).first
-                c.add_to_set({:subscribers => target.id})
-                message = { 
-                  :type => 'challenge', 
-                  :from => current_resource_owner.id, 
-                  :challenge_id => c.id, 
-                  :taunt => action[:taunt] 
-                }
-                target.notifications.create( 
-                    :message => message
-                ) 
-              end
-            when 'challenge_attempt'
-              challenge_id = action[:challenge_id]
-              # Dirty hack to fix broken mongoid
-              challenge_id = action[:challenge_id][:$oid] if action[:challenge_id].is_a?(Hash) && action[:challenge_id][:$oid]
-              challenge = Challenge.find(challenge_id)
-              track_cid = action[:track_id]
-              track = Track.where(device_id: track_cid[0], track_id: track_cid[1]).first
-              challenge.attempts << track
-              challenge.save!
-            when 'share'
-              provider = action[:provider]
-              case provider
-              when 'facebook'
-                FacebookShareTrackWorker.perform_async(current_resource_owner.id,
-                                                       action[:track], action[:message])
-              when 'twitter'
-                TwitterShareTrackWorker.perform_async(current_resource_owner.id,
+            # Ignore bad data and continue
+            # TODO: Notify admin?
+            begin
+              type = action[:action]
+              case type
+              when 'challenge'
+                c = Challenge.build(action[:challenge])
+                c.creator_id = current_resource_owner.id
+                c.add_to_set({:subscribers => c.creator_id})
+                c.save!
+              
+                # Notify target of challenge if registered (unregistered are notified client-side)
+                if action[:target] && target = User.where(id: action[:target]).first
+                  c.add_to_set({:subscribers => target.id})
+                  message = { 
+                    :type => 'challenge', 
+                    :from => current_resource_owner.id, 
+                    :challenge_id => c.id, 
+                    :taunt => action[:taunt] 
+                  }
+                  target.notifications.create( 
+                      :message => message
+                  ) 
+                end
+              when 'challenge_attempt'
+                challenge_id = action[:challenge_id]
+                # Dirty hack to fix broken mongoid
+                challenge_id = action[:challenge_id][:$oid] if action[:challenge_id].is_a?(Hash) && action[:challenge_id][:$oid]
+                challenge = Challenge.find(challenge_id)
+                track_cid = action[:track_id]
+                track = Track.where(device_id: track_cid[0], track_id: track_cid[1]).first
+                challenge.attempts << track
+                challenge.save!
+              when 'share'
+                provider = action[:provider]
+                case provider
+                when 'facebook'
+                  FacebookShareTrackWorker.perform_async(current_resource_owner.id,
+                                                         action[:track], action[:message])
+                when 'twitter'
+                  TwitterShareTrackWorker.perform_async(current_resource_owner.id,
+                                                        action[:track], action[:message])
+                when 'google+'
+                  GplusShareTrackWorker.perform_async(current_resource_owner.id,
                                                       action[:track], action[:message])
-              when 'google+'
-                GplusShareTrackWorker.perform_async(current_resource_owner.id,
-                                                    action[:track], action[:message])
+                end
+              when 'link'
+                LinkTrackWorker.perform_async(current_resource_owner.id,
+                                              action[:friend_id],
+                                              action[:track], action[:message])
+              else
+                EchoWorker.perform_async(current_resource_owner.id, action)
               end
-            when 'link'
-              LinkTrackWorker.perform_async(current_resource_owner.id,
-                                            action[:friend_id],
-                                            action[:track], action[:message])
-            else
-              EchoWorker.perform_async(current_resource_owner.id, action)
+            rescue => e
+              logger.error(e.class.name + ": " + e.message)
+              logger.debug e.backtrace.join("\n")
             end
           end
         end
