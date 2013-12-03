@@ -32,6 +32,16 @@ class Challenge
     self._type.downcase.sub('challenge', '')
   end
 
+  def serializable_hash(options = {})
+    options = {
+      methods: :type,
+      except: :attempt_ids,
+      include: {
+        attempts: { only: [ :device_id, :track_id, :user_id ] }                                             }
+    }.update(options)
+    super(options)
+  end
+
   def self.build(challenge)
     c = Mongoid::Factory.build((challenge[:type].capitalize + 'Challenge').constantize, challenge.except(:type, :attempts))
     if challenge[:attempts]
