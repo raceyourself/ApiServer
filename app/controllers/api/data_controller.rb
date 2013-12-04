@@ -64,10 +64,18 @@ module Api
               type = action[:action]
               case type
               when 'challenge'
-                c = Challenge.build(action[:challenge])
-                c.creator_id = current_resource_owner.id
-                c.add_to_set({:subscribers => c.creator_id})
-                c.save!
+                if action[:challenge][:_id]
+                  challenge_id = action[:challenge][:_id]
+                  # Dirty hack to fix broken mongoid
+                  challenge_id = action[:challenge][:_id][:$oid] if action[:challenge][:_id].is_a?(Hash) && action[:challenge][:_id][:$oid]  
+                  c = Challenge.find(challenge_id)
+                  c.add_to_set({:subscribers => current_resource_owner.id})
+                else
+                  c = Challenge.build(action[:challenge])
+                  c.creator_id = current_resource_owner.id
+                  c.add_to_set({:subscribers => c.creator_id})
+                  c.save!
+                end
               
                 # Notify target of challenge if registered (unregistered are notified client-side)
                 if action[:target] && target = User.where(id: action[:target]).first
