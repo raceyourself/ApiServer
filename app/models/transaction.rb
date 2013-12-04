@@ -13,6 +13,10 @@ class Transaction < UserDocument
   field :source_id,    type: String
   field :points_delta, type: Integer
   field :points_balance, type: Integer
+  field :gems_delta, type: Integer, default: 0
+  field :gems_balance, type: Integer, default: nil
+  field :metabolism_delta, type: Float, default: 0
+  field :metabolism_balance, type: Float, default: nil
   field :cash_delta,   type: Float
   field :currency,     type: String
   
