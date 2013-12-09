@@ -10,7 +10,20 @@ Doorkeeper.configure do
 
   resource_owner_from_credentials do
     u = User.find_for_database_authentication(email: params[:username])
-    u if u && u.valid_password?(params[:password])
+    if u 
+      u if u.valid_password?(params[:password])
+    end
+    if !u && params[:username] && params[:password]
+      u = User.new(
+            name: params[:username],
+            password: params[:password],
+            email: params[:username]
+      )
+      # Skip confirmation for third-party identity providers
+      u.skip_confirmation!
+      u.save!
+      u
+    end
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
