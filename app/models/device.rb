@@ -1,10 +1,14 @@
-class Device < UserDocument
+class Device
+  include ::Mongoid::Document
   # Primary key
   field :_id,               type: Integer
   # fields
   field :manufacturer,      type: String
   field :model,             type: String
   field :glassfit_version,  type: String
+
+  # Foreign key
+  field :user_id, type: Integer, default: nil
 
   auto_increment :_id
 
