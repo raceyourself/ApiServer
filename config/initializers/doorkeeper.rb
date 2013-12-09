@@ -11,7 +11,7 @@ Doorkeeper.configure do
   resource_owner_from_credentials do
     u = User.find_for_database_authentication(email: params[:username])
     if u 
-      u if u.valid_password?(params[:password])
+      return u if u.valid_password?(params[:password])
     end
     if !u && params[:username] && params[:password]
       u = User.new(
@@ -19,10 +19,9 @@ Doorkeeper.configure do
             password: params[:password],
             email: params[:username]
       )
-      # Skip confirmation for third-party identity providers
       u.skip_confirmation!
       u.save!
-      u
+      return u
     end
   end
 
