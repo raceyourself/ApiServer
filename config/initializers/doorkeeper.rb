@@ -9,9 +9,10 @@ Doorkeeper.configure do
   end
 
   resource_owner_from_credentials do
+    user = nil
     u = User.find_for_database_authentication(email: params[:username])
     if u 
-      return u if u.valid_password?(params[:password])
+      user = u if u.valid_password?(params[:password])
     end
     if !u && params[:username] && params[:password]
       u = User.new(
@@ -21,8 +22,9 @@ Doorkeeper.configure do
       )
       u.skip_confirmation!
       u.save!
-      return u
+      user = u
     end
+    user
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
