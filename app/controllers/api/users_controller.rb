@@ -12,7 +12,7 @@ module Api
     caching_options[:must_revalidate] = true
 
     def index
-      expose User.all
+      expose User.all, methods: :points
     end
 
     def show

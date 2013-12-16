@@ -23,4 +23,13 @@ class User < ActiveRecord::Base
     username.present? ? username : email
   end
 
+  def points
+    latest = self.transactions.desc(:ts).first
+    if latest
+      latest.points_balance
+    else
+      0
+    end
+  end
+
 end
