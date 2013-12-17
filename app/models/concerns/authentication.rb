@@ -26,7 +26,7 @@ module Concerns
             user = User.new(
               name: omniauth.extra.raw_info.name,
               password: Devise.friendly_token[0,20],
-              email: omniauth.info.email || omniauth.uid+'-'+omniauth.provider+'@glassfitgames.com'
+              email: omniauth.info.email || omniauth.uid+'-'+omniauth.provider+'@raceyourself.com'
             )
             # Skip confirmation for third-party identity providers
             user.skip_confirmation!

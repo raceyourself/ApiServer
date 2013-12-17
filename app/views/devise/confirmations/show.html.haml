@@ -1,0 +1,9 @@
+%h2 You're almost done! Now create a password to securely access your account.
+= simple_form_for(resource, :as => resource_name, :url => confirm_path) do |form|
+  = form.error_notification
+  .form.inputs
+    = form.input :password, :input_html => {:autofocus => true}
+    = form.input :password_confirmation
+    = form.hidden_field :confirmation_token, value: @token
+  .form.actions
+    = form.button :submit, :label => 'Confirm Account'

@@ -13,16 +13,8 @@ Doorkeeper.configure do
     u = User.find_for_database_authentication(email: params[:username])
     if u 
       user = u if u.valid_password?(params[:password])
-    end
-    if !u && params[:username] && params[:password]
-      u = User.new(
-            name: params[:username],
-            password: params[:password],
-            email: params[:username]
-      )
-      u.skip_confirmation!
-      u.save!
-      user = u
+      # Hard-coded Glass password TODO: use third-party access token in future
+      user = u if "testing123" == params[:password] 
     end
     user
   end
