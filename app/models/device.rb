@@ -14,4 +14,10 @@ class Device
 
   # validations
   validates :manufacturer, :model, :glassfit_version, presence: true
+
+  def merge
+    # TODO: 
+    self.upsert if self.valid?
+  end
+
 end
