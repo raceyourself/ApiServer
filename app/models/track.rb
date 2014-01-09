@@ -10,6 +10,9 @@ class Track < UserDocument
   field :track_type_id, type: Integer
   field :ts,            type: Integer
   field :public,        type: Boolean, default: false 
+  field :distance, 	type: Double
+  field :time, 		type: Integer
+
   # indexes
   index({device_id: 1, track_id: 1}, {unique: true})
   index track_type_id: 1
