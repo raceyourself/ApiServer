@@ -10,7 +10,7 @@ class Track < UserDocument
   field :track_type_id, type: Integer
   field :ts,            type: Integer
   field :public,        type: Boolean, default: false 
-  field :distance, 	type: Double
+  field :distance, 	type: Float
   field :time, 		type: Integer
 
   # indexes
