@@ -35,12 +35,13 @@ class User < ActiveRecord::Base
   end
 
   def points
-    latest = self.transactions.desc(:ts).first
-    if latest
-      latest.points_balance
-    else
-      0
-    end
+    return 0
+    #latest = self.transactions.desc(:ts).first
+    #if latest
+    #  latest.points_balance
+    #else
+    #  0
+    #end
   end
 
 end
