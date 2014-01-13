@@ -28,7 +28,7 @@ class Orientation < UserDocument
   field :linacc_y,     type: Float # [x,y,z] real-world co-ords
   field :linacc_z,     type: Float # [x,y,z] real-world co-ords
   # indexes
-  index({device_id: 1, track_id: 1, orientation_id: 1}, {unique: true})
+  index({device_id: 1, track_id: 1, orientation_id: 1}) # , {unique: true})
   index ts: 1
   # validations
 

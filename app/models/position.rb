@@ -20,7 +20,7 @@ class Position < UserDocument
   field :epe,       type: Float
   field :nmea,      type: String
   # indexes
-  index({device_id: 1, track_id: 1, position_id: 1}, {unique: true})
+  index({device_id: 1, track_id: 1, position_id: 1}) #, {unique: true})
   # validations
   validates :device_id, :track_id, :position_id, :state_id, :gps_ts, :lng, :lat, :alt, :bearing, presence: true
 

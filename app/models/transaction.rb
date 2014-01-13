@@ -21,7 +21,7 @@ class Transaction < UserDocument
   field :currency,     type: String
   
   # indexes
-  index({device_id: 1, transaction_id: 1}, {unique: true})
+  index({device_id: 1, transaction_id: 1}) #, {unique: true})
   
   # validations
   validates :device_id, :transaction_id, :transaction_type, :source_id, :points_balance, presence: true
