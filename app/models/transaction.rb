@@ -22,6 +22,7 @@ class Transaction < UserDocument
   
   # indexes
   index({device_id: 1, transaction_id: 1}) #, {unique: true})
+  index({user_id: 1, ts: -1})
   
   # validations
   validates :device_id, :transaction_id, :transaction_type, :source_id, :points_balance, presence: true
