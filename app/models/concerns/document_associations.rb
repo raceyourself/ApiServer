@@ -2,7 +2,7 @@ module Concerns
   module DocumentAssociations
     extend ActiveSupport::Concern
 
-    COLLECTIONS = [:devices, :friends, :challenges, :orientations, :positions, :tracks, :transactions, :notifications]
+    COLLECTIONS = [:devices, :friends, :challenges, :orientations, :positions, :tracks, :transactions, :notifications, :events]
 
     included do
       define_method :friends do |scope=:all|
