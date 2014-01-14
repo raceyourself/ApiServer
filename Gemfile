@@ -54,6 +54,9 @@ gem 'rack-cache'
 #api
 gem 'rocket_pants'
 
+#json
+gem 'yajl-ruby', :require => 'yajl'
+
 # admin
 gem 'rails_admin'
 

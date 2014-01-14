@@ -29,7 +29,7 @@ module Api
 
       # return the sync data from the requested time forward
       date = Time.at(timestamp.to_i)
-      expose export_data(date)
+      expose MultiJson.encode(export_data(date))
     end
 
     protected
