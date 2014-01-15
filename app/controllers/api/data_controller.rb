@@ -167,9 +167,11 @@ module Api
             count += data[collection_key].count()
           end
 
-          if count < 5000 # Random limit
-            new_tail_date = tail_date - 1.days
-            new_tail_date = Time.at(0) if new_tail_date.to_i < 0
+          new_tail_date = tail_date
+          iteration = 1
+          while count < 5000 && new_tail_date.to_i > 0
+            new_tail_date = tail_date - iteration.days
+            new_tail_date = Time.at(0) if new_tail_date.to_i < current_resource_owner.created_at.to_i
             User::COLLECTIONS.each do |collection_key|
               next if collection_key == :positions
               data[collection_key] = current_resource_owner.send(collection_key, :unscoped)
@@ -189,8 +191,12 @@ module Api
                                                                       '$gt' => new_tail_date.to_time.utc}}], 
                                                            '_type' => { '$in' => ['Position'] }});
 
-            data[:tail_timestamp] = new_tail_date.to_i
+            User::COLLECTIONS.each do |collection_key|
+              count += data[collection_key].count()
+            end
+            iteration = iteration + 1
           end
+          data[:tail_timestamp] = new_tail_date.to_i
 
         end
 
