@@ -18,6 +18,7 @@ end
 gem 'bson_ext'
 
 # data
+gem 'composite_primary_keys'
 gem 'mysql2'
 gem 'mongoid', github: 'mongoid'
 gem 'mongoid-paranoia', github: 'simi/mongoid-paranoia'
@@ -55,6 +56,7 @@ gem 'rack-cache'
 gem 'rocket_pants'
 
 #json
+gem 'oj'
 gem 'yajl-ruby', :require => 'yajl'
 
 # admin
@@ -81,6 +83,7 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'letter_opener'
   gem 'shoulda-matchers'
+  gem 'ruby-prof'
 end
 
 group :development do
