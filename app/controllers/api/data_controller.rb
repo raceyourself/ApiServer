@@ -21,24 +21,36 @@ module Api
     end
     
     def sync
-      timestamp = params[:ts]
-      raise Exception.new("You must send ts in the query") unless timestamp
-  
+      head_timestamp = params[:ts]
+      raise Exception.new("You must send ts in the query") unless head_timestamp
+      tail_timestamp = params[:tail_ts] if params[:tail_ts]
+
+      errors = []
       if params[:data]
         data = params[:data] 
-        import_data(data)
+        errors = import_data(data)
       end
       # update the user record with last sync time (now)
       current_resource_owner.update_attribute(:sync_timestamp, Time.now)
 
-      # return the sync data from the requested time forward
-      date = Time.at(timestamp.to_i)
-      expose export_data(date)
+      now = Time.now
+
+      # return the sync data from the head forward and tail backward
+      head_date = Time.at(head_timestamp.to_i) if head_timestamp.to_i >= 0
+      head_date = Time.at(now.to_i + head_timestamp.to_i) if head_timestamp.to_i < 0 # Relative
+      if tail_timestamp
+        tail_date = Time.at(tail_timestamp.to_i) if tail_timestamp.to_i >= 0
+        tail_date = Time.at(now.to_i + tail_timestamp.to_i) if tail_timestamp.to_i < 0 # Relative
+      end
+      data = export_data(head_date, tail_date)
+      data[:errors] = errors
+      expose data
     end
 
     protected
 
       def import_data(data)
+        errors = []
         User::COLLECTIONS.each do |collection_key|
           if data[collection_key]
             data[collection_key].each do |record|
@@ -55,6 +67,7 @@ module Api
               rescue => e
                 logger.error(e.class.name + ": " + e.message)
                 logger.debug e.backtrace.join("\n")
+                errors << e.class.name
               end
             end
           end
@@ -126,23 +139,60 @@ module Api
             rescue => e
               logger.error(e.class.name + ": " + e.message)
               logger.debug e.backtrace.join("\n")
+              errors << e.class.name
             end
           end
         end
+        errors
       end
 
-      def export_data(date)
+      def export_data(head_date, tail_date)
         data = {sync_timestamp: Time.now.to_i}
 
+        ### Head forward
         User::COLLECTIONS.each do |collection_key|
           next if collection_key == :positions
           data[collection_key] = current_resource_owner.send(collection_key, :unscoped)
-                                                       .any_of({:updated_at.gt => date},
-                                                               {:deleted_at.gt => date})
+                                                       .any_of({:updated_at.gt => head_date},
+                                                               {:deleted_at.gt => head_date})
         end
 
         # Optimized positions query
-        data[:positions] = Position.collection.find({ 'user_id' => current_resource_owner.id, '$or' => [{'updated_at' => {'$gt' => date.to_time.utc}}, {'deleted_at' => {'$gt' => date.to_time.utc}}], '_type' => { '$in' => ['Position'] }});
+        data[:positions] = Position.collection.find({ 'user_id' => current_resource_owner.id, '$or' => [{'updated_at' => {'$gt' => head_date.to_time.utc}}, {'deleted_at' => {'$gt' => head_date.to_time.utc}}], '_type' => { '$in' => ['Position'] }});
+
+        ### Tail backward if head is small
+        if tail_date && tail_date.to_i > 0
+          count = 0
+          User::COLLECTIONS.each do |collection_key|
+            count += data[collection_key].count()
+          end
+
+          if count < 5000 # Random limit
+            new_tail_date = tail_date - 1.days
+            new_tail_date = Time.at(0) if new_tail_date.to_i < 0
+            User::COLLECTIONS.each do |collection_key|
+              next if collection_key == :positions
+              data[collection_key] = current_resource_owner.send(collection_key, :unscoped)
+                                                           .any_of({:updated_at.lte => tail_date, 
+                                                                    :updated_at.gt => new_tail_date},
+                                                                   {:deleted_at.lte => tail_date,
+                                                                    :deleted_at.gt => new_tail_date})
+            end
+
+            # Optimized positions query
+            data[:positions] = Position.collection.find({ 'user_id' => current_resource_owner.id, 
+                                                          '$or' => [{'updated_at' => 
+                                                                     {'$lte' => tail_date.to_time.utc, 
+                                                                      '$gt' => new_tail_date.to_time.utc}}, 
+                                                                    {'deleted_at' => 
+                                                                     {'$lte' => tail_date.to_time.utc,
+                                                                      '$gt' => new_tail_date.to_time.utc}}], 
+                                                           '_type' => { '$in' => ['Position'] }});
+
+            data[:tail_timestamp] = new_tail_date.to_i
+          end
+
+        end
 
         data
       end
