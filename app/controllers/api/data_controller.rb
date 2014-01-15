@@ -16,6 +16,10 @@ module Api
 
     end
 
+    def encode_to_json(object)
+      MultiJson.encode object
+    end
+    
     def sync
       timestamp = params[:ts]
       raise Exception.new("You must send ts in the query") unless timestamp
@@ -131,10 +135,14 @@ module Api
         data = {sync_timestamp: Time.now.to_i}
 
         User::COLLECTIONS.each do |collection_key|
+          next if collection_key == :positions
           data[collection_key] = current_resource_owner.send(collection_key, :unscoped)
                                                        .any_of({:updated_at.gt => date},
                                                                {:deleted_at.gt => date})
         end
+
+        # Optimized positions query
+        data[:positions] = Position.collection.find({ 'user_id' => current_resource_owner.id, '$or' => [{'updated_at' => {'$gt' => date.to_time.utc}}, {'deleted_at' => {'$gt' => date.to_time.utc}}], '_type' => { '$in' => ['Position'] }});
 
         data
       end
