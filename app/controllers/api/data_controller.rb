@@ -24,6 +24,7 @@ module Api
       head_timestamp = params[:ts]
       raise Exception.new("You must send ts in the query") unless head_timestamp
       tail_timestamp = params[:tail_ts] if params[:tail_ts]
+      tail_skip = params[:tail_skip].to_i if params[:tail_skip]
 
       errors = []
       if params[:data]
@@ -42,7 +43,7 @@ module Api
         tail_date = Time.at(tail_timestamp.to_i) if tail_timestamp.to_i >= 0
         tail_date = Time.at(now.to_i + tail_timestamp.to_i) if tail_timestamp.to_i < 0 # Relative
       end
-      data = export_data(head_date, tail_date)
+      data = export_data(head_date, tail_date, tail_skip)
       data[:errors] = errors
       expose data
     end
@@ -146,57 +147,55 @@ module Api
         errors
       end
 
-      def export_data(head_date, tail_date)
+      def export_data(head_date, tail_date, tail_skip)
         data = {sync_timestamp: Time.now.to_i}
 
         ### Head forward
         User::COLLECTIONS.each do |collection_key|
+          data[collection_key] = []
           next if collection_key == :positions
-          data[collection_key] = current_resource_owner.send(collection_key, :unscoped)
+          data[collection_key].concat current_resource_owner.send(collection_key, :unscoped)
                                                        .any_of({:updated_at.gt => head_date},
-                                                               {:deleted_at.gt => head_date})
+                                                               {:deleted_at.gt => head_date}).entries()
         end
 
         # Optimized positions query
-        data[:positions] = Position.collection.find({ 'user_id' => current_resource_owner.id, '$or' => [{'updated_at' => {'$gt' => head_date.to_time.utc}}, {'deleted_at' => {'$gt' => head_date.to_time.utc}}], '_type' => { '$in' => ['Position'] }});
+        data[:positions].concat Position.collection.find({ 'user_id' => current_resource_owner.id, '$or' => [{'updated_at' => {'$gt' => head_date.to_time.utc}}, {'deleted_at' => {'$gt' => head_date.to_time.utc}}], '_type' => { '$in' => ['Position'] }}).entries()
 
         ### Tail backward if head is small
         if tail_date && tail_date.to_i > 0
           count = 0
           User::COLLECTIONS.each do |collection_key|
-            count += data[collection_key].count()
+            count += data[collection_key].length
           end
 
-          new_tail_date = tail_date
-          iteration = 1
-          while count < 5000 && new_tail_date.to_i > 0
-            new_tail_date = tail_date - iteration.days
-            new_tail_date = Time.at(0) if new_tail_date.to_i < current_resource_owner.created_at.to_i
+          if count < 5000
+            limit = (5000 - count)/5
+            tail_skip = 0 unless tail_skip
             User::COLLECTIONS.each do |collection_key|
               next if collection_key == :positions
-              data[collection_key] = current_resource_owner.send(collection_key, :unscoped)
-                                                           .any_of({:updated_at.lte => tail_date, 
-                                                                    :updated_at.gt => new_tail_date},
-                                                                   {:deleted_at.lte => tail_date,
-                                                                    :deleted_at.gt => new_tail_date})
+              data[collection_key].concat current_resource_owner.send(collection_key, :unscoped)
+                                                           .any_of({:updated_at.lte => tail_date},
+                                                                   {:deleted_at.lte => tail_date})
+                                                           .skip(tail_skip).limit(limit).entries()
             end
 
             # Optimized positions query
-            data[:positions] = Position.collection.find({ 'user_id' => current_resource_owner.id, 
+            data[:positions].concat Position.collection.find({ 'user_id' => current_resource_owner.id, 
                                                           '$or' => [{'updated_at' => 
-                                                                     {'$lte' => tail_date.to_time.utc, 
-                                                                      '$gt' => new_tail_date.to_time.utc}}, 
+                                                                     {'$lte' => tail_date.to_time.utc}}, 
                                                                     {'deleted_at' => 
-                                                                     {'$lte' => tail_date.to_time.utc,
-                                                                      '$gt' => new_tail_date.to_time.utc}}], 
-                                                           '_type' => { '$in' => ['Position'] }});
+                                                                     {'$lte' => tail_date.to_time.utc}}
+                                                                   ], 
+                                                           '_type' => { '$in' => ['Position'] }})
+                                                        .skip(tail_skip).limit(limit).entries()
 
             User::COLLECTIONS.each do |collection_key|
-              count += data[collection_key].count()
+              count += data[collection_key].length
             end
-            iteration = iteration + 1
+            data[:tail_timestamp] = tail_date.to_i
+            data[:tail_skip] = tail_skip + limit
           end
-          data[:tail_timestamp] = new_tail_date.to_i
 
         end
 
