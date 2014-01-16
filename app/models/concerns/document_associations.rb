@@ -10,6 +10,10 @@ module Concerns
         Friendship.send(scope).where(:identity_id.in => identities.flat_map { |id| id.id })
       end
 
+      define_method :positions do |scope=:all|
+        Position.send(scope).where(user_id: id).gte(state_id: 0)
+      end
+
       define_method :challenges do |scope=:all|
         Challenge.send(scope).in(subscribers: [id])
       end
