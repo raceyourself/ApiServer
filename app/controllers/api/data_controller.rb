@@ -190,11 +190,18 @@ module Api
                                                            '_type' => { '$in' => ['Position'] }})
                                                         .skip(tail_skip).limit(limit).entries()
 
+            tail_count = 0
             User::COLLECTIONS.each do |collection_key|
-              count += data[collection_key].length
+              tail_count += data[collection_key].length
             end
-            data[:tail_timestamp] = tail_date.to_i
-            data[:tail_skip] = tail_skip + limit
+            if tail_count > 0
+              data[:tail_timestamp] = tail_date.to_i
+              data[:tail_skip] = tail_skip + limit
+            else
+              # Tail fully synced
+              data[:tail_timestamp] = 0
+              data[:tail_skip] = 0
+            end
           end
 
         end
