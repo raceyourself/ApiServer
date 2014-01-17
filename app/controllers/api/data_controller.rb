@@ -16,10 +16,6 @@ module Api
 
     end
 
-    def encode_to_json(object)
-      MultiJson.encode object
-    end
-    
     def sync
       head_timestamp = params[:ts]
       raise Exception.new("You must send ts in the query") unless head_timestamp

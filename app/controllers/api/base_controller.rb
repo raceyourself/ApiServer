@@ -25,5 +25,9 @@ module Api
       User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
     end
 
+    def encode_to_json(object)
+      MultiJson.encode object
+    end
+
   end
 end
