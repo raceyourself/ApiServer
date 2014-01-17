@@ -26,7 +26,6 @@ class UserDocument
     if options.nil? || options.except(:url_options, :root, :compact).empty?
       attributes
     else
-      logger.info options.to_s
       super(options)
     end
   end
