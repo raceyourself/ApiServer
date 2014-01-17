@@ -23,9 +23,10 @@ class UserDocument
 
   def serializable_hash(options = {})
     # Return plain attributes if no options or default rocket_pants options
-    if options.nil? || options.except(:url_options, :root).empty?
+    if options.nil? || options.except(:url_options, :root, :compact).empty?
       attributes
     else
+      logger.info options.to_s
       super(options)
     end
   end
