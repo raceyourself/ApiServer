@@ -78,7 +78,7 @@ gem 'google-api-client'
 # analytics
 gem 'newrelic_rpm'
 gem 'rocket_pants-rpm'
-gem 'newrelic_moped'
+gem 'newrelic_moped', :path => 'vendor/gems/newrelic_moped-0.0.8.ry'
 
 group :development, :test do
   gem 'faker'
