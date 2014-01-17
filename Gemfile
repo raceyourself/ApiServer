@@ -75,6 +75,9 @@ gem 'koala'
 gem 'twitter'
 gem 'google-api-client'
 
+# analytics
+gem 'newrelic_rpm'
+
 group :development, :test do
   gem 'faker'
   gem 'pry'

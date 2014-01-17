@@ -21,4 +21,13 @@ class UserDocument
     self.upsert if self.valid?
   end
 
+  def serializable_hash(options = {})
+    # Return plain attributes if no options or default rocket_pants options
+    if options.nil? || options.except(:url_options, :root).empty?
+      attributes
+    else
+      super(options)
+    end
+  end
+
 end
