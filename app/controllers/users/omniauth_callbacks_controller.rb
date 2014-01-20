@@ -31,10 +31,12 @@ module Users
       standard_provider
       if @user.persisted?
         auth = Authentication.where(provider: 'twitter', user_id: @user.id).first
-        client = Twitter::REST::Client.new(:consumer_key => CONFIG[:twitter][:client_id],
-                                     :consumer_secret => CONFIG[:twitter][:client_secret],
-                                     :oauth_token => auth.token,
-                                     :oauth_token_secret => auth.token_secret)
+        client = Twitter::REST::Client.new do |config| 
+          config.consumer_key = CONFIG[:twitter][:client_id]
+          config.consumer_secret = CONFIG[:twitter][:client_secret]
+          config.oauth_token = auth.token
+          config.oauth_token_secret = auth.token_secret
+        end
         begin
           credentials = client.verify_credentials
         rescue Twitter::Error::TooManyRequests => error
@@ -47,7 +49,7 @@ module Users
         me.upsert if me.valid?
         # Race condition
         me.friendships.destroy_all(friend_type: 'TwitterIdentity')
-        get_twitter_friends_with_cursor(client).each do |friend|
+        get_twitter_friends(client).each do |friend|
           fid = TwitterIdentity.new().update_from_twitter(friend)
           fid.merge
           fs = Friendship.new( identity: me, friend: fid )
@@ -56,22 +58,15 @@ module Users
       end
     end
 
-    def get_twitter_friends_with_cursor(client, cursor=-1, list=[])
-      # Base case
-      if cursor == 0
-        return list
-      else
-        begin
-          hashie = client.friends(:count => 200, :skip_status => true, :cursor => cursor)                      
-        rescue Twitter::Error::TooManyRequests => error
-          logger.warn "Twitter rate limited and fail-fast enabled, aborting!" if @@FAIL_FAST
-          return list if @@FAIL_FAST
-          logger.warn "Rate limit error, sleeping for #{error.rate_limit.reset_in} seconds..."
-          sleep error.rate_limit.reset_in
-          retry
-        end
-        hashie.users.each {|u| list << u }                              # Concat users to list
-        get_twitter_friends_with_cursor(client,hashie.next_cursor,list) # Recursive step using the next cursor
+    def get_twitter_friends(client)
+      begin
+        client.friends.to_a
+      rescue Twitter::Error::TooManyRequests => error
+        logger.warn "Twitter rate limited and fail-fast enabled, aborting!" if @@FAIL_FAST
+        return []
+        logger.warn "Rate limit error, sleeping for #{error.rate_limit.reset_in} seconds..."
+        sleep error.rate_limit.reset_in
+        retry
       end
     end
 
