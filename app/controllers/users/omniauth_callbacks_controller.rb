@@ -31,7 +31,7 @@ module Users
       standard_provider
       if @user.persisted?
         auth = Authentication.where(provider: 'twitter', user_id: @user.id).first
-        client = Twitter::Client.new(:consumer_key => CONFIG[:twitter][:client_id],
+        client = Twitter::REST::Client.new(:consumer_key => CONFIG[:twitter][:client_id],
                                      :consumer_secret => CONFIG[:twitter][:client_secret],
                                      :oauth_token => auth.token,
                                      :oauth_token_secret => auth.token_secret)
