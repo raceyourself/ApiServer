@@ -25,8 +25,7 @@ Doorkeeper.configure do
     # Example implementation:
     # u = User.find(session[:user_id]) || redirect_to(new_user_session_url)
     # u.has_role?(:admin) ? u : redirect_to(new_user_session_url)
-    current_user || redirect_to(new_user_session_url)
-    current_user.admin? || redirect_to(new_user_session_url)
+    (current_user && current_user.admin?) || redirect_to(new_user_session_url)
   end
 
   # Authorization Code expiration time (default 10 minutes).
