@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131118212800) do
+ActiveRecord::Schema.define(version: 20140123100639) do
 
   create_table "authentications", force: true do |t|
     t.integer  "user_id"
@@ -94,14 +94,34 @@ ActiveRecord::Schema.define(version: 20131118212800) do
 
   add_index "roles_users", ["user_id", "role_id"], name: "index_roles_users_on_user_id_and_role_id", using: :btree
 
+  create_table "track_positions", id: false, force: true do |t|
+    t.integer  "device_id",                                null: false
+    t.integer  "position_id",                              null: false
+    t.integer  "track_id",                                 null: false
+    t.integer  "state_id",                                 null: false
+    t.integer  "gps_ts",                         limit: 8, null: false
+    t.integer  "device_ts",                      limit: 8, null: false
+    t.float    "lng",                                      null: false
+    t.float    "lat",                                      null: false
+    t.float    "bearing"
+    t.float    "corrected_bearing"
+    t.float    "corrected_bearing_R"
+    t.float    "corrected_bearing_significance"
+    t.float    "speed",                                    null: false
+    t.float    "epe"
+    t.string   "nmea"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "users", force: true do |t|
-    t.string   "username",               default: "",    null: false
-    t.string   "email",                  default: "",    null: false
-    t.string   "encrypted_password",     default: "",    null: false
+    t.string   "username",                         default: "",    null: false
+    t.string   "email",                            default: "",    null: false
+    t.string   "encrypted_password",               default: "",    null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0
+    t.integer  "sign_in_count",                    default: 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
@@ -110,7 +130,7 @@ ActiveRecord::Schema.define(version: 20131118212800) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email"
-    t.integer  "failed_attempts",        default: 0
+    t.integer  "failed_attempts",                  default: 0
     t.string   "unlock_token"
     t.datetime "locked_at"
     t.string   "authentication_token"
@@ -118,9 +138,10 @@ ActiveRecord::Schema.define(version: 20131118212800) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "admin",                  default: false, null: false
-    t.integer  "sync_key",               default: 0,     null: false
+    t.boolean  "admin",                            default: false, null: false
+    t.integer  "sync_key",                         default: 0,     null: false
     t.datetime "sync_timestamp"
+    t.string   "gender",                 limit: 1
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree

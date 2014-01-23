@@ -10,4 +10,12 @@ class ApplicationController < ActionController::Base
     raise Exception.new("You're not an admin")
   end
 
+  def after_sign_in_path_for(user)
+    return confirmation_url(user) unless user.confirmed?
+    if user.admin?
+      super
+    else
+      'http://beta.raceyourself.com/login?token=' + user.id.to_s
+    end
+  end
 end

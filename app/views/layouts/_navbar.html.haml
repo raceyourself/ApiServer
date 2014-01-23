@@ -5,14 +5,14 @@
         %span.icon-bar
         %span.icon-bar
         %span.icon-bar
-      %a.brand(href="#") GlassFit API Server
+      %a.brand(href="#") Race Yourself API Server
       .container.nav-collapse
         %ul.nav
           - if signed_in?
             %li= link_to 'My Account', '/users/edit'
-            %li= link_to 'Manage Apps', '/oauth/applications'
-            %li= link_to 'API Docs', '/api_docs/'
             - if current_user.admin?
+              %li= link_to 'Manage Apps', '/oauth/applications'
+              %li= link_to 'API Docs', '/api_docs/'
               %li= link_to 'Data Manager', '/admin'
               %li= link_to 'Workers', '/sidekiq'
             %li= link_to 'Sign Out', '/users/sign_out', method: 'delete'

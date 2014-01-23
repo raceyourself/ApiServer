@@ -1,0 +1,81 @@
+@font-face {
+  font-family: 'Bebas Neue';
+  src: url(font-path('BebasNeue-webfont.eot'));
+  src: url(font-path('BebasNeue-webfont.eot')+'?#iefix') format('embedded-opentype'),
+       url(font-path('BebasNeue-webfont.woff')) format('woff'),
+       url(font-path('BebasNeue-webfont.ttf')) format('truetype'),
+       url(font-path('BebasNeue-webfont.svg')+'#bebas_neueregular') format('svg');
+}
+
+@import url(http://fonts.googleapis.com/css?family=Quicksand:300,400,700);
+
+h1,h2,h3 {
+  font-family: 'Bebas Neue';
+}
+
+.race-green-bg {
+  background-color: #3cb64b;
+}
+
+.race-gradient {
+  background: #45484d; /* Old browsers */
+  background: -moz-linear-gradient(-45deg,  #45484d 0%, #000000 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#45484d), color-stop(100%,#000000)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(-45deg,  #45484d 0%,#000000 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(-45deg,  #45484d 0%,#000000 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(-45deg,  #45484d 0%,#000000 100%); /* IE10+ */
+  background: linear-gradient(135deg,  #45484d 0%,#000000 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', endColorstr='#000000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+.centered-base {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: 100%;
+  height: 100%;
+  display: table;
+  z-index: -1;
+}
+
+.centered-container {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.hex-container {
+  display: inline-block; 
+  text-align: left;
+  padding: 25px;
+  border: solid 1px black;
+  border-radius: 5px;
+  background-color: white;
+  color: black;
+}
+
+.hex-container form {
+  margin: 15px;
+  .control-group {
+    margin-bottom: 5px;
+  }
+  .inline-group {
+    p {
+      margin: 0 0;
+    }
+    margin-bottom: 5px;
+    input, label {
+      display: inline-block;
+      margin: 5px;
+    }
+  }
+  .inline-group.error {
+    color: #b94a48;
+  }
+  .inputs {
+    margin-bottom: 15px;
+  }
+  .form-actions {
+    border: none;
+  }
+}
