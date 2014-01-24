@@ -151,7 +151,9 @@ module Api
         data = {sync_timestamp: Time.now.to_i}
 
         ### Head forward
-        data[:transactions] = [ current_resource_owner.latest_transaction ]
+        data[:transactions] = []
+        transaction = current_resource_owner.latest_transaction 
+        data[:transactions] << transaction if transaction
         User::COLLECTIONS.each do |collection_key|
           next if collection_key == :transactions
           data[collection_key] = current_resource_owner.send(collection_key, :unscoped)

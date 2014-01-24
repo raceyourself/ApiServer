@@ -54,7 +54,7 @@ class Transaction < UserDocument
       
       warnings[:points_mismatch] += 1 if points_balance != transaction.points_balance
       warnings[:gems_mismatch] += 1 if gems_balance != transaction.gems_balance
-      warnings[:metabolism_mismatch] += 1 if metabolism_balance != transaction.metabolism_balance
+      warnings[:metabolism_mismatch] += 1 if metabolism_balance.to_i != transaction.metabolism_balance.to_i
 
       transaction.points_balance = points_balance
       transaction.gems_balance = gems_balance
