@@ -14,6 +14,8 @@ class User < ActiveRecord::Base
   # associations
   has_and_belongs_to_many :roles
 
+  # TODO: Add photo field (populate from identities if null)
+
   def has_role?(role)
     role = role.to_s.downcase.to_sym
     roles.any?{|r| r.name.to_s.downcase.to_sym == role}
@@ -41,6 +43,10 @@ class User < ActiveRecord::Base
     else
       0
     end
+  end
+
+  def latest_transaction
+    self.transactions.order_by(:updated_at.desc, :ts.desc).first
   end
 
 end
