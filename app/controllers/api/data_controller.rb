@@ -51,7 +51,13 @@ module Api
         User::COLLECTIONS.each do |collection_key|
           if data[collection_key]
             if collection_key == :transactions
-              Transaction.import(data[collection_key], current_resource_owner)
+              begin
+                Transaction.import(data[collection_key], current_resource_owner)
+              rescue => e
+                logger.error(e.class.name + ": " + e.message)
+                logger.debug e.backtrace.join("\n")
+                errors << e.class.name
+              end
               next
             end
             data[collection_key].each do |record|
