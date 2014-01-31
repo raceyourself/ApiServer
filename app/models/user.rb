@@ -13,6 +13,7 @@ class User < ActiveRecord::Base
 
   # associations
   has_and_belongs_to_many :roles
+  has_and_belongs_to_many :groups
 
   # TODO: Add photo field (populate from identities if null)
 
@@ -49,4 +50,20 @@ class User < ActiveRecord::Base
     self.transactions.order_by(:updated_at.desc, :ts.desc).first
   end
 
+ 
+  def peers
+    groups = self.group_ids
+    if groups.empty?
+      User.all
+    else
+      User.find(:all, :include => :groups, :conditions => {:groups => {:id => groups}})
+    end
+  end
+
+  def serializable_hash(options = {})
+    options = {
+      methods: :points
+    }.update(options)
+    super(options)
+  end
 end
