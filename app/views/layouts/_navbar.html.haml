@@ -1,6 +1,6 @@
 - if signed_in?
   :javascript
-    document.getElementsByTagName("body")[0].style.paddingTop = '50px';
+    $(function() { $( "<style>body { padding-top: 50px; }</style>" ).prependTo( "head" ); });
   .navbar.navbar-fixed-top.navbar-inverse
     .navbar-inner
       .container-fluid
