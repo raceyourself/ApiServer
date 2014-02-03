@@ -14,6 +14,8 @@ module Api
       else
         track = Track.find(id)
       end
+      # Long cache time for completed tracks
+      response.cache_control[:max_age] = 60*60 if track && track.duration
       expose track, methods: :positions
     end
 
