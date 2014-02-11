@@ -14,6 +14,9 @@ development:
     scope: 'plus.login'
     request_visible_actions: 'AddActivity'
 
+  google:
+    api_key: 'AIzaSyBu2nEeRQGOtABQu1CC_yXqKtxv-BlWkD0'
+
 production:
   facebook:
     client_id: '625999614089605'
@@ -29,6 +32,9 @@ production:
     client_secret: 'GYOUnQiHC8R8IMyb9iIbI2Nb'
     scope: 'plus.login'
     request_visible_actions: 'AddActivity'
+
+  google:
+    api_key: 'AIzaSyBu2nEeRQGOtABQu1CC_yXqKtxv-BlWkD0'
 
 test:
   facebook:

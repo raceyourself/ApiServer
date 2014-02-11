@@ -112,7 +112,11 @@ module Api
                   }
                   target.notifications.create( 
                       :message => message
-                  ) 
+                  )
+                  PushNotificationWorker.perform_async(target.id, { 
+                                                        title => "You have been challenged by " + target.to_s,
+                                                        text => "Click to race!"
+                                                       })
                 end
               when 'challenge_attempt'
                 challenge_id = action[:challenge_id]

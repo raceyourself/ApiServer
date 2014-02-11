@@ -80,6 +80,9 @@ gem 'newrelic_rpm'
 gem 'rocket_pants-rpm'
 gem 'newrelic_moped', :path => 'vendor/gems/newrelic_moped-0.0.8.ry'
 
+# push notifications
+gem 'gcm'
+
 group :development, :test do
   gem 'faker'
   gem 'pry'
