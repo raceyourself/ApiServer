@@ -6,6 +6,7 @@ class Device
   field :manufacturer,      type: String
   field :model,             type: String
   field :glassfit_version,  type: String
+  field :push_id,           type: String, default: nil
 
   # Foreign key
   field :user_id, type: Integer, default: nil
