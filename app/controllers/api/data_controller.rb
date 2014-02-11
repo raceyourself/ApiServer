@@ -114,7 +114,7 @@ module Api
                       :message => message
                   )
                   PushNotificationWorker.perform_async(target.id, { 
-                                                        :title => "You have been challenged by " + target.to_s,
+                                                        :title => "You have been challenged by " + current_resource_owner.to_s,
                                                         :text => "Click to race!"
                                                        })
                 end
