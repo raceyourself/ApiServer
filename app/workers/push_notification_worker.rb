@@ -8,7 +8,7 @@ class PushNotificationWorker
     return if reg_ids.empty?
     options = {data: data}
     gcm = GCM.new(CONFIG[:google][:api_key])
-    response = gcm.send_notification(reg_ids, options)
+    response = gcm.send_notification(reg_ids.uniq, options)
     logger.info response
   end
     
