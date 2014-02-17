@@ -3,7 +3,7 @@ module Api
     doorkeeper_for :all
 
     def index
-      expose user.positions.gte(state_id: 0)
+      expose user.positions
     end
 
     def show

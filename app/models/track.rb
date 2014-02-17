@@ -27,6 +27,6 @@ class Track < UserDocument
   end
 
   def positions
-     Position.where(device_id: device_id, track_id: track_id)
+     Position.where(device_id: device_id, track_id: track_id).gte(state_id: 0)
   end
 end
