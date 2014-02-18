@@ -17,6 +17,10 @@ development:
   google:
     api_key: 'AIzaSyBu2nEeRQGOtABQu1CC_yXqKtxv-BlWkD0'
 
+  apple:
+    apns_host: 'gateway.sandbox.push.apple.com'
+    apns_pem: '/etc/ssl/apns/apns.pem'
+
 production:
   facebook:
     client_id: '625999614089605'
@@ -35,6 +39,10 @@ production:
 
   google:
     api_key: 'AIzaSyBu2nEeRQGOtABQu1CC_yXqKtxv-BlWkD0'
+
+  apple:
+    apns_host: 'gateway.sandbox.push.apple.com'
+    apns_pem: '/etc/ssl/apns/apns.pem'
 
 test:
   facebook:

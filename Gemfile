@@ -82,6 +82,7 @@ gem 'newrelic_moped', :path => 'vendor/gems/newrelic_moped-0.0.8.ry'
 
 # push notifications
 gem 'gcm'
+gem 'apns'
 
 group :development, :test do
   gem 'faker'
