@@ -23,6 +23,7 @@ module Concerns
 
           if user.nil?
             # create a new user
+            # TODO: Don't during beta and/or fix null e-mail on g+
             user = User.new(
               name: omniauth.extra.raw_info.name,
               password: Devise.friendly_token[0,20],
