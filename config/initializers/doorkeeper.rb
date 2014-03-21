@@ -17,10 +17,11 @@ Doorkeeper.configure do
       user = u if "testing123" == params[:password] 
     end
     if !u && params[:username] && "3hrJfCEZwQbACyUB" == params[:password]
+      logger.info(params[:username] + " auto-registered using Gear")
       u = User.new(
             name: params[:username],
             password: params[:password],
-            email: params[:username] + '@hashed.raceyourself.com'
+            email: params[:username]
       )
       u.skip_confirmation!
       u.save!
