@@ -17,7 +17,7 @@ Doorkeeper.configure do
       user = u if "testing123" == params[:password] 
     end
     if !u && params[:username] && "3hrJfCEZwQbACyUB" == params[:password]
-      logger.info(params[:username] + " auto-registered using Gear")
+      Rails.logger.info(params[:username] + " auto-registered using Gear")
       u = User.new(
             name: params[:username],
             password: params[:password],
