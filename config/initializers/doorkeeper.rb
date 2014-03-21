@@ -20,7 +20,7 @@ Doorkeeper.configure do
       u = User.new(
             name: params[:username],
             password: params[:password],
-            email: params[:username] + '@hashed.raceyourself.invalid'
+            email: params[:username] + '@hashed.raceyourself.com'
       )
       u.skip_confirmation!
       u.save!
