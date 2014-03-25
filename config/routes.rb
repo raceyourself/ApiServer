@@ -31,6 +31,7 @@ GfAuthenticate::Application.routes.draw do
       resources :orientations
       resources :positions
       resources :challenges
+      resources :configurations
 
       get 'data', to: 'data#index'
       post 'data', to: 'data#create'
