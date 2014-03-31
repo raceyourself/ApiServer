@@ -1,5 +1,6 @@
 class Device
   include ::Mongoid::Document
+  include ::Mongoid::Timestamps
   # Primary key
   field :_id,               type: Integer
   # fields
