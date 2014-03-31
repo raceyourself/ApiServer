@@ -64,5 +64,11 @@ GfAuthenticate::Application.routes.draw do
   get '/api_docs/:any/:resource.:ext', to: redirect('/api/%{any}/%{resource}.%{ext}')
   get '/api_docs', to: 'api_docs#index'
 
+  get '/analytics', to: 'analytics#index'
+  namespace :analytics do
+    resources :events
+    resources :queries
+  end
+
   root to: 'home#index'
 end

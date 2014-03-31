@@ -1,0 +1,65 @@
+%div
+  %select#queries
+
+%div
+  Query
+  %br
+  %input#queryname
+  %br
+  %textarea#querytextarea
+  %br
+  %button#savequery Save
+  %button#runquery Run
+
+%div
+  Result
+  %br
+  %textarea#resulttextarea
+
+
+:javascript
+  var queries = {};
+  var result;
+
+  jQuery(function() {
+    fetchQueries();
+    
+    $('#queries').on('change', function() {
+      var query = queries[$(this).val()];
+      $('#queryname').val(query._id);
+      $('#querytextarea').val(JSON.stringify(query.query))
+    });
+
+    $('#savequery').on('click', function() {
+    
+      $.ajax({
+        url: 'queries/' + $('#queryname').val(),
+        type: 'PUT',
+        contentType: 'application/json',
+        data: $('#querytextarea').val(),
+        success: fetchQueries
+      });
+    
+    });
+
+    $('#runquery').on('click', function() {
+    
+      $.get('events/' + $('#queryname').val(), function(d) {
+        result = d;
+        $('#resulttextarea').html(JSON.stringify(d));
+      });
+    
+    });
+  });
+
+  function fetchQueries() {
+    $.get('queries', function(d) {
+      queries = {};
+      var options = [ '<option value=\"new\">New</option>' ];
+      $(d).each(function(i,e) {
+        options.push('<option value=\"' + e._id + '\">' + e._id + '</option>');
+        queries[e._id] = e;
+      });
+      $('#queries').html(options.join('\n'));
+    });
+  }
