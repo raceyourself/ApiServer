@@ -68,6 +68,7 @@ GfAuthenticate::Application.routes.draw do
   namespace :analytics do
     resources :events
     resources :queries
+    resources :views
   end
 
   root to: 'home#index'

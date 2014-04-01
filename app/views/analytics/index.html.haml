@@ -1,32 +1,58 @@
-%div
-  %select#queries
-  %button#reloadqueries Reload
+%div#analyticscontainer
+  %div#analyticsmenu.split
+    %div
+      Queries:
+      %select#queries
+      %button#reloadqueries Reload
+    %div
+      View
+      %select#views
+      %button#reloadviews Reload
 
-%div
-  Query
-  %br
-  %input#queryname
-  %br
-  %textarea#querytextarea
-  %br
-  %button#savequery Save
-  %button#runquery Run
+  %div.split
+    %div#querycontainer
+      Query
+      %a#togglequery Toggle
+      %div#queryedit
+        %input#queryname
+        %br
+        %p#queryline
+        %textarea#querytextarea
+        %p#queryerror
+        %button#savequery Save
+      %button#runquery Run
+    %div#viewcontainer
+      View
+      %a#toggleview Toggle
+      %div#viewedit
+        %input#viewname
+        %br
+        %p#viewline
+        %textarea#viewtextarea
+        %p#viewerror
+        %button#saveview Save
+      %button#runview Run
 
-%div
-  Result
-  %br
-  %textarea#resulttextarea
+  %div#resultcontainer
+    Raw result
+    %a#toggleresult Toggle
+    %div#rawresult
+      %textarea#resulttextarea
+
+  %div#chart
 
 
 :javascript
   var queries = {};
+  var views = {};
   var result;
 
   jQuery(function() {
     fetchQueries();
+    fetchViews();
     
     $('#queries').on('change', function() {
-      var query = queries[$(this).val()];
+      var query = queries[$(this).val()] || {'_id':'New', 'query' : {}};
       $('#queryname').val(query._id);
       $('#querytextarea').val(JSON.stringify(query.query, undefined, 2))
     });
@@ -34,6 +60,31 @@
     $('#reloadqueries').on('click', function() {
       fetchQueries();
     });
+
+    $('#views').on('change', function() {
+      var view = views[$(this).val()] || {'_id':'New', 'script' : {}};
+      $('#viewname').val(view._id);
+      $('#viewtextarea').val(view.script)
+    });
+
+    $('#reloadview').on('click', function() {
+      fetchViews();
+    });
+
+    $('#togglequery').on('click', function() {
+      $('#queryedit').toggle();
+    });
+    $('#queryedit').toggle();
+
+    $('#toggleview').on('click', function() {
+      $('#viewedit').toggle();
+    });
+    $('#viewedit').toggle();
+
+    $('#toggleresult').on('click', function() {
+      $('#rawresult').toggle();
+    });
+    $('#rawresult').toggle();
 
     $('#savequery').on('click', function() {
     
@@ -55,6 +106,49 @@
       });
     
     });
+
+    $('#saveview').on('click', function() {
+    
+      $.ajax({
+        url: 'views/' + $('#viewname').val(),
+        type: 'PUT',
+        contentType: 'plain/text',
+        data: $('#viewtextarea').val(),
+        success: fetchViews
+      });
+    
+    });
+
+    $('#runview').on('click', function() {
+      eval($('#viewtextarea').val())
+    });
+
+    $('#querytextarea').on('focusout', function() {
+      var lint = JSONLint( $('#querytextarea').val() );
+      if (lint.error) {
+        $('#queryerror').html( '<b>' + lint.error + '</b> on line ' + lint.line + ':' + lint.character  );
+      } else {
+        $('#queryerror').html('');
+      }
+    });
+
+    $('#querytextarea').on('click keyup', function() {
+      $('#queryline').html('Line ' + getline('#querytextarea'));
+    });
+    
+    $('#viewtextarea').on('focusout', function() {
+      var errors = [];
+      if (!JSHINT.jshint( $('#viewtextarea').val() )) {
+        $(JSHINT.errors).each(function(i,hint) {
+          errors.push( '<b>' + hint.reason + '</b> on line ' + hint.line + ':' + hint.character  );
+        });
+      }
+      $('#viewerror').html(errors.join('<br/>'));
+    });
+
+    $('#viewtextarea').on('click keyup', function() {
+      $('#viewline').html('Line ' + getline('#viewtextarea'));
+    });
   });
 
   function fetchQueries() {
@@ -67,4 +161,22 @@
       });
       $('#queries').html(options.join('\n'));
     });
+  }
+
+  function fetchViews() {
+    $.get('views', function(d) {
+      views = {};
+      var options = [ '<option value=\"new\">New</option>' ];
+      $(d).each(function(i,e) {
+        options.push('<option value=\"' + e._id + '\">' + e._id + '</option>');
+        views[e._id] = e;
+      });
+      $('#views').html(options.join('\n'));
+    });
+  }
+
+  function getline(selector)
+  {
+      var t = $(selector)[0];
+      return t.value.substr(0, t.selectionStart).split("\n").length;
   }
