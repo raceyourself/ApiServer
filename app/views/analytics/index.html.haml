@@ -62,7 +62,7 @@
     });
 
     $('#views').on('change', function() {
-      var view = views[$(this).val()] || {'_id':'New', 'script' : {}};
+      var view = views[$(this).val()] || {'_id':'New', 'script' : ''};
       $('#viewname').val(view._id);
       $('#viewtextarea').val(view.script)
     });
