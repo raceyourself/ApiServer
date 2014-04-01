@@ -89,7 +89,7 @@
     $('#savequery').on('click', function() {
     
       $.ajax({
-        url: 'queries/' + $('#queryname').val(),
+        url: '/analytics/queries/' + $('#queryname').val(),
         type: 'PUT',
         contentType: 'application/json',
         data: $('#querytextarea').val(),
@@ -100,7 +100,7 @@
 
     $('#runquery').on('click', function() {
     
-      $.get('events/' + $('#queryname').val(), function(d) {
+      $.get('/analytics/events/' + $('#queryname').val(), function(d) {
         result = d;
         $('#resulttextarea').html(JSON.stringify(d));
       });
@@ -110,7 +110,7 @@
     $('#saveview').on('click', function() {
     
       $.ajax({
-        url: 'views/' + $('#viewname').val(),
+        url: '/analytics/views/' + $('#viewname').val(),
         type: 'PUT',
         contentType: 'plain/text',
         data: $('#viewtextarea').val(),
@@ -152,7 +152,7 @@
   });
 
   function fetchQueries() {
-    $.get('queries', function(d) {
+    $.get('/analytics/queries', function(d) {
       queries = {};
       var options = [ '<option value=\"new\">New</option>' ];
       $(d).each(function(i,e) {
@@ -164,7 +164,7 @@
   }
 
   function fetchViews() {
-    $.get('views', function(d) {
+    $.get('/analytics/views', function(d) {
       views = {};
       var options = [ '<option value=\"new\">New</option>' ];
       $(d).each(function(i,e) {
