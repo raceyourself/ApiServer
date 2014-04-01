@@ -17,7 +17,8 @@
     = favicon_link_tag 'apple-touch-icon-precomposed.png', rel: 'apple-touch-icon-precomposed', type: 'image/png'
     = favicon_link_tag 'favicon.ico', rel: 'shortcut icon'
 
-    = javascript_include_tag 'http://code.jquery.com/jquery-2.1.0.min.js'
+    = javascript_include_tag '//code.jquery.com/jquery-2.1.0.min.js'
+    = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js'
     = javascript_include_tag "application"
   %body
     = render 'layouts/navbar'

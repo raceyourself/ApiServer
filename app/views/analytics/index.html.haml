@@ -1,5 +1,6 @@
 %div
   %select#queries
+  %button#reloadqueries Reload
 
 %div
   Query
@@ -27,7 +28,11 @@
     $('#queries').on('change', function() {
       var query = queries[$(this).val()];
       $('#queryname').val(query._id);
-      $('#querytextarea').val(JSON.stringify(query.query))
+      $('#querytextarea').val(JSON.stringify(query.query, undefined, 2))
+    });
+
+    $('#reloadqueries').on('click', function() {
+      fetchQueries();
     });
 
     $('#savequery').on('click', function() {
