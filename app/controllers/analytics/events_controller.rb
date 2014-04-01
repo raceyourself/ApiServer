@@ -7,7 +7,7 @@ module Analytics
     def show
       aq = AnalyticsQuery.find(params[:id])
       query = aq.query if aq
-      query = query[:_json] if query && query[:_json] 
+      query = query['_json'] if query && query['_json'] 
       results = Event.collection.aggregate(query) if query
       render :json => results
     end
