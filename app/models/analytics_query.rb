@@ -4,9 +4,9 @@ class AnalyticsQuery
   # Primary key
   field :_id,               type: String
   # fields
-  field :query,            type: Hash
+  field :sql,               type: String
 
   # validations
-  validates :query, presence: true
+  validates :sql, presence: true
 
 end

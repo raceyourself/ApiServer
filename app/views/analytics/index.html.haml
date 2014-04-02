@@ -91,7 +91,7 @@
       $.ajax({
         url: '/analytics/queries/' + $('#queryname').val(),
         type: 'PUT',
-        contentType: 'application/json',
+        contentType: 'plain/text',
         data: $('#querytextarea').val(),
         success: fetchQueries
       });

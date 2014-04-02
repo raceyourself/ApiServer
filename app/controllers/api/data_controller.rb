@@ -166,6 +166,7 @@ module Api
         data[:transactions] << transaction if transaction
         User::COLLECTIONS.each do |collection_key|
           next if collection_key == :transactions
+          next if collection_key == :events
           data[collection_key] = current_resource_owner.send(collection_key, :unscoped)
                                                        .any_of({:updated_at.gt => head_date},
                                                                {:deleted_at.gt => head_date}).entries()
@@ -183,6 +184,7 @@ module Api
             tail_skip = 0 unless tail_skip
             User::COLLECTIONS.each do |collection_key|
               next if collection_key == :transactions
+              next if collection_key == :events
               data[collection_key].concat current_resource_owner.send(collection_key, :unscoped)
                                                            .any_of({:updated_at.lte => tail_date},
                                                                    {:deleted_at.lte => tail_date})

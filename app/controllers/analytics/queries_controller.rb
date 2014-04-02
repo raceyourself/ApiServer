@@ -13,7 +13,7 @@ module Analytics
     end
 
     def update
-      q = AnalyticsQuery.new(_id: params[:id], query: params[:query])
+      q = AnalyticsQuery.new(_id: params[:id], sql: request.raw_post)
       q.upsert if q.valid?
       render :json => q
     end

@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140131120410) do
+ActiveRecord::Schema.define(version: 20140402134113) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "authentications", force: true do |t|
     t.integer  "user_id"
@@ -27,6 +30,17 @@ ActiveRecord::Schema.define(version: 20140131120410) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "permissions"
+  end
+
+  create_table "events", force: true do |t|
+    t.integer  "ts",         limit: 8
+    t.integer  "version"
+    t.integer  "device_id"
+    t.integer  "session_id"
+    t.integer  "user_id"
+    t.json     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "groups", force: true do |t|
@@ -107,26 +121,6 @@ ActiveRecord::Schema.define(version: 20140131120410) do
   end
 
   add_index "roles_users", ["user_id", "role_id"], name: "index_roles_users_on_user_id_and_role_id", using: :btree
-
-  create_table "track_positions", id: false, force: true do |t|
-    t.integer  "device_id",                                null: false
-    t.integer  "position_id",                              null: false
-    t.integer  "track_id",                                 null: false
-    t.integer  "state_id",                                 null: false
-    t.integer  "gps_ts",                         limit: 8, null: false
-    t.integer  "device_ts",                      limit: 8, null: false
-    t.float    "lng",                                      null: false
-    t.float    "lat",                                      null: false
-    t.float    "bearing"
-    t.float    "corrected_bearing"
-    t.float    "corrected_bearing_R"
-    t.float    "corrected_bearing_significance"
-    t.float    "speed",                                    null: false
-    t.float    "epe"
-    t.string   "nmea"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "users", force: true do |t|
     t.string   "username",                         default: "",    null: false
