@@ -1,25 +1,15 @@
-class Device
-  include ::Mongoid::Document
-  include ::Mongoid::Timestamps
-  # Primary key
-  field :_id,               type: Integer
-  # fields
-  field :manufacturer,      type: String
-  field :model,             type: String
-  field :glassfit_version,  type: String
-  field :push_id,           type: String, default: nil
-
-  # Foreign key
-  field :user_id, type: Integer, default: nil
-
-  auto_increment :_id
-
-  # validations
-  validates :manufacturer, :model, :glassfit_version, presence: true
+class Device < ActiveRecord::Base
+  belongs_to :user # may be null
 
   def merge
-    # TODO: 
-    self.upsert if self.valid?
+    if self.id
+      device = Device.find(self.id)
+      if device
+        device.push_id = self.push_id
+        device.user_id = self.user_id
+      end
+    end
+    device = self unless device
+    device.save!
   end
-
 end

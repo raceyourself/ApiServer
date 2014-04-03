@@ -15,6 +15,7 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :roles
   has_and_belongs_to_many :groups
   has_many :events
+  has_many :devices
 
   # TODO: Add photo field (populate from identities if null)
 

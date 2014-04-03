@@ -67,6 +67,7 @@ module Api
               begin
                 # Dirty hack to fix broken mongoid
                 record[:_id] = record[:_id][:$oid] if record[:_id] && record[:_id].is_a?(Hash) && record[:_id][:$oid]
+                record.delete(:user_id)
                 deleted = record[:deleted_at]
                 d = relation.new(record)
                 d.merge
@@ -167,6 +168,7 @@ module Api
         User::COLLECTIONS.each do |collection_key|
           next if collection_key == :transactions
           next if collection_key == :events
+          next if collection_key == :devices
           data[collection_key] = current_resource_owner.send(collection_key, :unscoped)
                                                        .any_of({:updated_at.gt => head_date},
                                                                {:deleted_at.gt => head_date}).entries()
@@ -185,6 +187,7 @@ module Api
             User::COLLECTIONS.each do |collection_key|
               next if collection_key == :transactions
               next if collection_key == :events
+              next if collection_key == :devices
               data[collection_key].concat current_resource_owner.send(collection_key, :unscoped)
                                                            .any_of({:updated_at.lte => tail_date},
                                                                    {:deleted_at.lte => tail_date})
