@@ -12,8 +12,7 @@ module Api
 
     def create
       path_params = request.path_parameters
-      logger.info params.except(*path_params.keys)
-      expose Device.create!(params.except(*path_params.keys).permit!)
+      expose Device.create!(params.except(*path_params.keys).except('id').permit!)
     end
 
   end
