@@ -2,7 +2,7 @@ require 'bundler/capistrano'
 require "rvm/capistrano"
 require 'sidekiq/capistrano'
 
-#set :rvm_ruby_string, :local              # use the same ruby as used locally for deployment
+set :rvm_ruby_string, "1.9.3"              # use the same ruby as used locally for deployment
 set :rvm_autolibs_flag, "read-only"       # more info: rvm help autolibs
 set :rvm_type, :system       # more info: rvm help autolibs
 
@@ -18,14 +18,14 @@ set :repository,  "git@github.com:glassfit/GFAuthenticate.git"
 set :scm, "git"
 set :user, "deployer"  # The server's user for deploys
 
-set :branch, "develop"
+set :branch, "postgres"
 set :deploy_via, :remote_cache
 
 set :ssh_options, { forward_agent: true }
 
-role :web, "auth.raceyourself.com"                          # Your HTTP server, Apache/etc
-role :app, "auth.raceyourself.com"                         # This may be the same as your `Web` server
-role :db,  "auth.raceyourself.com", primary: true # This is where Rails migrations will run
+role :web, "api.raceyourself.com"                          # Your HTTP server, Apache/etc
+role :app, "api.raceyourself.com"                         # This may be the same as your `Web` server
+role :db,  "api.raceyourself.com", primary: true # This is where Rails migrations will run
 
 # if you want to clean up old releases on each deploy uncomment this:
 after "deploy:restart", "deploy:cleanup"
