@@ -9,7 +9,9 @@ module Analytics
       begin
         results = ActiveRecord::Base.connection.execute(aq.sql) if aq && aq.sql
       rescue Exception=>e
-        results = e
+        err = e
+        err = e.message if e.message
+        results = {:error => err}
       end
       render :json => results
     end
