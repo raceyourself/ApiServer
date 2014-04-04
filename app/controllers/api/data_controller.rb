@@ -178,6 +178,9 @@ module Api
         if tail_date && tail_date.to_i > 0
           count = 0
           User::COLLECTIONS.each do |collection_key|
+            next if collection_key == :transactions
+            next if collection_key == :events
+            next if collection_key == :devices
             count += data[collection_key].length
           end
 
@@ -196,6 +199,9 @@ module Api
 
             tail_count = 0
             User::COLLECTIONS.each do |collection_key|
+              next if collection_key == :transactions
+              next if collection_key == :events
+              next if collection_key == :devices
               tail_count += data[collection_key].length
             end
             if tail_count > 0
