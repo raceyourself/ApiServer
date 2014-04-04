@@ -245,7 +245,6 @@ GEM
     multi_test (0.0.3)
     multi_xml (0.5.5)
     multipart-post (1.2.0)
-    mysql2 (0.3.14)
     nested_form (0.3.2)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
@@ -499,7 +498,6 @@ DEPENDENCIES
   mongoid!
   mongoid-paranoia!
   mongoid_auto_increment
-  mysql2
   newrelic_moped!
   newrelic_rpm
   oj
