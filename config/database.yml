@@ -19,5 +19,5 @@ production:
   encoding: unicode
   database: gf_core
   host: localhost
-  username: root
+  username: gfauth
   password: ex171aY555
