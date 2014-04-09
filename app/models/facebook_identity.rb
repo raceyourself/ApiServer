@@ -1,8 +1,4 @@
 class FacebookIdentity < Identity
-  field :uid, type: String
-  field :name, type: String
-  field :photo, type: String
-
   validates :uid, presence: true
 
   def generate_id

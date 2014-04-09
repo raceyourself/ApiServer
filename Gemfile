@@ -19,6 +19,7 @@ gem 'bson_ext'
 
 # data
 gem 'composite_primary_keys'
+gem "paranoia", "~> 2.0"
 gem 'pg'
 gem 'mongoid', github: 'mongoid'
 gem 'mongoid-paranoia', github: 'simi/mongoid-paranoia'
@@ -78,7 +79,7 @@ gem 'google-api-client'
 # analytics
 gem 'newrelic_rpm'
 gem 'rocket_pants-rpm'
-gem 'newrelic_moped', :path => 'vendor/gems/newrelic_moped-0.0.8.ry'
+gem 'newrelic_moped'
 
 # push notifications
 gem 'gcm'
@@ -110,7 +111,6 @@ group :test do
   gem 'capybara-webkit', '0.12.1'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
-  gem 'faker'
   gem 'fakeweb'
   gem 'webmock'
   gem 'email_spec'

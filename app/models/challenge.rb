@@ -1,40 +1,17 @@
-class Challenge
-  include ::Mongoid::Document
-  include ::Mongoid::Timestamps::Updated
-  include ::Mongoid::Paranoia
+class Challenge < ActiveRecord::Base
+  has_one :creator
+  has_many :challenge_attempts
+  has_many :challenge_subscribers
+  has_many :attempts, :through => :challenge_attempts, :source => :track
+  has_many :subscribers, :through => :challenge_subscribers, :source => :user
 
-  # May be linked to a registered user (nullable)
-  field :creator_id, type: Integer
-
-  # Embed foreign keys 
-  has_and_belongs_to_many :attempts, class_name: "Track", inverse_of: nil
-
-  field :subscribers, type: Array, default: []
-
-  # fields
-  field :start_time,    type: DateTime, default: nil
-  field :stop_time,     type: DateTime, default: nil
-  field :location,      type: Array, default: nil
-  field :public,        type: Boolean, default: false
-  # indexes
-  # now.between(start, stop) and geo_near
-  
-  before_upsert :set_updated_at
-
-  # validations
-  validates :public, presence: true
-
-  def creator
-    User.where(id: creator_id).first
-  end
-  
-  def type
-    self._type.downcase.sub('challenge', '')
+  def challenge_type
+    self.type.downcase.sub('challenge', '')
   end
 
   def serializable_hash(options = {})
     options = {
-      methods: :type,
+      methods: :challenge_type,
       except: :attempt_ids,
       include: {
         attempts: { only: [ :device_id, :track_id, :user_id ] }                                             }

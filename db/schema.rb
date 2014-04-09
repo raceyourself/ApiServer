@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140403071617) do
+ActiveRecord::Schema.define(version: 20140409145955) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,32 @@ ActiveRecord::Schema.define(version: 20140403071617) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "permissions"
+  end
+
+  create_table "challenge_attempts", id: false, force: true do |t|
+    t.integer "challenge_id", null: false
+    t.integer "device_id",    null: false
+    t.integer "track_id",     null: false
+  end
+
+  create_table "challenge_subscribers", id: false, force: true do |t|
+    t.integer "challenge_id", null: false
+    t.integer "user_id",      null: false
+  end
+
+  create_table "challenges", force: true do |t|
+    t.datetime "start_time"
+    t.datetime "stop_time"
+    t.boolean  "public",     default: false
+    t.integer  "creator_id"
+    t.string   "type"
+    t.integer  "distance"
+    t.integer  "time"
+    t.integer  "duration"
+    t.integer  "pace"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
   end
 
   create_table "devices", force: true do |t|
@@ -53,6 +79,16 @@ ActiveRecord::Schema.define(version: 20140403071617) do
     t.datetime "updated_at"
   end
 
+  create_table "friendships", id: false, force: true do |t|
+    t.string   "identity_type", null: false
+    t.string   "identity_uid",  null: false
+    t.string   "friend_type",   null: false
+    t.string   "friend_uid",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
+
   create_table "groups", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -66,6 +102,29 @@ ActiveRecord::Schema.define(version: 20140403071617) do
 
   add_index "groups_users", ["group_id"], name: "index_groups_users_on_group_id", using: :btree
   add_index "groups_users", ["user_id", "group_id"], name: "index_groups_users_on_user_id_and_group_id", using: :btree
+
+  create_table "identities", id: false, force: true do |t|
+    t.integer "user_id"
+    t.boolean "has_glass",   default: false
+    t.string  "type",                        null: false
+    t.string  "uid",                         null: false
+    t.string  "name"
+    t.string  "photo"
+    t.string  "screen_name"
+  end
+
+  add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
+
+  create_table "notifications", force: true do |t|
+    t.boolean  "read",       default: false, null: false
+    t.json     "message",                    null: false
+    t.integer  "user_id",                    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
+
+  add_index "notifications", ["user_id"], name: "index_notifications_on_user_id", using: :btree
 
   create_table "oauth_access_grants", force: true do |t|
     t.integer  "resource_owner_id", null: false
@@ -106,6 +165,32 @@ ActiveRecord::Schema.define(version: 20140403071617) do
 
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
+  create_table "positions", id: false, force: true do |t|
+    t.integer  "device_id",                      null: false
+    t.integer  "position_id",                    null: false
+    t.integer  "track_id",                       null: false
+    t.integer  "state_id",                       null: false
+    t.integer  "gps_ts",                         null: false
+    t.integer  "device_ts",                      null: false
+    t.float    "lng",                            null: false
+    t.float    "lat",                            null: false
+    t.float    "alt",                            null: false
+    t.float    "bearing",                        null: false
+    t.float    "corrected_bearing"
+    t.float    "corrected_bearing_R"
+    t.float    "corrected_bearing_significance"
+    t.float    "speed"
+    t.float    "epe"
+    t.string   "nmea"
+    t.integer  "user_id",                        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
+
+  add_index "positions", ["device_id", "track_id"], name: "index_positions_on_device_id_and_track_id", using: :btree
+  add_index "positions", ["user_id"], name: "index_positions_on_user_id", using: :btree
+
   create_table "rails_admin_histories", force: true do |t|
     t.text     "message"
     t.string   "username"
@@ -131,6 +216,46 @@ ActiveRecord::Schema.define(version: 20140403071617) do
   end
 
   add_index "roles_users", ["user_id", "role_id"], name: "index_roles_users_on_user_id_and_role_id", using: :btree
+
+  create_table "tracks", id: false, force: true do |t|
+    t.integer  "device_id",                  null: false
+    t.integer  "track_id",                   null: false
+    t.string   "track_name"
+    t.integer  "ts",                         null: false
+    t.boolean  "public",     default: false
+    t.float    "distance"
+    t.integer  "time"
+    t.integer  "user_id",                    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
+
+  add_index "tracks", ["user_id"], name: "index_tracks_on_user_id", using: :btree
+
+  create_table "transactions", force: true do |t|
+    t.integer  "device_id",                        null: false
+    t.integer  "transaction_id",                   null: false
+    t.integer  "ts",                               null: false
+    t.string   "transaction_type",                 null: false
+    t.string   "transaction_calc",                 null: false
+    t.string   "source_id",                        null: false
+    t.integer  "points_delta",       default: 0,   null: false
+    t.integer  "points_balance",     default: 0,   null: false
+    t.integer  "gems_delta",         default: 0,   null: false
+    t.integer  "gems_balance",       default: 0,   null: false
+    t.float    "metabolism_delta",   default: 0.0, null: false
+    t.float    "metabolism_balance", default: 0.0, null: false
+    t.float    "cash_delta",         default: 0.0, null: false
+    t.string   "currency"
+    t.integer  "user_id",                          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
+
+  add_index "transactions", ["ts"], name: "index_transactions_on_ts", using: :btree
+  add_index "transactions", ["user_id"], name: "index_transactions_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "username",                         default: "",    null: false
