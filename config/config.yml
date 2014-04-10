@@ -21,6 +21,29 @@ development:
     apns_host: 'gateway.sandbox.push.apple.com'
     apns_pem: '/etc/ssl/apns/apns.pem'
 
+staging:
+  facebook:
+    client_id: '625999614089605'
+    client_secret: '27f0dbfd392ef841809a22854a30f73b'
+    scope: 'email, publish_actions'
+
+  twitter:
+    client_id: NAs6Vh3PtN7Pv7ULG7eCyA
+    client_secret: 3E8RgvAGjCrnqynkrCPfBI6KVdIK4u9iXt8WGPVyLq0
+    
+  gplus:
+    client_id: '892619514273.apps.googleusercontent.com'
+    client_secret: 'GYOUnQiHC8R8IMyb9iIbI2Nb'
+    scope: 'plus.login'
+    request_visible_actions: 'AddActivity'
+
+  google:
+    api_key: 'AIzaSyBu2nEeRQGOtABQu1CC_yXqKtxv-BlWkD0'
+
+  apple:
+    apns_host: 'gateway.sandbox.push.apple.com'
+    apns_pem: '/etc/ssl/apns/apns.pem'
+
 production:
   facebook:
     client_id: '625999614089605'
