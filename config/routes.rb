@@ -28,7 +28,6 @@ GfAuthenticate::Application.routes.draw do
       resources :transactions
       resources :tracks
       resources :friends
-      resources :orientations
       resources :positions
       resources :challenges
       resources :configurations
@@ -46,7 +45,6 @@ GfAuthenticate::Application.routes.draw do
         resources :transactions
         resources :tracks
         resources :friends
-        resources :orientations
         resources :positions
       end
 

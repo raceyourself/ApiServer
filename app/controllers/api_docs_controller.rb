@@ -41,11 +41,6 @@ class ApiDocsController < AuthedController
     render "api_docs/#{params[:version]}/tracks", formats: :json
   end
 
-  def orientations
-    @base = root_url
-    render "api_docs/#{params[:version]}/orientations", formats: :json
-  end
-
   def positions
     @base = root_url
     render "api_docs/#{params[:version]}/positions", formats: :json
