@@ -1,4 +1,5 @@
 class Challenge < ActiveRecord::Base
+  acts_as_paranoid
   has_one :creator
   has_many :challenge_attempts
   has_many :challenge_subscribers

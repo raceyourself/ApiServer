@@ -158,12 +158,17 @@ module Api
         data = {sync_timestamp: Time.now.to_i}
 
         ### Head forward
+        data[:devices] = current_resource_owner.send(:devices, :with_deleted)
+                                                     .where('updated_at > :head', 
+                                                            {head: head_date})
+                                                     .entries()
         data[:transactions] = []
         transaction = current_resource_owner.latest_transaction 
         data[:transactions] << transaction if transaction
         User::COLLECTIONS.each do |collection_key|
           next if collection_key == :transactions
           next if collection_key == :events
+          next if collection_key == :devices
           data[collection_key] = current_resource_owner.send(collection_key, :with_deleted)
                                                        .where('updated_at > :head OR deleted_at > :head', 
                                                               {head: head_date})
@@ -185,6 +190,7 @@ module Api
             User::COLLECTIONS.each do |collection_key|
               next if collection_key == :transactions
               next if collection_key == :events
+              next if collection_key == :devices
               data[collection_key].concat current_resource_owner.send(collection_key, :with_deleted)
                                                                  .where('updated_at <= :tail or deleted_at <= :tail', 
                                                                         {tail: tail_date})

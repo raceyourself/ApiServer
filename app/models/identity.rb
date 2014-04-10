@@ -1,11 +1,11 @@
 class Identity < ActiveRecord::Base
   self.primary_keys = :type, :uid
   # Bidirectional friend graph
-  has_many :friendships, :foreign_key => [:identity_type, :identity_uid]
-  has_many :friends, :through => :friendships 
-  
+  has_many :friendships, :foreign_key => [:identity_type, :identity_uid], :dependent => :destroy
+  has_many :friends, :through => :friendships # TODO: Figure out how to support self.friends.clear 
+
   def provider
-    self._type.downcase.sub('identity', '')
+    self.type.downcase.sub('identity', '')
   end
 
   def serializable_hash(options = {})

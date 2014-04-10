@@ -38,7 +38,7 @@ class User < ActiveRecord::Base
   end
 
   def points
-    latest = self.transactions.desc(:ts).first
+    latest = latest_transaction()
     if latest
       latest.points_balance
     else
@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
   end
 
   def latest_transaction
-    self.transactions.order_by(:updated_at.desc, :ts.desc).first
+    self.transactions.order(updated_at: :desc, ts: :desc).first
   end
 
  

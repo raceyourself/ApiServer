@@ -1,4 +1,6 @@
 class Friendship < ActiveRecord::Base
+  acts_as_paranoid
+
   self.primary_keys = :identity_type, :identity_uid, :friend_type, :friend_uid
 
   belongs_to :identity, :foreign_key => [:identity_type, :identity_uid]
