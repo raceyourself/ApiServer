@@ -15,13 +15,4 @@ class Identity < ActiveRecord::Base
     super(options)
   end
 
-  def merge
-    return unless self.valid?
-    existing = Identity.where(id: self.id).first
-    unless existing.nil?
-      self.user_id = existing.user_id
-      self.has_glass = existing.has_glass
-    end
-    self.upsert
-  end
 end
