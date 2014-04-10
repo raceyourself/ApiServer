@@ -65,8 +65,6 @@ module Api
               # Ignore bad data and continue
               # TODO: Notify admin?
               begin
-                # Dirty hack to fix broken mongoid
-                record[:_id] = record[:_id][:$oid] if record[:_id] && record[:_id].is_a?(Hash) && record[:_id][:$oid]
                 record.delete(:user_id)
                 deleted = record[:deleted_at]
                 d = relation.new(record)
@@ -91,8 +89,6 @@ module Api
               when 'challenge'
                 if action[:challenge][:_id]
                   challenge_id = action[:challenge][:_id]
-                  # Dirty hack to fix broken mongoid
-                  challenge_id = action[:challenge][:_id][:$oid] if action[:challenge][:_id].is_a?(Hash) && action[:challenge][:_id][:$oid]  
                   c = Challenge.find(challenge_id)
                   c.add_to_set({:subscribers => current_resource_owner.id})
                 else
@@ -168,10 +164,10 @@ module Api
         User::COLLECTIONS.each do |collection_key|
           next if collection_key == :transactions
           next if collection_key == :events
-          next if collection_key == :devices
-          data[collection_key] = current_resource_owner.send(collection_key, :unscoped)
-                                                       .any_of({:updated_at.gt => head_date},
-                                                               {:deleted_at.gt => head_date}).entries()
+          data[collection_key] = current_resource_owner.send(collection_key, :with_deleted)
+                                                       .where('updated_at > :head OR deleted_at > :head', 
+                                                              {head: head_date})
+                                                       .entries()
         end
 
         ### Tail backward if head is small
@@ -180,7 +176,6 @@ module Api
           User::COLLECTIONS.each do |collection_key|
             next if collection_key == :transactions
             next if collection_key == :events
-            next if collection_key == :devices
             count += data[collection_key].length
           end
 
@@ -190,18 +185,16 @@ module Api
             User::COLLECTIONS.each do |collection_key|
               next if collection_key == :transactions
               next if collection_key == :events
-              next if collection_key == :devices
-              data[collection_key].concat current_resource_owner.send(collection_key, :unscoped)
-                                                           .any_of({:updated_at.lte => tail_date},
-                                                                   {:deleted_at.lte => tail_date})
-                                                           .skip(tail_skip).limit(limit).entries()
+              data[collection_key].concat current_resource_owner.send(collection_key, :with_deleted)
+                                                                 .where('updated_at <= :tail or deleted_at <= :tail', 
+                                                                        {tail: tail_date})
+                                                                 .offset(tail_skip).limit(limit).entries()
             end
 
             tail_count = 0
             User::COLLECTIONS.each do |collection_key|
               next if collection_key == :transactions
               next if collection_key == :events
-              next if collection_key == :devices
               tail_count += data[collection_key].length
             end
             if tail_count > 0

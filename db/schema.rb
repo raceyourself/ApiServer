@@ -11,10 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140409145955) do
+ActiveRecord::Schema.define(version: 20140410073008) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "analyticsqueries", id: false, force: true do |t|
+    t.string   "id",         null: false
+    t.string   "sql",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "analyticsviews", id: false, force: true do |t|
+    t.string   "id",         null: false
+    t.string   "script",     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "authentications", force: true do |t|
     t.integer  "user_id"
@@ -56,6 +70,14 @@ ActiveRecord::Schema.define(version: 20140409145955) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
+  end
+
+  create_table "configurations", force: true do |t|
+    t.string   "type",          null: false
+    t.json     "configuration", null: false
+    t.integer  "group_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "devices", force: true do |t|
@@ -233,7 +255,7 @@ ActiveRecord::Schema.define(version: 20140409145955) do
 
   add_index "tracks", ["user_id"], name: "index_tracks_on_user_id", using: :btree
 
-  create_table "transactions", force: true do |t|
+  create_table "transactions", id: false, force: true do |t|
     t.integer  "device_id",                        null: false
     t.integer  "transaction_id",                   null: false
     t.integer  "ts",                               null: false

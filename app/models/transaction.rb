@@ -1,5 +1,7 @@
 class Transaction < ActiveRecord::Base
-  include Concerns:UserRecord
+  include Concerns::UserRecord
+
+  self.primary_keys = :device_id, :transaction_id
 
   def self.import(transactions, user)
     logger.info "Importing " + transactions.length.to_s + " transactions for user " + user.id.to_s

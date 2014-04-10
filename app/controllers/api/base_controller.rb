@@ -6,8 +6,6 @@ module Api
     version 1
 
     map_error! ActiveRecord::RecordNotFound, RocketPants::NotFound
-    map_error! Mongoid::Errors::DocumentNotFound, RocketPants::NotFound
-    map_error! Mongoid::Errors::UnknownAttribute, RocketPants::BadRequest
 
     # For the api to always revalidate on expiry.
     caching_options[:must_revalidate] = true

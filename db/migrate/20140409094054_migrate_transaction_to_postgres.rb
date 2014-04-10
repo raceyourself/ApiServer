@@ -1,6 +1,6 @@
 class MigrateTransactionToPostgres < ActiveRecord::Migration
   def up
-    create_table :transactions do |t|
+    create_table :transactions, :id => false do |t|
       t.integer  :device_id,          :null => false
       t.integer  :transaction_id,     :null => false
       t.integer  :ts,                 :null => false  
@@ -23,6 +23,7 @@ class MigrateTransactionToPostgres < ActiveRecord::Migration
 
       t.index    :ts
     end
+    execute 'ALTER TABLE transactions ADD PRIMARY KEY (device_id, transaction_id);'
   end
   def down
     drop_table 'transactions'

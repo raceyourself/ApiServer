@@ -11,16 +11,20 @@ class Challenge < ActiveRecord::Base
 
   def serializable_hash(options = {})
     options = {
-      methods: :challenge_type,
       except: :attempt_ids,
       include: {
-        attempts: { only: [ :device_id, :track_id, :user_id ] }                                             }
+        attempts: { only: [ :device_id, :track_id, :user_id ] }
+      }
     }.update(options)
-    super(options)
+    hash = super(options)
+    hash[:type] = challenge_type() if hash
+    hash
   end
 
   def self.build(challenge)
-    c = Mongoid::Factory.build((challenge[:type].capitalize + 'Challenge').constantize, challenge.except(:type, :attempts))
+    full_type = challenge[:type].capitalize + 'Challenge'
+    challenge[:type] = full_type
+    c = Challenge.create!(challenge.except(:attempts))
     if challenge[:attempts]
       attempts = challenge[:attempts]
       attempts.each do |attempt|
