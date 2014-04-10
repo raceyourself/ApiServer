@@ -13,12 +13,12 @@ module Concerns
       has_many :challenge_subscribers
       has_many :challenges, :through => :challenge_subscribers
 
-      define_method :friends do |scope=:all|
-        Friendship.send(scope).joins(:identity).where(:identities => {:user_id => id})
+      define_method :friends do
+        Friendship.joins(:identity).where(:identities => {:user_id => id})
       end
 
-      define_method :positions do |scope=:all|
-        Position.send(scope).where(user_id: id).where('state_id >= 0')
+      define_method :positions do
+        Position.where(user_id: id).where('state_id >= 0')
       end
 
     end #included

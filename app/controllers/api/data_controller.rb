@@ -158,7 +158,7 @@ module Api
         data = {sync_timestamp: Time.now.to_i}
 
         ### Head forward
-        data[:devices] = current_resource_owner.send(:devices, :with_deleted)
+        data[:devices] = current_resource_owner.send(:devices)
                                                      .where('updated_at > :head', 
                                                             {head: head_date})
                                                      .entries()
@@ -169,7 +169,7 @@ module Api
           next if collection_key == :transactions
           next if collection_key == :events
           next if collection_key == :devices
-          data[collection_key] = current_resource_owner.send(collection_key, :with_deleted)
+          data[collection_key] = current_resource_owner.send(collection_key).with_deleted
                                                        .where('updated_at > :head OR deleted_at > :head', 
                                                               {head: head_date})
                                                        .entries()
@@ -191,7 +191,7 @@ module Api
               next if collection_key == :transactions
               next if collection_key == :events
               next if collection_key == :devices
-              data[collection_key].concat current_resource_owner.send(collection_key, :with_deleted)
+              data[collection_key].concat current_resource_owner.send(collection_key).with_deleted
                                                                  .where('updated_at <= :tail or deleted_at <= :tail', 
                                                                         {tail: tail_date})
                                                                  .offset(tail_skip).limit(limit).entries()
