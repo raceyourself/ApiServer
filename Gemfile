@@ -21,9 +21,6 @@ gem 'bson_ext'
 gem 'composite_primary_keys'
 gem "paranoia", "~> 2.0"
 gem 'pg'
-gem 'mongoid', github: 'mongoid'
-gem 'mongoid-paranoia', github: 'simi/mongoid-paranoia'
-gem 'mongoid_auto_increment'
 
 # pagination
 gem 'kaminari'
@@ -63,10 +60,6 @@ gem 'yajl-ruby', :require => 'yajl'
 # admin
 gem 'rails_admin'
 
-# deployer
-gem 'capistrano'
-gem 'rvm-capistrano'
-
 # worker
 gem 'sinatra'
 gem 'sidekiq'
@@ -101,6 +94,11 @@ group :development do
   gem 'binding_of_caller'
   gem 'pry-rails'
   gem 'html2haml'
+  # deployer
+  gem 'capistrano', '~> 3.0', require: false
+  gem 'capistrano-rails', '~> 1.1', require: false
+  gem 'capistrano-bundler', '~> 1.1', require: false
+  gem 'capistrano-rvm', '~> 0.1', require: false
 end
 
 group :test do
