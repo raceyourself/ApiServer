@@ -13,8 +13,9 @@ module Analytics
     end
 
     def update
-      v = AnalyticsView.new(_id: params[:id], script: request.raw_post)
-      v.upsert if v.valid?
+      v = AnalyticsView.find_or_initialize_by_id(params[:id])
+      v.script = request.raw_post
+      v.save!
       render :json => v
     end
 

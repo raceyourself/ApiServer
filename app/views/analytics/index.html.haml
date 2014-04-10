@@ -52,8 +52,8 @@
     fetchViews();
     
     $('#queries').on('change', function() {
-      var query = queries[$(this).val()] || {'_id':'New', 'sql' : {}};
-      $('#queryname').val(query._id);
+      var query = queries[$(this).val()] || {'id':'New', 'sql' : {}};
+      $('#queryname').val(query.id);
       $('#querytextarea').val(query.sql);
     });
 
@@ -62,8 +62,8 @@
     });
 
     $('#views').on('change', function() {
-      var view = views[$(this).val()] || {'_id':'New', 'script' : ''};
-      $('#viewname').val(view._id);
+      var view = views[$(this).val()] || {'id':'New', 'script' : ''};
+      $('#viewname').val(view.id);
       $('#viewtextarea').val(view.script)
     });
 
@@ -157,8 +157,8 @@
       queries = {};
       var options = [ '<option value=\"new\">New</option>' ];
       $(d).each(function(i,e) {
-        options.push('<option value=\"' + e._id + '\">' + e._id + '</option>');
-        queries[e._id] = e;
+        options.push('<option value=\"' + e.id + '\">' + e.id + '</option>');
+        queries[e.id] = e;
       });
       $('#queries').html(options.join('\n'));
     });
@@ -169,8 +169,8 @@
       views = {};
       var options = [ '<option value=\"new\">New</option>' ];
       $(d).each(function(i,e) {
-        options.push('<option value=\"' + e._id + '\">' + e._id + '</option>');
-        views[e._id] = e;
+        options.push('<option value=\"' + e.id + '\">' + e.id + '</option>');
+        views[e.id] = e;
       });
       $('#views').html(options.join('\n'));
     });

@@ -11,19 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140410073008) do
+ActiveRecord::Schema.define(version: 20140410143629) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "analyticsqueries", id: false, force: true do |t|
+  create_table "analytics_queries", id: false, force: true do |t|
     t.string   "id",         null: false
     t.string   "sql",        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "analyticsviews", id: false, force: true do |t|
+  create_table "analytics_views", id: false, force: true do |t|
     t.string   "id",         null: false
     t.string   "script",     null: false
     t.datetime "created_at"
