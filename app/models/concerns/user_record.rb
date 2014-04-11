@@ -8,6 +8,13 @@ module Concerns
     end
     
     def merge
+      # TODO: Improve performance:
+      #       Do  a) update! || save for things likely to always exist
+      #       and b) create! || update for things likely to not exist
+      #       Surround data_controller::import with a transaction
+      # NOTE: update_all should bypass object instantiation
+      #       activerecord-import could work similarly for inserts
+      #       data validation is the only problem
       hash = self.serializable_hash.except('created_at', 'deleted_at', 'updated_at')
       key = hash.extract!(*self.class.primary_key)
       begin
