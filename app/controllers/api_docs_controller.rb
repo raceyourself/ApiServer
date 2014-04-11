@@ -35,6 +35,11 @@ class ApiDocsController < AuthedController
     @base = root_url
     render "api_docs/#{params[:version]}/devices", formats: :json
   end
+  
+  def games
+    @base = root_url
+    render "api_docs/#{params[:version]}/games", formats: :json
+  end
 
   def transactions
     @base = root_url
