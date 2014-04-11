@@ -9,6 +9,11 @@ class ApiDocsController < AuthedController
     render "api_docs/#{params[:version]}/glassfit", formats: :json
   end
 
+  def configurations
+    @base = root_url
+    render "api_docs/#{params[:version]}/configurations", formats: :json
+  end
+
   def challenges
     @base = root_url
     render "api_docs/#{params[:version]}/challenges", formats: :json

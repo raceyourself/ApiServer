@@ -3,10 +3,7 @@ module Api
     doorkeeper_for :all
 
     def show
-      groups = user.group_ids
-      configuration = RemoteConfiguration.where(type: params[:id]).where(:group => groups).first
-      configuration = RemoteConfiguration.where(type: params[:id]).where(group: nil).first unless configuration
-      expose configuration
+      expose ::Configuration.for(user, params[:id])
     end
 
   end
