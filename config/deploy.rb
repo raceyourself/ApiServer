@@ -8,7 +8,7 @@ set :rvm_ruby_string, '2.0.0'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
-set :branch, "postgres"
+set :branch, "develop"
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/var/www/vhosts/glassfit'
