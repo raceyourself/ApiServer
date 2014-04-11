@@ -1,8 +1,8 @@
 class GameState < ActiveRecord::Base
   belongs_to :game
 
-  def self.for(user)
-    
+  def self.last_modified
+    GameState.maximum(:updated_at)
   end
 
   def self.for(user, game_id)
