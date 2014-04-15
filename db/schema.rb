@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140411110445) do
+ActiveRecord::Schema.define(version: 20140415121911) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -273,17 +273,18 @@ ActiveRecord::Schema.define(version: 20140411110445) do
   add_index "roles_users", ["user_id", "role_id"], name: "index_roles_users_on_user_id_and_role_id", using: :btree
 
   create_table "tracks", id: false, force: true do |t|
-    t.integer  "device_id",                  null: false
-    t.integer  "track_id",                   null: false
+    t.integer  "device_id",                     null: false
+    t.integer  "track_id",                      null: false
     t.string   "track_name"
-    t.integer  "ts",                         null: false
-    t.boolean  "public",     default: false
+    t.integer  "ts",                            null: false
+    t.boolean  "public",        default: false
     t.float    "distance"
     t.integer  "time"
-    t.integer  "user_id",                    null: false
+    t.integer  "user_id",                       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
+    t.integer  "track_type_id", default: 1,     null: false
   end
 
   add_index "tracks", ["user_id"], name: "index_tracks_on_user_id", using: :btree
