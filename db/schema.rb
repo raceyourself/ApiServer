@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140415121911) do
+ActiveRecord::Schema.define(version: 20140415122939) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -221,23 +221,23 @@ ActiveRecord::Schema.define(version: 20140415121911) do
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
   create_table "positions", id: false, force: true do |t|
-    t.integer  "device_id",                      null: false
-    t.integer  "position_id",                    null: false
-    t.integer  "track_id",                       null: false
-    t.integer  "state_id",                       null: false
-    t.integer  "gps_ts",                         null: false
-    t.integer  "device_ts",                      null: false
-    t.float    "lng",                            null: false
-    t.float    "lat",                            null: false
-    t.float    "alt",                            null: false
-    t.float    "bearing",                        null: false
+    t.integer  "device_id",                                null: false
+    t.integer  "position_id",                              null: false
+    t.integer  "track_id",                                 null: false
+    t.integer  "state_id",                                 null: false
+    t.integer  "gps_ts",                         limit: 8, null: false
+    t.integer  "device_ts",                      limit: 8, null: false
+    t.float    "lng",                                      null: false
+    t.float    "lat",                                      null: false
+    t.float    "alt",                                      null: false
+    t.float    "bearing",                                  null: false
     t.float    "corrected_bearing"
     t.float    "corrected_bearing_R"
     t.float    "corrected_bearing_significance"
     t.float    "speed"
     t.float    "epe"
     t.string   "nmea"
-    t.integer  "user_id",                        null: false
+    t.integer  "user_id",                                  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
@@ -273,38 +273,38 @@ ActiveRecord::Schema.define(version: 20140415121911) do
   add_index "roles_users", ["user_id", "role_id"], name: "index_roles_users_on_user_id_and_role_id", using: :btree
 
   create_table "tracks", id: false, force: true do |t|
-    t.integer  "device_id",                     null: false
-    t.integer  "track_id",                      null: false
+    t.integer  "device_id",                               null: false
+    t.integer  "track_id",                                null: false
     t.string   "track_name"
-    t.integer  "ts",                            null: false
-    t.boolean  "public",        default: false
+    t.integer  "ts",            limit: 8,                 null: false
+    t.boolean  "public",                  default: false
     t.float    "distance"
     t.integer  "time"
-    t.integer  "user_id",                       null: false
+    t.integer  "user_id",                                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
-    t.integer  "track_type_id", default: 1,     null: false
+    t.integer  "track_type_id",           default: 1,     null: false
   end
 
   add_index "tracks", ["user_id"], name: "index_tracks_on_user_id", using: :btree
 
   create_table "transactions", id: false, force: true do |t|
-    t.integer  "device_id",                        null: false
-    t.integer  "transaction_id",                   null: false
-    t.integer  "ts",                               null: false
-    t.string   "transaction_type",                 null: false
-    t.string   "transaction_calc",                 null: false
-    t.string   "source_id",                        null: false
-    t.integer  "points_delta",       default: 0,   null: false
-    t.integer  "points_balance",     default: 0,   null: false
-    t.integer  "gems_delta",         default: 0,   null: false
-    t.integer  "gems_balance",       default: 0,   null: false
-    t.float    "metabolism_delta",   default: 0.0, null: false
-    t.float    "metabolism_balance", default: 0.0, null: false
-    t.float    "cash_delta",         default: 0.0, null: false
+    t.integer  "device_id",                                  null: false
+    t.integer  "transaction_id",                             null: false
+    t.integer  "ts",                 limit: 8,               null: false
+    t.string   "transaction_type",                           null: false
+    t.string   "transaction_calc",                           null: false
+    t.string   "source_id",                                  null: false
+    t.integer  "points_delta",                 default: 0,   null: false
+    t.integer  "points_balance",               default: 0,   null: false
+    t.integer  "gems_delta",                   default: 0,   null: false
+    t.integer  "gems_balance",                 default: 0,   null: false
+    t.float    "metabolism_delta",             default: 0.0, null: false
+    t.float    "metabolism_balance",           default: 0.0, null: false
+    t.float    "cash_delta",                   default: 0.0, null: false
     t.string   "currency"
-    t.integer  "user_id",                          null: false
+    t.integer  "user_id",                                    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
