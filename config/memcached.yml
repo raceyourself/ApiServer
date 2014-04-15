@@ -2,6 +2,10 @@ production:
   host: localhost
   port: 11211
 
+staging:
+  host: localhost
+  port: 11211
+
 development:
   host: localhost
   port: 11211

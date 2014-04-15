@@ -9,6 +9,16 @@ class ApiDocsController < AuthedController
     render "api_docs/#{params[:version]}/glassfit", formats: :json
   end
 
+  def configurations
+    @base = root_url
+    render "api_docs/#{params[:version]}/configurations", formats: :json
+  end
+
+  def challenges
+    @base = root_url
+    render "api_docs/#{params[:version]}/challenges", formats: :json
+  end
+
   def users
     @base = root_url
     render "api_docs/#{params[:version]}/users", formats: :json
@@ -25,6 +35,11 @@ class ApiDocsController < AuthedController
     @base = root_url
     render "api_docs/#{params[:version]}/devices", formats: :json
   end
+  
+  def games
+    @base = root_url
+    render "api_docs/#{params[:version]}/games", formats: :json
+  end
 
   def transactions
     @base = root_url
@@ -34,11 +49,6 @@ class ApiDocsController < AuthedController
   def tracks
     @base = root_url
     render "api_docs/#{params[:version]}/tracks", formats: :json
-  end
-
-  def orientations
-    @base = root_url
-    render "api_docs/#{params[:version]}/orientations", formats: :json
   end
 
   def positions

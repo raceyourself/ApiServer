@@ -39,7 +39,7 @@ module GfAuthenticate
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-    config.action_mailer.default_url_options = { host: 'glassfit.dannyhawkins.co.uk' }
+    config.action_mailer.default_url_options = { host: 'api.raceyourself.com' }
 
     config.autoload_paths += %W(#{config.root}/app/workers)
 
@@ -59,9 +59,9 @@ module GfAuthenticate
 
   ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {  
-    address:              'localhost', 
+    address:              'raceyourself.com', 
     port:                 25,  
-    domain:               'dannyhawkins.co.uk',  
+    domain:               'raceyourself.com',  
     enable_starttls_auto: true,
     openssl_verify_mode:  'none'
   }

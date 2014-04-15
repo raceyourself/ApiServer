@@ -1,39 +1,63 @@
-require 'bundler/capistrano'
-require "rvm/capistrano"
+# config valid only for Capistrano 3.1
+lock '3.1.0'
 
-#set :rvm_ruby_string, :local              # use the same ruby as used locally for deployment
-set :rvm_autolibs_flag, "read-only"       # more info: rvm help autolibs
-set :rvm_type, :system       # more info: rvm help autolibs
+set :application, 'glassfit'
+set :repo_url, 'git@github.com:glassfit/GFAuthenticate.git'
 
-# before 'deploy:setup', 'rvm:install_rvm'  # install/update RVM
-# before 'deploy:setup', 'rvm:install_ruby' # install Ruby and create gemset, OR:
-before 'deploy:setup', 'rvm:create_gemset' # only create gemset
+set :rvm_ruby_string, '2.0.0'
 
-default_run_options[:pty] = true  # Must be set for the password prompt
-                                  # from git to work
-set :application, "glassfit"
-set :deploy_to, File.join("", "var", "www", "vhosts", application)
-set :repository,  "git@github.com:glassfit/GFAuthenticate.git"
-set :scm, "git"
-set :user, "deployer"  # The server's user for deploys
-
+# Default branch is :master
+# ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 set :branch, "develop"
-set :deploy_via, :remote_cache
 
-set :ssh_options, { forward_agent: true }
+# Default deploy_to directory is /var/www/my_app
+set :deploy_to, '/var/www/vhosts/glassfit'
 
-role :web, "glassfit.dannyhawkins.co.uk"                          # Your HTTP server, Apache/etc
-role :app, "glassfit.dannyhawkins.co.uk"                         # This may be the same as your `Web` server
-role :db,  "glassfit.dannyhawkins.co.uk", primary: true # This is where Rails migrations will run
+# Default value for :scm is :git
+set :scm, :git
 
-# if you want to clean up old releases on each deploy uncomment this:
-after "deploy:restart", "deploy:cleanup"
+# Default value for :format is :pretty
+# set :format, :pretty
 
-# If you are using Passenger mod_rails uncomment this:
+# Default value for :log_level is :debug
+# set :log_level, :debug
+
+# Default value for :pty is false
+# set :pty, true
+
+# Default value for :linked_files is []
+# set :linked_files, %w{config/database.yml}
+
+# Default value for linked_dirs is []
+# set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
+
+# Default value for default_env is {}
+# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+
+# Default value for keep_releases is 5
+# set :keep_releases, 5
+
 namespace :deploy do
-  task :start do ; end
-  task :stop do ; end
-  task :restart, :roles => :app, :except => { :no_release => true } do
-    run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
+
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      # Your restart mechanism here, for example:
+      execute :touch, release_path.join('tmp/restart.txt')
+    end
   end
+
+  after :publishing, :restart
+
+  after :restart, :clear_cache do
+    on roles(:web), in: :groups, limit: 3, wait: 10 do
+      # Here we can do anything such as:
+      # within release_path do
+      #   execute :rake, 'cache:clear'
+      # end
+    end
+  end
+
+  after :finishing, 'deploy:cleanup'
+
 end

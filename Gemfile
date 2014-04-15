@@ -18,8 +18,9 @@ end
 gem 'bson_ext'
 
 # data
-gem 'mysql2'
-gem 'mongoid_rails4', require: 'mongoid'
+gem 'composite_primary_keys'
+gem "paranoia", "~> 2.0"
+gem 'pg'
 
 # pagination
 gem 'kaminari'
@@ -36,6 +37,8 @@ gem 'devise-async'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-twitter'
+# gem 'omniauth-google-oauth2'
+# gem 'omniauth-gplus'
 # gem 'omniauth-linkedin'
 # gem 'omniauth-google'
 gem 'doorkeeper', '~> 0.7.0'
@@ -50,16 +53,30 @@ gem 'rack-cache'
 #api
 gem 'rocket_pants'
 
+#json
+gem 'oj'
+gem 'yajl-ruby', :require => 'yajl'
+
 # admin
 gem 'rails_admin'
-
-# deployer
-gem 'capistrano'
-gem 'rvm-capistrano'
 
 # worker
 gem 'sinatra'
 gem 'sidekiq'
+
+# social
+gem 'koala'
+gem 'twitter'
+gem 'google-api-client'
+
+# analytics
+gem 'newrelic_rpm'
+gem 'rocket_pants-rpm'
+gem 'newrelic_moped'
+
+# push notifications
+gem 'gcm'
+gem 'apns'
 
 group :development, :test do
   gem 'faker'
@@ -69,6 +86,7 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'letter_opener'
   gem 'shoulda-matchers'
+  gem 'ruby-prof'
 end
 
 group :development do
@@ -76,6 +94,11 @@ group :development do
   gem 'binding_of_caller'
   gem 'pry-rails'
   gem 'html2haml'
+  # deployer
+  gem 'capistrano', '~> 3.0', require: false
+  gem 'capistrano-rails', '~> 1.1', require: false
+  gem 'capistrano-bundler', '~> 1.1', require: false
+  gem 'capistrano-rvm', '~> 0.1', require: false
 end
 
 group :test do
@@ -86,7 +109,6 @@ group :test do
   gem 'capybara-webkit', '0.12.1'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
-  gem 'faker'
   gem 'fakeweb'
   gem 'webmock'
   gem 'email_spec'

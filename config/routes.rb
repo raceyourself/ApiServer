@@ -1,6 +1,9 @@
 GfAuthenticate::Application.routes.draw do
   use_doorkeeper
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks', registrations: 'registrations' }
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks', registrations: 'registrations', confirmations: 'confirmations' }
+  devise_scope :user do
+    patch "/confirm" => "confirmations#confirm"
+  end
 
   #TODO: should use authenticate blocks
 
@@ -25,8 +28,10 @@ GfAuthenticate::Application.routes.draw do
       resources :transactions
       resources :tracks
       resources :friends
-      resources :orientations
       resources :positions
+      resources :challenges
+      resources :configurations
+      resources :games
 
       get 'data', to: 'data#index'
       post 'data', to: 'data#create'
@@ -41,8 +46,10 @@ GfAuthenticate::Application.routes.draw do
         resources :transactions
         resources :tracks
         resources :friends
-        resources :orientations
         resources :positions
+        resources :challenges
+        resources :configurations
+        resources :games
       end
 
     end
@@ -58,6 +65,13 @@ GfAuthenticate::Application.routes.draw do
   # FIXME: Any better way to redirect local calls (/api_dos/images/throbber.gif)
   get '/api_docs/:any/:resource.:ext', to: redirect('/api/%{any}/%{resource}.%{ext}')
   get '/api_docs', to: 'api_docs#index'
+
+  get '/analytics', to: 'analytics#index'
+  namespace :analytics do
+    resources :events
+    resources :queries
+    resources :views
+  end
 
   root to: 'home#index'
 end

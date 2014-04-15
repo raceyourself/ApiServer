@@ -1,0 +1,31 @@
+{
+  "apis":[
+  {
+    "path": "api/1/challenges",
+    "description": "Challenge Index",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a list of challenges",
+      "nickname": "get_challenges"
+    }]
+  },{
+    "path": "api/1/challenges/{challenge_id}",
+    "description": "Challenge Item",
+    "operations":[
+    {
+      "httpMethod": "GET",
+      "summary": "Return a specific challenge",
+      "nickname": "get_challenge",
+      "parameters":[
+      {
+        "name": "challenge_id",
+        "description": "The challenge id",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "path"
+      }]
+    }]
+  }]
+}

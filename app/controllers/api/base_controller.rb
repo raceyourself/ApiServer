@@ -6,7 +6,6 @@ module Api
     version 1
 
     map_error! ActiveRecord::RecordNotFound, RocketPants::NotFound
-    map_error! Mongoid::Errors::DocumentNotFound, RocketPants::NotFound
 
     # For the api to always revalidate on expiry.
     caching_options[:must_revalidate] = true
@@ -22,6 +21,10 @@ module Api
 
     def current_resource_owner
       User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
+    end
+
+    def encode_to_json(object)
+      MultiJson.encode object
     end
 
   end

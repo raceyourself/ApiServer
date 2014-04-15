@@ -4,12 +4,18 @@ Devise.setup do |config|
 
   require 'omniauth-facebook'
   require 'omniauth-twitter'
+  require File.expand_path('lib/omniauth/strategies/gplus', Rails.root)
   OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE if Rails.env.development? 
 
   config.omniauth :facebook, CONFIG[:facebook][:client_id], CONFIG[:facebook][:client_secret], {
     scope: CONFIG[:facebook][:scope]
   }
   config.omniauth :twitter, CONFIG[:twitter][:client_id], CONFIG[:twitter][:client_secret]
+  config.omniauth :gplus, CONFIG[:gplus][:client_id], CONFIG[:gplus][:client_secret], {
+    scope: CONFIG[:gplus][:scope],
+    request_visible_actions: CONFIG[:gplus][:request_visible_actions],
+    access_type: 'offline'
+  }
   
   # config.omniauth :linkedin, "APP_ID", "APP_SECRET"
   # config.omniauth :github, "APP_ID", "APP_SECRET"
@@ -17,7 +23,7 @@ Devise.setup do |config|
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class with default "from" parameter.
-  config.mailer_sender = "no-reply@glassfitgames.com"
+  config.mailer_sender = '"Race Yourself" <no-reply@raceyourself.com>'
 
   # Configure the class responsible to send e-mails.
   # config.mailer = "Devise::Mailer"
@@ -262,4 +268,6 @@ Devise.setup do |config|
   # When using omniauth, Devise cannot automatically set Omniauth path,
   # so you need to do it manually. For the users scope, it would be:
   # config.omniauth_path_prefix = "/my_engine/users/auth"
+
+  config.secret_key = '9c6dde11552c115a04ab933fd03c83df8691c0e17290c743b87d4fa4752a1cbe8c031fa6b3161cb92d803781db5469c3bcc56275b41a37001bf05f6ad9c1e2af'
 end

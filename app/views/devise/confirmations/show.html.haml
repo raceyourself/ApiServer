@@ -1,0 +1,21 @@
+.centered-base.race-gradient
+  .centered-container
+    .hex-container
+      %h2 Thank you for joining the Race Yourself beta
+      %p Please enter your details below:
+      = simple_form_for(resource, :as => resource_name, :url => confirm_path) do |form|
+        = form.error_notification
+        .form-inputs
+          = form.input :username
+          = form.input :name
+          = form.input :password, :input_html => {:autofocus => true}
+          = form.input :password_confirmation
+          .inline-group
+            %p Gender
+            = form.collection_radio_buttons :gender, [['M', 'male'], ['F', 'female'], ['U', 'undisclosed']], :first, :last, :default => 'U'
+          .inline-group{:class => ("error" if @age_confirmed == false)}
+            %input{:type => 'checkbox', :name => 'age_confirmed', :id => 'age_confirmed', :checked => @age_confirmed}
+            %label{:for => 'age_confirmed'} I confirm that I am over 16 years of age
+          = form.hidden_field :confirmation_token, value: @token
+        .form-actions
+          = form.button :submit, :label => 'Confirm Account', :value => 'Confirm Account'
