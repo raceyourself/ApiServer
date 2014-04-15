@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140411110445) do
+ActiveRecord::Schema.define(version: 20140415142131) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -92,12 +92,12 @@ ActiveRecord::Schema.define(version: 20140411110445) do
   end
 
   create_table "events", force: true do |t|
-    t.integer  "ts",         limit: 8
-    t.integer  "version"
-    t.integer  "device_id"
-    t.integer  "session_id"
-    t.integer  "user_id"
-    t.json     "data"
+    t.integer  "ts",         limit: 8, null: false
+    t.integer  "version",              null: false
+    t.integer  "device_id",            null: false
+    t.integer  "session_id",           null: false
+    t.integer  "user_id",              null: false
+    t.json     "data",                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -120,6 +120,7 @@ ActiveRecord::Schema.define(version: 20140411110445) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "deleted_at"
   end
 
   add_index "game_states", ["game_id"], name: "index_game_states_on_game_id", using: :btree
