@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140415142131) do
+ActiveRecord::Schema.define(version: 20140416142443) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -120,20 +120,20 @@ ActiveRecord::Schema.define(version: 20140415142131) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "deleted_at"
   end
 
   add_index "game_states", ["game_id"], name: "index_game_states_on_game_id", using: :btree
 
   create_table "games", id: false, force: true do |t|
-    t.string  "id",              null: false
-    t.string  "name",            null: false
-    t.string  "description",     null: false
-    t.integer "tier",            null: false
-    t.integer "price_in_points", null: false
-    t.integer "price_in_gems",   null: false
-    t.string  "scene_name",      null: false
-    t.string  "type",            null: false
+    t.string   "id",              null: false
+    t.string   "name",            null: false
+    t.string   "description",     null: false
+    t.integer  "tier",            null: false
+    t.integer  "price_in_points", null: false
+    t.integer  "price_in_gems",   null: false
+    t.string   "scene_name",      null: false
+    t.string   "type",            null: false
+    t.datetime "deleted_at"
   end
 
   create_table "groups", force: true do |t|

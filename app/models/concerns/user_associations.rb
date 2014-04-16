@@ -58,7 +58,7 @@ module Concerns
             and gs.user_id is null
           ) global_games
           on group_user_games.game_id = global_games.game_id
-        ) merged_states on game_states.id = merged_states.state_id").select("games.id, games.name, games.description, games.tier, games.price_in_points, games.price_in_gems, games.scene_name, games.type, game_states.created_at, game_states.updated_at, game_states.deleted_at, merged_states.enabled, merged_states.locked, menu_items.icon, menu_items.column, menu_items.row")
+        ) merged_states on game_states.id = merged_states.state_id").select("games.id, games.name, games.description, games.tier, games.price_in_points, games.price_in_gems, games.scene_name, games.type, game_states.created_at, game_states.updated_at, games.deleted_at, merged_states.enabled, merged_states.locked, menu_items.icon, menu_items.column, menu_items.row")
       end
       
       define_method :friends do
