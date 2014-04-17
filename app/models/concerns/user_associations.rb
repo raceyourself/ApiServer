@@ -35,7 +35,7 @@ module Concerns
             (--Games associated with user
               select gs.id state_id, gs.user_id, gs.game_id, gs.enabled, gs.locked
               from game_states gs
-              where gs.user_id = 2
+              where gs.user_id = %d
             ) user_games
             full outer join
             (--Game states associated with user via group -- group by game
@@ -45,7 +45,7 @@ module Concerns
               on gs.group_id = gr.id
               join groups_users gu
               on gr.id = gu.group_id
-              where gu.user_id = 2
+              where gu.user_id = %d
               group by gu.user_id, gs.game_id
             ) group_games
             on user_games.game_id = group_games.game_id
@@ -58,7 +58,7 @@ module Concerns
             and gs.user_id is null
           ) global_games
           on group_user_games.game_id = global_games.game_id
-        ) merged_states on game_states.id = merged_states.state_id").select("games.id, games.name, games.description, games.tier, games.price_in_points, games.price_in_gems, games.scene_name, games.type, game_states.created_at, game_states.updated_at, games.deleted_at, merged_states.enabled, merged_states.locked, menu_items.icon, menu_items.column, menu_items.row")
+        ) merged_states on game_states.id = merged_states.state_id" % [id, id]).select("games.id, games.name, games.description, games.tier, games.price_in_points, games.price_in_gems, games.scene_name, games.type, game_states.created_at, game_states.updated_at, games.deleted_at, merged_states.enabled, merged_states.locked, menu_items.icon, menu_items.column, menu_items.row")
       end
       
       define_method :friends do
