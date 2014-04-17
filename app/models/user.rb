@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   # associations
   has_and_belongs_to_many :roles
   has_and_belongs_to_many :groups
+  has_many :game_states
 
   # TODO: Add photo field (populate from identities if null)
 
@@ -50,20 +51,6 @@ class User < ActiveRecord::Base
     self.transactions.order(updated_at: :desc, ts: :desc).first
   end
 
-  def games
-    games = Game.all
-    array = []
-    games.each do |game|
-      hash = game.attributes
-      hash = hash.merge! GameState.for(self, game.id)
-      hash = hash.merge! game.menu_items.first.attributes
-      hash['id'] = game.id
-      hash.delete('game_id')
-      array.push hash
-    end
-    array
-  end
- 
   def peers
     groups = self.group_ids
     if groups.empty?

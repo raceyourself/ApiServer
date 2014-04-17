@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140415122939) do
+ActiveRecord::Schema.define(version: 20140417111401) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -92,12 +92,12 @@ ActiveRecord::Schema.define(version: 20140415122939) do
   end
 
   create_table "events", force: true do |t|
-    t.integer  "ts",         limit: 8
-    t.integer  "version"
-    t.integer  "device_id"
-    t.integer  "session_id"
-    t.integer  "user_id"
-    t.json     "data"
+    t.integer  "ts",         limit: 8, null: false
+    t.integer  "version",              null: false
+    t.integer  "device_id",            null: false
+    t.integer  "session_id",           null: false
+    t.integer  "user_id",              null: false
+    t.json     "data",                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -125,14 +125,16 @@ ActiveRecord::Schema.define(version: 20140415122939) do
   add_index "game_states", ["game_id"], name: "index_game_states_on_game_id", using: :btree
 
   create_table "games", id: false, force: true do |t|
-    t.string  "id",              null: false
-    t.string  "name",            null: false
-    t.string  "description",     null: false
-    t.integer "tier",            null: false
-    t.integer "price_in_points", null: false
-    t.integer "price_in_gems",   null: false
-    t.string  "scene_name",      null: false
-    t.string  "type",            null: false
+    t.string   "id",              null: false
+    t.string   "name",            null: false
+    t.string   "description",     null: false
+    t.integer  "tier",            null: false
+    t.integer  "price_in_points", null: false
+    t.integer  "price_in_gems",   null: false
+    t.string   "scene_name",      null: false
+    t.string   "type",            null: false
+    t.datetime "deleted_at"
+    t.string   "activity"
   end
 
   create_table "groups", force: true do |t|
