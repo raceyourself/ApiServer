@@ -18,14 +18,14 @@ ActiveRecord::Schema.define(version: 20140417111401) do
 
   create_table "analytics_queries", id: false, force: true do |t|
     t.string   "id",         null: false
-    t.string   "sql",        null: false
+    t.text     "sql",        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "analytics_views", id: false, force: true do |t|
     t.string   "id",         null: false
-    t.string   "script",     null: false
+    t.text     "script",     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
