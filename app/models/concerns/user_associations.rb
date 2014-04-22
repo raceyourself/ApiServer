@@ -14,6 +14,9 @@ module Concerns
       has_many :challenges, :through => :challenge_subscribers
       
       define_method :games do
+        # TODO work out how to simplify this query without doing the user-group-global game state merge
+        # in Ruby (too many object instantiations). Couldn't find any nice neat way of doing it in SQL...
+        # Maybe this would be more maintainable as a stored procedure?
         Game.joins(:menu_items).joins(:game_states).joins("inner join (
           select
             coalesce(group_user_games.game_id, global_games.game_id) game_id,
@@ -68,7 +71,7 @@ module Concerns
       define_method :positions do
         Position.where(user_id: id).where('state_id >= 0')
       end
-
+      
     end #included
 
   end
