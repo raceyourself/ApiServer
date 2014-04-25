@@ -16,6 +16,32 @@ Doorkeeper.configure do
       # Hard-coded Glass password TODO: use third-party access token in future
       user = u if "testing123" == params[:password] 
     end
+    if !u && params[:username] && params[:username].end_with?("@facebook")
+      uid = params[:username].chomp("@facebook")
+      auth = ::Authentication.where(provider: "facebook", uid: uid).first
+      u = auth.user if auth
+      unless u
+        identity = ::Identity.where(uid: uid).first
+        u = identity.user if identity
+        unless u
+          # TODO: Auto-register? Add to beta list?
+        end
+      end
+      if u
+        server_token = ::Authentication.exchange_access_token("facebook", params[:password])
+        if server_token
+          user = u
+          unless auth
+            auth = user.authentications.build.tap do |a|
+              a.provider = 'facebook'
+              a.uid = uid
+            end
+          end
+          auth.update_from_access_token(server_token)
+          auth.save!
+        end
+      end
+    end
     if !u && params[:username] && "3hrJfCEZwQbACyUB" == params[:password]
       Rails.logger.info(params[:username] + " auto-registered using Gear")
       u = User.new(

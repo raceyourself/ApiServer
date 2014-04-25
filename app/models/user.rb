@@ -60,6 +60,18 @@ class User < ActiveRecord::Base
     end
   end
 
+  def exchange_access_token(provider, token)
+    server_token = nil
+
+    case provider
+    when 'facebook'
+      oauth = Koala::Facebook::OAuth.new(CONFIG[:facebook][:client_id], CONFIG[:facebook][:client_secret])
+      server_token = oauth.exchange_access_token_info(token)
+    end
+
+    server_token
+  end
+
   def serializable_hash(options = {})
     options = {
       methods: :points

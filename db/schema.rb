@@ -92,12 +92,12 @@ ActiveRecord::Schema.define(version: 20140417181625) do
   end
 
   create_table "events", force: true do |t|
-    t.integer  "ts",         limit: 8, null: false
-    t.integer  "version",              null: false
-    t.integer  "device_id",            null: false
-    t.integer  "session_id",           null: false
-    t.integer  "user_id",              null: false
-    t.json     "data",                 null: false
+    t.integer  "ts",         limit: 8
+    t.integer  "version"
+    t.integer  "device_id"
+    t.integer  "session_id"
+    t.integer  "user_id"
+    t.json     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

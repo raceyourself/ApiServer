@@ -24,6 +24,15 @@ class Authentication < ActiveRecord::Base
 
   end
 
+  def update_from_access_token(token)
+    self.token = token
+    self.token_secret = nil
+    self.token_expires = false
+    self.token_expires_at = nil
+
+    update_permissions_from_provider()
+  end
+
   def update_permissions_from_provider
     perms = []
 
@@ -45,5 +54,16 @@ class Authentication < ActiveRecord::Base
     self.permissions = perms.join(',')
   end
 
+   def self.exchange_access_token(provider, token)
+    server_token = nil
+
+    case provider
+    when 'facebook'
+      oauth = Koala::Facebook::OAuth.new(CONFIG[:facebook][:client_id], CONFIG[:facebook][:client_secret])
+      server_token = oauth.exchange_access_token_info(token)
+    end
+
+    server_token
+  end 
 
 end
