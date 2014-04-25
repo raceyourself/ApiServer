@@ -20,7 +20,7 @@ module Users
             fid = FacebookIdentity.new().update_from_facebook(friend)
             fid.merge
             fs = Friendship.new( identity: me, friend: fid )
-            fs.upsert if fs.valid?
+            fs.merge
           end
           result = result.next_page || []
         end while not result.empty?
@@ -53,7 +53,7 @@ module Users
           fid = TwitterIdentity.new().update_from_twitter(friend)
           fid.merge
           fs = Friendship.new( identity: me, friend: fid )
-          fs.upsert if fs.valid?
+          fs.merge
         end
       end
     end
@@ -99,7 +99,7 @@ module Users
             fid = GplusIdentity.new().update_from_gplus(person)
             fid.merge
             fs = Friendship.new( identity: me, friend: fid )
-            fs.upsert if fs.valid?
+            fs.merge
           end
           if result.next_page_token
             req = result.next_page
