@@ -19,9 +19,9 @@ module Api
           a.provider = provider_token[:provider]
           a.uid = provider_token[:uid]
         end 
-        auth.update_from_access_token(server_token)
-        auth.save!
       end
+      auth.update_from_access_token(server_token)
+      auth.save!
 
       # Update friends list
       case auth.provider
