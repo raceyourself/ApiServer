@@ -22,6 +22,17 @@ module Api
         auth.update_from_access_token(server_token)
         auth.save!
       end
+
+      # Update friends list
+      case auth.provider
+      when 'facebook'
+        FacebookFriendsWorker.perform_async(user.id)
+      when 'twitter'
+        TwitterFriendsWorker.perform_async(user.id)
+      when 'gplus'
+        GplusFriendsWorker.perform_async(user.id)
+      end
+
       show()
     end
 

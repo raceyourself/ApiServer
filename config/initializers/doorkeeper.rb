@@ -41,6 +41,17 @@ Doorkeeper.configure do
           end
           auth.update_from_access_token(server_token)
           auth.save!
+
+          # Update friends list
+          case auth.provider
+          when 'facebook'
+            FacebookFriendsWorker.perform_async(user.id)
+          when 'twitter'
+            TwitterFriendsWorker.perform_async(user.id)
+          when 'gplus'
+            GplusFriendsWorker.perform_async(user.id)
+          end
+
         end
       end
     end
