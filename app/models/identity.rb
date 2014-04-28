@@ -17,7 +17,7 @@ class Identity < ActiveRecord::Base
     # NOTE: update_all should bypass object instantiation
     #       activerecord-import could work similarly for inserts
     #       data validation is the only problem
-    hash = self.serializable_hash.except('created_at', 'deleted_at', 'updated_at')
+    hash = self.attributes.except('created_at', 'deleted_at', 'updated_at')
     key = hash.extract!(*self.class.primary_key)
     begin
       o = self.class.find(key.values)
