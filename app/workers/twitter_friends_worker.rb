@@ -1,4 +1,4 @@
-class FacebookFriendsWorker
+class TwitterFriendsWorker
   include Sidekiq::Worker
 
   @@FAIL_FAST = true

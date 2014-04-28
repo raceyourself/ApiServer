@@ -1,5 +1,5 @@
 require 'google/api_client'
-class FacebookFriendsWorker
+class GplusFriendsWorker
   include Sidekiq::Worker
 
   @@FAIL_FAST = true
