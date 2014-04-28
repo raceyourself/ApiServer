@@ -28,7 +28,9 @@ Doorkeeper.configure do
         end
       end
       if u
-        server_token = ::Authentication.exchange_access_token("facebook", params[:password])
+        # server_token = ::Authentication.exchange_access_token("facebook", params[:password])
+        # Native access tokens already long-term
+        server_token = params[:password]
         if server_token
           user = u
           unless auth
