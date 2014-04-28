@@ -10,9 +10,10 @@ module Api
       path_params = request.path_parameters
       provider_token = params.except(*path_params.keys)
       # server_token = Authentication.exchange_access_token(provider_token[:provider], provider_token[:access_token])
-      # raise 'Could not exchange access token with ' + provider_token[:provider] unless server_token
       # Native access token is already long-term
       server_token = provider_token[:access_token]
+      raise 'No access token supplied for ' + provider_token[:provider] unless server_token
+
       auth = Authentication.where(provider: provider_token[:provider], uid: provider_token[:uid]).first
       unless auth
         auth = user.authentications.build.tap do |a|
@@ -20,6 +21,7 @@ module Api
           a.uid = provider_token[:uid]
         end 
       end
+      raise 'Uid already in use by another user' unless auth.user_id == user.id
       auth.update_from_access_token(server_token)
       auth.save!
 
