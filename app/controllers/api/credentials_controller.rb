@@ -13,7 +13,7 @@ module Api
       # raise 'Could not exchange access token with ' + provider_token[:provider] unless server_token
       # Native access token is already long-term
       server_token = provider_token[:access_token]
-      auth = Authentications.where(provider: provider_token[:provider], uid: provider_token[:uid]).first
+      auth = ::Authentications.where(provider: provider_token[:provider], uid: provider_token[:uid]).first
       unless auth
         auth = user.authentications.build.tap do |a|
           a.provider = provider_token[:provider]
