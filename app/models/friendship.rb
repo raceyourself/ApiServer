@@ -11,9 +11,10 @@ class Friendship < ActiveRecord::Base
     key = hash.extract!(*self.class.primary_key)
     this = self
     begin
-      o = self.class.find(key.values)
-      # Update
-      o.updated_at = Time.now
+      o = self.class.with_deleted.find(key.values)
+      # Treat updated_at as created_at
+      o.updated_at = o.created_at
+      o.deleted_at = nil
       o.update!(hash)
       this = o
     rescue ActiveRecord::RecordNotFound => e
