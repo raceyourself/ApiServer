@@ -11,5 +11,6 @@ class Device < ActiveRecord::Base
     end
     device = self unless device
     device.save!
+    device
   end
 end

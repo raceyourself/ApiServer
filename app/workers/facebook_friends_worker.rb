@@ -10,16 +10,16 @@ class FacebookFriendsWorker
     profile = graph.get_object("me")
     me = FacebookIdentity.new().update_from_facebook(profile)
     me.user_id = user.id
-    me.merge
+    me = me.merge
     # Race condition
     me.friendships.where(:friend_type => 'FacebookIdentity').destroy_all
     result = graph.get_connections("me", "friends", :fields=>"name,id,picture") || []
     begin
       result.each do |friend|
         fid = FacebookIdentity.new().update_from_facebook(friend)
-        fid.merge
+        fid = fid.merge
         fs = Friendship.new( identity: me, friend: fid )
-        fs.merge
+        fs = fs.merge
       end
       result = result.next_page || []
     end while not result.empty?

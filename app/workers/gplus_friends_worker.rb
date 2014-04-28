@@ -19,7 +19,7 @@ class GplusFriendsWorker
     )
     me = GplusIdentity.new().update_from_gplus(result.data)
     me.user_id = user.id
-    me.merge
+    me = me.merge
     # Race condition
     me.friendships.where(:friend_type => 'GplusIdentity').destroy_all
     req = {
@@ -30,9 +30,9 @@ class GplusFriendsWorker
       result = client.execute(req)
       result.data.items.each do |person|
         fid = GplusIdentity.new().update_from_gplus(person)
-        fid.merge
+        fid = fid.merge
         fs = Friendship.new( identity: me, friend: fid )
-        fs.merge
+        fs = fs.merge
       end
       if result.next_page_token
         req = result.next_page

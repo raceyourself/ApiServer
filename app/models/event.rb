@@ -3,5 +3,6 @@ class Event < ActiveRecord::Base
 
   def merge
     self.save!
+    self
   end
 end

@@ -10,14 +10,17 @@ class Identity < ActiveRecord::Base
   end
 
   def merge
+    this = self
     begin
       o = self.class.find([self.type, self.uid])
       # Update
       o.update!(self.attributes)
+      this = o
     rescue ActiveRecord::RecordNotFound => e
       # Insert
       self.save!
     end
+    this
   end
 
   def serializable_hash(options = {})

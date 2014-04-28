@@ -38,9 +38,12 @@ class Challenge < ActiveRecord::Base
 
   def merge
     existing = Challenge.where(id: self.id).first
+    this = self
     unless existing.nil?
       # Add subscriber?
-      # Change details if current_user == creator_id  
+      # Change details if current_user == creator_id 
+      this = existing
     end
+    this
  end
 end
