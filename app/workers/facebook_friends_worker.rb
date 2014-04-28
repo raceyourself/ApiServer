@@ -12,7 +12,7 @@ class FacebookFriendsWorker
     me.user_id = user.id
     me.merge
     # Race condition
-    me.friendships.destroy_all(friend_type: 'FacebookIdentity')
+    me.friendships.where(:friend_type => 'FacebookIdentity').destroy_all
     result = graph.get_connections("me", "friends", :fields=>"name,id,picture") || []
     begin
       result.each do |friend|

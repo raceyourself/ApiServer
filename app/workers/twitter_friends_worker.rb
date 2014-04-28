@@ -23,7 +23,7 @@ class TwitterFriendsWorker
     me.user_id = user.id
     me.merge
     # Race condition
-    me.friendships.destroy_all(friend_type: 'TwitterIdentity')
+    me.friendships.where(:friend_type => 'TwitterIdentity').destroy_all
     get_twitter_friends(client).each do |friend|
       fid = TwitterIdentity.new().update_from_twitter(friend)
       fid.merge

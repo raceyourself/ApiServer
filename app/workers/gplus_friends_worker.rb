@@ -21,7 +21,7 @@ class GplusFriendsWorker
     me.user_id = user.id
     me.merge
     # Race condition
-    me.friendships.destroy_all(friend_type: 'GplusIdentity')
+    me.friendships.where(:friend_type => 'GplusIdentity').destroy_all
     req = {
         :api_method => plus.people.list, 
         :parameters => {'collection' => 'visible', 'userId' => 'me'}
