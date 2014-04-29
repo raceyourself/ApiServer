@@ -124,6 +124,17 @@ module Api
                 track = Track.where(device_id: track_cid[0], track_id: track_cid[1]).first
                 challenge.attempts << track
                 challenge.save!
+              when 'invite'
+                code = action[:code]
+                invite = Invite.where(:code => code)
+                               .where(:user_id => current_resource_owner.id)
+                               .where('used_at IS NULL')
+                               .where('expires_at IS NULL or expires_at < ?', Time.now).first
+                if invite
+                  provider = action[:provider]
+                  uid = action[:uid]
+                  invite.update_attributes!({:identity_provider => provider, :identity_uid => uid})
+                end
               when 'share'
                 provider = action[:provider]
                 case provider

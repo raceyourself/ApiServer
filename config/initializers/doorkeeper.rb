@@ -24,7 +24,19 @@ Doorkeeper.configure do
         identity = ::Identity.where(uid: uid).first
         u = identity.user if identity
         unless u
-          # TODO: Auto-register? Add to beta list?
+          invite = Invite.where(:identity => identity).first if identity
+          if invite
+            # Currently ignoring invite.used? and invite.expired? as invite is tied to the identity
+            Rails.logger.info(params[:username] + " auto-registered by invite")
+            u = User.new(
+                  name: params[:username],
+                  password: Devise.friendly_token[0,20],
+                  email: params[:username]
+            )
+            u.skip_confirmation!
+            u.save!
+            user = u
+          end
         end
       end
       if u

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140428132821) do
+ActiveRecord::Schema.define(version: 20140429141332) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -164,6 +164,17 @@ ActiveRecord::Schema.define(version: 20140428132821) do
   end
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
+
+  create_table "invites", id: false, force: true do |t|
+    t.string   "code",          null: false
+    t.datetime "expires_at"
+    t.datetime "used_at"
+    t.integer  "user_id"
+    t.string   "identity_type"
+    t.string   "identity_uid"
+  end
+
+  add_index "invites", ["identity_type", "identity_uid"], name: "index_invites_on_identity_type_and_identity_uid", using: :btree
 
   create_table "menu_items", force: true do |t|
     t.string  "icon",    null: false
@@ -345,6 +356,7 @@ ActiveRecord::Schema.define(version: 20140428132821) do
     t.integer  "sync_key",                         default: 0,     null: false
     t.datetime "sync_timestamp"
     t.string   "gender",                 limit: 1
+    t.integer  "invites",                          default: 0
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree

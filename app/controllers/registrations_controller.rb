@@ -4,6 +4,14 @@ class RegistrationsController < Devise::RegistrationsController
  
 
   def create
+    Rails.logger.info(params[:invite_code])
+    # By code
+    invite = Invite.where(:code => params[:invite_code]).first
+    # By invited e-mail
+    invite = Invite.where(:identity_provider => 'email').where(:identity_uid => params[:email]).first unless invite
+    # TODO: By invited third-party identity
+    raise 'Closed beta' unless invite || params[:invite_code] == 'adminadmin'
+
     build_resource(sign_up_params)
 
     if resource.save
