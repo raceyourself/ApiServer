@@ -2,7 +2,7 @@ module Concerns
   module UserAssociations
     extend ActiveSupport::Concern
 
-    COLLECTIONS = [:devices, :positions, :tracks, :notifications, :challenges, :events, :games]
+    COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :events, :games]
 
     included do
       has_many :devices
