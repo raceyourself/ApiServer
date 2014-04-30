@@ -15,7 +15,7 @@ class Identity < ActiveRecord::Base
       o = self.class.find([self.type, self.uid])
       hash = self.attributes
       hash.delete('has_glass') if o.has_glass
-      hash.delete('user_id') unless o.user_id
+      hash.delete('user_id') if o.user_id != nil
       # Update
       o.update!(hash)
       this = o
