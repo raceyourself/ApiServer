@@ -13,8 +13,11 @@ class Identity < ActiveRecord::Base
     this = self
     begin
       o = self.class.find([self.type, self.uid])
+      hash = self.attributes
+      hash.delete('has_glass') if o.has_glass
+      hash.delete('user_id') unless o.user_id
       # Update
-      o.update!(self.attributes)
+      o.update!(hash)
       this = o
     rescue ActiveRecord::RecordNotFound => e
       # Insert
