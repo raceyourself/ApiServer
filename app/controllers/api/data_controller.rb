@@ -133,7 +133,7 @@ module Api
                 if invite
                   provider = action[:provider]
                   uid = action[:uid]
-                  invite.update_attributes!({:identity_type => provider, :identity_uid => uid})
+                  invite.update_attributes!({:identity_type => provider, :identity_uid => uid, :used_at => Time.now})
                 end
               when 'share'
                 provider = action[:provider]
