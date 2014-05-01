@@ -32,12 +32,15 @@ class Invite < ActiveRecord::Base
             break
           end
         rescue ActiveRecord::RecordNotUnique
+          # Remove expired invite
+          invite = Invite.find(random_token)
+          invite.destroy if invite.expired?
           # Continue loop
         end
       end
     end
 
-    Invite.where(user_id: user.id).where('used_at IS NULL').where('expires_at IS NULL or expires_at < ?', Time.now)
+    Invite.where(user_id: user.id).where('expires_at IS NULL or expires_at < ?', Time.now)
   end
 
 end
