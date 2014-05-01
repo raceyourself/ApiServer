@@ -22,13 +22,14 @@ class TwitterFriendsWorker
     me = TwitterIdentity.new().update_from_twitter(credentials)
     me.user_id = user.id
     me = me.merge
-    # Race condition
-    me.friendships.where(:friend_type => 'TwitterIdentity').destroy_all
-    get_twitter_friends(client).each do |friend|
-      fid = TwitterIdentity.new().update_from_twitter(friend)
-      fid = fid.merge
-      fs = Friendship.new( identity: me, friend: fid )
-      fs = fs.merge
+    ActiveRecord::Base.transaction do
+      me.friendships.where(:friend_type => 'TwitterIdentity').destroy_all
+      get_twitter_friends(client).each do |friend|
+        fid = TwitterIdentity.new().update_from_twitter(friend)
+        fid = fid.merge
+        fs = Friendship.new( identity: me, friend: fid )
+        fs = fs.merge
+      end
     end
   end
 

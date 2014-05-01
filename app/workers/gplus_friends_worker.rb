@@ -20,26 +20,27 @@ class GplusFriendsWorker
     me = GplusIdentity.new().update_from_gplus(result.data)
     me.user_id = user.id
     me = me.merge
-    # Race condition
-    me.friendships.where(:friend_type => 'GplusIdentity').destroy_all
-    req = {
-        :api_method => plus.people.list, 
-        :parameters => {'collection' => 'visible', 'userId' => 'me'}
-    }
-    begin
-      result = client.execute(req)
-      result.data.items.each do |person|
-        fid = GplusIdentity.new().update_from_gplus(person)
-        fid = fid.merge
-        fs = Friendship.new( identity: me, friend: fid )
-        fs = fs.merge
-      end
-      if result.next_page_token
-        req = result.next_page
-      else
-        req = nil
-      end
-    end while not req.nil?
+    ActiveRecord::Base.transaction do
+      me.friendships.where(:friend_type => 'GplusIdentity').destroy_all
+      req = {
+          :api_method => plus.people.list, 
+          :parameters => {'collection' => 'visible', 'userId' => 'me'}
+      }
+      begin
+        result = client.execute(req)
+        result.data.items.each do |person|
+          fid = GplusIdentity.new().update_from_gplus(person)
+          fid = fid.merge
+          fs = Friendship.new( identity: me, friend: fid )
+          fs = fs.merge
+        end
+        if result.next_page_token
+          req = result.next_page
+        else
+          req = nil
+        end
+      end while not req.nil?
+    end
   end
 
 end
