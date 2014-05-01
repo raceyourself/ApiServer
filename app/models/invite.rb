@@ -33,11 +33,12 @@ class Invite < ActiveRecord::Base
           end
         rescue ActiveRecord::RecordNotUnique
           # Continue loop
+          # TODO: Remove/overwrite expired and used (after a safety period)
         end
       end
     end
 
-    Invite.where(user_id: user.id).where('used_at IS NULL').where('expires_at IS NULL or expires_at < ?', Time.now)
+    Invite.where(user_id: user.id).where('expires_at IS NULL or expires_at < ?', Time.now)
   end
 
 end
