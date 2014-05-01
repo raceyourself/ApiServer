@@ -13,8 +13,8 @@ class Friendship < ActiveRecord::Base
     begin
       o = self.class.with_deleted.find(key.values)
       # Treat updated_at as created_at
-      o.updated_at = o.created_at
-      o.deleted_at = nil
+      hash['updated_at'] = o.created_at
+      hash['deleted_at'] = nil
       o.update!(hash)
       this = o
     rescue ActiveRecord::RecordNotFound => e

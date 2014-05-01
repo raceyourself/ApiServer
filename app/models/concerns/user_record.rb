@@ -21,8 +21,8 @@ module Concerns
       begin
         o = self.class.with_deleted.find(key.values)
         # Update
-        o.updated_at = Time.now
-        o.deleted_at = nil
+        hash['updated_at'] = Time.now
+        hash['deleted_at'] = nil
         o.update!(hash)
         this = o
       rescue ActiveRecord::RecordNotFound => e
