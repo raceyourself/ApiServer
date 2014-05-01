@@ -35,6 +35,10 @@ Doorkeeper.configure do
             )
             u.skip_confirmation!
             u.save!
+
+            # Destroy accepted invite
+            invite.destroy
+
             user = u
           end
         end

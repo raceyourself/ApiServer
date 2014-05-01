@@ -32,8 +32,10 @@ class Invite < ActiveRecord::Base
             break
           end
         rescue ActiveRecord::RecordNotUnique
+          # Remove expired invite
+          invite = Invite.find(random_token)
+          invite.destroy if invite.expired?
           # Continue loop
-          # TODO: Remove/overwrite expired and used (after a safety period)
         end
       end
     end
