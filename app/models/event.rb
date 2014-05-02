@@ -10,16 +10,19 @@ class Event < ActiveRecord::Base
 
   def send_analytics
     logger.info("Event.send_analytics called")
+    details = self.data
 
-    Analytics.identify(
+    logger.info("Details is " + details.to_s)
+
+    Analytics.track(
       user_id: self.user_id,
-      traits: {
+      event: details.key?(:event_type) ? details[:event_type] : "unknown event",
+      properties: {
         version: self.version,
         device_id: self.device_id,
-        session_id: self.session_id,
-        data: data
-      },
-      timestamp: self.ts
+        session_id: self.session_id
+      }.merge(details),
+      timestamp: self.created_at
     )
 
   end
