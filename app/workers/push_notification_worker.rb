@@ -14,7 +14,7 @@ class PushNotificationWorker
       logger.info response
     end
     # iOS devices
-    reg_ids = Device.where(user_id: user_id).where.not(:push_id => nil).where.not(:manufacturer => 'Apple').flat_map {|d| d.push_id}
+    reg_ids = Device.where(user_id: user_id).where.not(:push_id => nil).where(:manufacturer => 'Apple').flat_map {|d| d.push_id}
     unless reg_ids.empty?
       APNS.host = CONFIG[:apple][:apns_host]
       APNS.pem = CONFIG[:apple][:apns_pem]
