@@ -90,17 +90,17 @@ module Api
                 if action[:challenge][:_id]
                   challenge_id = action[:challenge][:_id]
                   c = Challenge.find(challenge_id)
-                  c.add_to_set({:subscribers => current_resource_owner.id})
+                  c.subscribers << current_resource_owner
                 else
                   c = Challenge.build(action[:challenge])
                   c.creator_id = current_resource_owner.id
-                  c.add_to_set({:subscribers => c.creator_id})
+                  c.subscribers << current_resource_owner
                   c.save!
                 end
               
                 # Notify target of challenge if registered (unregistered are notified client-side)
                 if action[:target] && target = User.where(id: action[:target]).first
-                  c.add_to_set({:subscribers => target.id})
+                  c.subscribers << target
                   message = { 
                     :type => 'challenge', 
                     :from => current_resource_owner.id, 
