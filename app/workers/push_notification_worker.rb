@@ -4,6 +4,7 @@ require 'apns'
 class PushNotificationWorker
   include Sidekiq::Worker
     
+  # NOTE: data is serialized+deserialized as JSON so symbols are converted to strings
   def perform(user_id, data)
     # Android devices
     reg_ids = Device.where(user_id: user_id).where.not(:push_id => nil).where.not(:manufacturer => 'Apple').flat_map {|d| d.push_id}
@@ -19,7 +20,7 @@ class PushNotificationWorker
       APNS.host = CONFIG[:apple][:apns_host]
       APNS.pem = CONFIG[:apple][:apns_pem]
       reg_ids.uniq.each do |device_token| 
-        APNS.send_notification(device_token, :alert => data[:title], :badge => 1, :sound => 'default', :content_available => 1)
+        APNS.send_notification(device_token, :alert => data['title'], :badge => 1, :sound => 'default', :content_available => 1)
         logger.info "Apple push notification sent to " + device_token
       end
       logger.info APNS.feedback
