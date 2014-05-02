@@ -100,7 +100,7 @@ module Api
               
                 # Notify target of challenge if registered (unregistered are notified client-side)
                 if action[:target] && target = User.where(id: action[:target]).first
-                  c.subscribers << target
+                  c.subscribers << target unless target.id == current_resource_owner.id
                   message = { 
                     :type => 'challenge', 
                     :from => current_resource_owner.id, 
