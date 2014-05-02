@@ -18,12 +18,10 @@ class PushNotificationWorker
     unless reg_ids.empty?
       APNS.host = CONFIG[:apple][:apns_host]
       APNS.pem = CONFIG[:apple][:apns_pem]
-      notifications = []
       reg_ids.uniq.each do |device_token| 
-        notifications << APNS::Notification.new(device_token, :alert => data[:title], :badge => 1, :sound => 'default', :content_available => 1)
+        APNS.send_notification(device_token, :alert => data[:title], :badge => 1, :sound => 'default', :content_available => 1)
+        logger.info "Apple push notification sent to " + device_token
       end
-      APNS.send_notifications(notifications)
-      logger.info notifications.length.to_s + " Apple push notifications sent"
       logger.info APNS.feedback
     end
   end
