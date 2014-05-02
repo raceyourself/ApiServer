@@ -74,6 +74,7 @@ gem 'newrelic_rpm'
 gem 'rocket_pants-rpm'
 #gem 'newrelic_moped'
 gem 'staccato'
+gem 'analytics-ruby', '~>1.0'
 
 # push notifications
 gem 'gcm'

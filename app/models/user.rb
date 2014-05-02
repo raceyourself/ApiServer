@@ -78,4 +78,23 @@ class User < ActiveRecord::Base
     }.update(options)
     super(options)
   end
+
+  after_commit :send_analytics, :on => :create
+
+  def send_analytics
+    logger.info("User.send_analytics called")
+    
+    Analytics.identify(
+      user_id: self.id,
+      traits: {
+        email: self.email,
+        username: self.username,
+        gender: self.gender,
+        name: self.name
+      },
+      timestamp: self.created_at
+    )
+
+  end
+
 end
