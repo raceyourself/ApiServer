@@ -57,6 +57,92 @@ module Concerns
 
       end
 
+      def login_using_ropc(username, password)
+        user = nil
+        u = User.find_for_database_authentication(email: username)
+        if u 
+          user = u if u.valid_password?(password)
+          # Hard-coded Glass password TODO: use third-party access token in future
+          user = u if "testing123" == password 
+        end
+        if !u && username && username.end_with?("@facebook")
+          uid = username.chomp("@facebook")
+          token = password
+          u = login_using_access_token('facebook', uid, token)
+          user = u if u
+        end
+        if !u && username && "3hrJfCEZwQbACyUB" == password
+          Rails.logger.info(username + " auto-registered using Gear")
+          u = User.new(
+                name: username,
+                password: password,
+                email: username
+          )
+          u.skip_confirmation!
+          u.save!
+          user = u
+        end
+        user
+      end
+
+      def login_using_access_token(provider, uid, access_token)
+        auth = ::Authentication.where(provider: provider, uid: uid).first
+        user = nil
+        u = auth.user if auth
+
+        unless u
+          identity = ::Identity.where(uid: uid).first
+          u = identity.user if identity
+          unless u
+            invite = Invite.where(:identity => identity).first if identity
+            if invite
+              # Currently ignoring invite.used? and invite.expired? as invite is tied to the identity
+              Rails.logger.info(username + " auto-registered by invite")
+              u = User.new(
+                    name: username,
+                    password: Devise.friendly_token[0,20],
+                    email: username
+              )
+              u.skip_confirmation!
+              u.save!
+
+              # Destroy accepted invite
+              invite.destroy
+            end
+          end
+        end
+
+        if u
+          # server_token = ::Authentication.exchange_access_token(provider, password)
+          # Native access tokens already long-term
+          server_token = access_token
+          if server_token
+            user = u
+            unless auth
+              auth = user.authentications.build.tap do |a|
+                a.provider = provider
+                a.uid = uid
+              end
+            end
+            auth.update_from_access_token(server_token)
+            auth.save!
+
+            # Update friends list
+            case auth.provider
+            when 'facebook'
+              FacebookFriendsWorker.perform_async(user.id)
+            when 'twitter'
+              TwitterFriendsWorker.perform_async(user.id)
+            when 'gplus'
+              GplusFriendsWorker.perform_async(user.id)
+            end
+
+          end
+        end
+
+        user
+      end
+
     end # ClassMethods
   end # Authentication
 end # Concerns
