@@ -24,6 +24,7 @@ GfAuthenticate::Application.routes.draw do
     api version: 1 do
       match 'me', to: 'credentials#show', via: 'get'
       resource :credentials
+      resource :sign_up
       resources :providers
       resources :devices
       resources :transactions
