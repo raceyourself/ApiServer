@@ -11,7 +11,7 @@ class Invite < ActiveRecord::Base
   end
 
   def self.generate_for(user)
-    max_invites = 3 # TODO: Fetch value by user || group || global
+    max_invites = Configuration.for(user, '_internal')[:configuration]['max_invites'] || 0
 
     while user.invites < max_invites
       loop do
