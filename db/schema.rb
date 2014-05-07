@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140506135051) do
+ActiveRecord::Schema.define(version: 20140507073014) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,8 +55,9 @@ ActiveRecord::Schema.define(version: 20140506135051) do
   end
 
   create_table "challenge_subscribers", id: false, force: true do |t|
-    t.integer "challenge_id", null: false
-    t.integer "user_id",      null: false
+    t.integer "challenge_id",                 null: false
+    t.integer "user_id",                      null: false
+    t.boolean "accepted",     default: false
   end
 
   create_table "challenges", force: true do |t|

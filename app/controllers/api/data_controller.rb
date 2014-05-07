@@ -115,6 +115,9 @@ module Api
                                                         :text => "Click to race!"
                                                        })
                 end
+              when 'accept_challenge'
+                challenge_id = action[:challenge_id]
+                current_resource_owner.challenge_subscribers.find(challenge_id).update!(accepted: true)
               when 'challenge_attempt'
                 challenge_id = action[:challenge_id]
                 # Dirty hack to fix broken mongoid

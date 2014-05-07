@@ -11,7 +11,7 @@ module Concerns
       has_many :notifications
       has_many :events
       has_many :challenge_subscribers
-      has_many :challenges, :through => :challenge_subscribers
+      has_many :challenges, :through => :challenge_subscribers, :select => 'challenges.*, challenge_subscribers.accepted'
       
       define_method :games do
         # TODO work out how to simplify this query without doing the user-group-global game state merge
