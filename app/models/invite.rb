@@ -1,6 +1,6 @@
 class Invite < ActiveRecord::Base
   belongs_to :user # may be null
-  belongs_to :identity # may be null (code FFA)
+  belongs_to :identity, :foreign_key => [:identity_type, :identity_uid] # may be null (code FFA)
   
   def expired?
     return expires_at != nil && Time.now > expires_at

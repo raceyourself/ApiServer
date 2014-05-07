@@ -94,7 +94,7 @@ module Concerns
           identity = ::Identity.where(uid: uid).first
           u = identity.user if identity
           unless u
-            invite = Invite.where(:identity => identity).first if identity
+            invite = identity.invites.first if identity
             if invite
               # Currently ignoring invite.used? and invite.expired? as invite is tied to the identity
               Rails.logger.info(username + " auto-registered by invite")
