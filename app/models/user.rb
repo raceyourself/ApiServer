@@ -79,7 +79,7 @@ class User < ActiveRecord::Base
     super(options)
   end
 
-  after_commit :send_analytics, :on => :create
+  after_commit :send_analytics, :on => [:create, :update]
 
   def send_analytics
     logger.info("User.send_analytics called")
@@ -90,7 +90,8 @@ class User < ActiveRecord::Base
         email: self.email,
         username: self.username,
         gender: self.gender,
-        name: self.name
+        name: self.name,
+        profile: self.profile
       },
       timestamp: self.created_at
     )
