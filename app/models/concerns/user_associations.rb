@@ -11,8 +11,11 @@ module Concerns
       has_many :notifications
       has_many :events
       has_many :challenge_subscribers
-      has_many :challenges, :through => :challenge_subscribers, :select => 'challenges.*, challenge_subscribers.accepted'
-      
+
+      define_method :challenges do
+        self.challenge_subscribers.joins(:challenge).select('*')
+      end
+
       define_method :games do
         # TODO work out how to simplify this query without doing the user-group-global game state merge
         # in Ruby (too many object instantiations). Couldn't find any nice neat way of doing it in SQL...
@@ -66,6 +69,13 @@ module Concerns
       
       define_method :friends do
         Friendship.joins(:identity).where(:identities => {:user_id => id})
+      end
+
+      define_method :registered_friend_ids do
+        ids = friends.map {|fs| fs.friend.user_id}
+        ids.uniq!
+        ids.compact!
+        ids
       end
 
       define_method :positions do

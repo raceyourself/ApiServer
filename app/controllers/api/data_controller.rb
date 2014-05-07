@@ -87,10 +87,15 @@ module Api
               type = action[:action]
               case type
               when 'challenge'
-                if action[:challenge][:_id]
-                  challenge_id = action[:challenge][:_id]
+                if action[:challenge][:id]
+                  challenge_id = action[:challenge][:id]
                   c = Challenge.find(challenge_id)
-                  c.subscribers << current_resource_owner
+                  begin
+                    c.subscribers << current_resource_owner
+                    c.touch
+                  rescue
+                    # Already subscribed
+                  end
                 else
                   c = Challenge.build(action[:challenge])
                   c.creator_id = current_resource_owner.id
