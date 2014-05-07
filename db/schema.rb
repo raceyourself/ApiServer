@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140507073014) do
+ActiveRecord::Schema.define(version: 20140507130128) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 20140507073014) do
   create_table "challenges", force: true do |t|
     t.datetime "start_time"
     t.datetime "stop_time"
-    t.boolean  "public",     default: false
+    t.boolean  "public",         default: false
     t.integer  "creator_id"
     t.string   "type"
     t.integer  "distance"
@@ -73,6 +73,10 @@ ActiveRecord::Schema.define(version: 20140507073014) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
+    t.string   "name"
+    t.text     "description"
+    t.integer  "points_awarded", default: 0,     null: false
+    t.string   "prize"
   end
 
   create_table "configurations", force: true do |t|
@@ -95,12 +99,12 @@ ActiveRecord::Schema.define(version: 20140507073014) do
   end
 
   create_table "events", force: true do |t|
-    t.integer  "ts",         limit: 8, null: false
-    t.integer  "version",              null: false
-    t.integer  "device_id",            null: false
-    t.integer  "session_id",           null: false
-    t.integer  "user_id",              null: false
-    t.json     "data",                 null: false
+    t.integer  "ts",         limit: 8
+    t.integer  "version"
+    t.integer  "device_id"
+    t.integer  "session_id"
+    t.integer  "user_id"
+    t.json     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
