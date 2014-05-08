@@ -12,12 +12,14 @@ class ChallengeSubscriber < ActiveRecord::Base
   end
 
   def serializable_hash(options = {})
+    # Acts as a decorated challenge
     options = {
-      except: [:id, :user_id],
+      include: :challenge,
+      except: [:id, :challenge_id, :user_id],
       methods: [:friends]
     }.update(options)
     hash = super(options)
-    hash['id'] = hash.delete('challenge_id') if hash
+    hash.merge!(hash.delete('challenge')) if hash
     hash
   end
 end

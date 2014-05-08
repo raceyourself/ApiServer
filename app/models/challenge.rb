@@ -20,7 +20,7 @@ class Challenge < ActiveRecord::Base
       }
     }.update(options)
     hash = super(options)
-    hash[:type] = challenge_type() if hash
+    hash['type'] = challenge_type() if hash
     hash
   end
 

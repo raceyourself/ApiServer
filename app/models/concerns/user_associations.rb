@@ -13,7 +13,7 @@ module Concerns
       has_many :challenge_subscribers
 
       define_method :challenges do
-        self.challenge_subscribers.joins(:challenge).select('*')
+        self.challenge_subscribers.joins(:challenge)
       end
 
       define_method :games do
