@@ -8,7 +8,7 @@ module Api
       # By invited e-mail
       invite = Invite.where(:identity_type => 'email').where(:identity_uid => params[:email]).first unless invite
       
-      errors[:invite_code] = 'missing' unless invite
+      errors[:invite_code] = ['missing'] unless invite
 
       if errors.empty?
         user = User.new(
@@ -27,7 +27,7 @@ module Api
           invite.destroy if invite
         else
           errors.merge! user.errors.messages
-          errors[:user] = 'is invalid' if errors.empty?
+          errors[:user] = ['is invalid'] if errors.empty?
         end
       end
 
