@@ -48,6 +48,7 @@ class Authentication < ActiveRecord::Base
         end
         user.gender = gender if user.gender == 'U' && gender
         user.timezone = me['timezone'] if user.timezone.blank? && me['timezone']
+        user.save if user.persisted?
       end
     end
 
