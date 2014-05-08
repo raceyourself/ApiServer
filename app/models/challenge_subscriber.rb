@@ -13,9 +13,11 @@ class ChallengeSubscriber < ActiveRecord::Base
 
   def serializable_hash(options = {})
     options = {
-      except: [:challenge_id, :user_id],
-      methods: :friends
+      except: [:id, :user_id],
+      methods: [:friends]
     }.update(options)
-    super(options)
+    hash = super(options)
+    hash['id'] = hash.delete('challenge_id') if hash
+    hash
   end
 end
