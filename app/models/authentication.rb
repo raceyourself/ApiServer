@@ -33,9 +33,22 @@ class Authentication < ActiveRecord::Base
     case self.provider
     when 'facebook'
       graph = Koala::Facebook::API.new(self.token)
-      me = graph.get_object('me')
+      me = graph.get_object('me?fields=id,name,email,picture,gender,timezone')
       self.uid = me['id']
       self.email = me['email'] if me['email']
+      if user = self.user
+        user.name = me['name'] if user.name.blank? && me['email']
+        image = me['picture']['data']['url'] if me['picture']
+        user.image = image if user.image.blank? && image
+        case me['gender']
+        when 'male'
+          gender = 'M'
+        when 'female'
+          gender = 'F'
+        end
+        user.gender = gender if user.gender == 'U' && gender
+        user.timezone = me['timezone'] if user.timezone.blank? && me['timezone']
+      end
     end
 
     update_permissions_from_provider()
