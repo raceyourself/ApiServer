@@ -10,7 +10,16 @@ module Api
       path_params = request.path_parameters
       post_params = params.except(*path_params.keys)
       
-      user.update_attributes!(post_params.permit!.slice(:username, :name, :gender, :profile))
+      user_attributes = post_params.slice(:username, :name, :gender, :profile).permit!
+      if user_attributes[:profile]
+        # Merge profile (potential race condition)
+        profile = user.profile || {}
+        profile.merge!(user_attributes[:profile])
+        profile.delete_if { |k,v| v.nil? }
+        user_attributes[:profile] = profile
+      end
+
+      user.update_attributes!(user_attributes)
 
       # TODO: Move params to a more relevant json path: ie. authentications/{provider, uid, access_token}
       link_provider(post_params[:provider], post_params[:uid], post_params[:access_token]) if post_params[:access_token]
