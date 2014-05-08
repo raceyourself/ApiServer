@@ -23,6 +23,7 @@ GfAuthenticate::Application.routes.draw do
   namespace :api do
     api version: 1 do
       match 'me', to: 'credentials#show', via: 'get'
+      match 'me', to: 'credentials#create', via: 'post'
       resource :credentials
       resource :sign_up
       resources :providers

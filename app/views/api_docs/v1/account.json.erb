@@ -8,8 +8,26 @@
     "operations":[
     {
       "httpMethod": "GET",
-      "summary": "Return the current users account details",
+      "summary": "Return the current user's account details",
       "nickname": "get_me"
+    }]
+  },{
+    "path": "api/1/me",
+    "description": "Credentials update",
+    "operations":[
+    {
+      "httpMethod": "POST",
+      "summary": "Update the user's account details",
+      "nickname": "post_credentials",
+      "parameters":[
+      {
+        "name": "data",
+        "description": "The user data",
+        "dataType": "string",
+        "allowMultiple": false,
+        "required": true,
+        "paramType": "body"
+      }]
     }]
   },{
     "path": "api/1/users/{user_id}/credentials",
@@ -17,7 +35,7 @@
     "operations":[
     {
       "httpMethod": "GET",
-      "summary": "Return the users account details",
+      "summary": "Return the user's account details",
       "nickname": "get_credentials",
       "parameters":[
       {

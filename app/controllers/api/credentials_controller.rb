@@ -8,17 +8,25 @@ module Api
 
     def create
       path_params = request.path_parameters
-      provider_token = params.except(*path_params.keys)
-      # server_token = Authentication.exchange_access_token(provider_token[:provider], provider_token[:access_token])
-      # Native access token is already long-term
-      server_token = provider_token[:access_token]
-      raise 'No access token supplied for ' + provider_token[:provider] unless server_token
+      post_params = params.except(*path_params.keys)
+      
+      user.update_attributes!(post_params.permit!.slice(:username, :name, :gender, :profile))
 
-      auth = Authentication.where(provider: provider_token[:provider], uid: provider_token[:uid]).first
+      # TODO: Move params to a more relevant json path: ie. authentications/{provider, uid, access_token}
+      link_provider(post_params[:provider], post_params[:uid], post_params[:access_token]) if post_params[:access_token]
+
+      show()
+    end
+
+    def link_provider(provider, uid, access_token)
+      # server_token = Authentication.exchange_access_token(provider, access_token)
+      # Native access token is already long-term
+
+      auth = Authentication.where(provider: provider, uid: uid).first
       unless auth
         auth = user.authentications.build.tap do |a|
-          a.provider = provider_token[:provider]
-          a.uid = provider_token[:uid]
+          a.provider = provider
+          a.uid = uid
         end 
       end
       raise 'Uid already in use by another user' unless auth.user_id == user.id
@@ -35,7 +43,6 @@ module Api
         GplusFriendsWorker.perform_async(user.id)
       end
 
-      show()
     end
 
   end
