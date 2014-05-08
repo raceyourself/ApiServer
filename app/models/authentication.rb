@@ -30,6 +30,14 @@ class Authentication < ActiveRecord::Base
     self.token_expires = false
     self.token_expires_at = nil
 
+    case self.provider
+    when 'facebook'
+      graph = Koala::Facebook::API.new(self.token)
+      me = graph.get_object('me')
+      self.uid = me['id']
+      self.email = me['email'] if me['email']
+    end
+
     update_permissions_from_provider()
   end
 
