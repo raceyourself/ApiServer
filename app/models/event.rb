@@ -11,12 +11,20 @@ class Event < ActiveRecord::Base
   def send_analytics
     logger.info("Event.send_analytics called")
     details = self.data
+    
+    event = "unknown event"
+    case details["event_type"]
+    when "Flow state changed"
+      event = "Flow state: " + details["flow_state"]
+    else
+      event = details["event_type"]
+    end
 
     logger.info("Details is " + details.to_s)
 
     Analytics.track(
       user_id: self.user_id,
-      event: details.key?(:event_type) ? details[:event_type] : "unknown event",
+      event: event,
       properties: {
         version: self.version,
         device_id: self.device_id,
