@@ -1,4 +1,5 @@
 class ChallengeSubscriber < ActiveRecord::Base
+  self.primary_keys = :challenge_id, :user_id
   belongs_to :challenge
   belongs_to :user
 
