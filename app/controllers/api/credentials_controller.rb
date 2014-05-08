@@ -10,7 +10,7 @@ module Api
       path_params = request.path_parameters
       post_params = params.except(*path_params.keys)
       
-      user_attributes = post_params.slice(:username, :name, :gender, :profile).permit!
+      user_attributes = post_params.slice(:username, :name, :image, :gender, :profile).permit!
       if user_attributes[:profile]
         # Merge profile (potential race condition)
         profile = user.profile || {}
