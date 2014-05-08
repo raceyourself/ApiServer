@@ -10,7 +10,7 @@ module Api
       path_params = request.path_parameters
       post_params = params.except(*path_params.keys)
       
-      user_attributes = post_params.slice(:username, :name, :image, :gender, :profile).permit!
+      user_attributes = post_params.slice(:username, :name, :image, :gender, :timezone, :profile).permit!
       if user_attributes[:profile]
         # Merge profile (potential race condition)
         profile = user.profile || {}
@@ -39,7 +39,7 @@ module Api
         end 
       end
       raise 'Uid already in use by another user' unless auth.user_id == user.id
-      auth.update_from_access_token(server_token)
+      auth.update_from_access_token(access_token)
       auth.save!
 
       # Update friends list
