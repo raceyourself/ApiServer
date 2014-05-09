@@ -16,7 +16,9 @@ module Api
                 name: params[:name],
                 password: params[:password],
                 email: params[:email],
+                image: params[:image],
                 gender: params[:gender],
+                timezone: params[:timezone],
                 profile: params[:profile]
         )
         if user.valid?
@@ -32,7 +34,7 @@ module Api
       end
 
       if errors.empty?
-        expose({:success => true})
+        expose({:success => true, :user => user})
       else
         expose({:errors => errors})
       end
