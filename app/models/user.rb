@@ -88,10 +88,14 @@ class User < ActiveRecord::Base
       user_id: self.id,
       traits: {
         email: self.email,
-        username: self.username,
-        gender: self.gender,
-        name: self.name,
-        profile: self.profile
+        username: self.username,  #unique
+        name: self.name,  #free text
+        firstName: self.name.strip.split("\s").first,  #needed for mailChimp
+        lastName: self.name.strip.split("\s").last,  #needed for mailChimp
+        gender: self.gender == "m" ? "male" : self.gender == "f" ? "female" : nil,  #mailchimp and trak both want the full word
+        profile: self.profile,
+        image: self.image,
+        avatar_url: self.image  #for trak.io
       },
       timestamp: self.created_at
     )
