@@ -13,4 +13,11 @@ class Device < ActiveRecord::Base
     device.save!
     device
   end
+
+  after_commit :send_analytics, :on => [:create, :update]
+
+  def send_analytics
+    defined? user do user.send_analytics end
+  end
+
 end

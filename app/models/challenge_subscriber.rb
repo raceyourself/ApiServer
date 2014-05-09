@@ -22,4 +22,11 @@ class ChallengeSubscriber < ActiveRecord::Base
     hash.merge!(hash.delete('challenge')) if hash
     hash
   end
+
+  after_commit :send_analytics, :on => [:create, :update]
+
+  def send_analytics
+    user.send_analytics
+  end
+
 end
