@@ -90,12 +90,17 @@ class User < ActiveRecord::Base
         email: self.email,
         username: self.username,  #unique
         name: self.name,  #free text
-        firstName: self.name.strip.split("\s").first,  #needed for mailChimp
-        lastName: self.name.strip.split("\s").last,  #needed for mailChimp
-        gender: self.gender == "m" ? "male" : self.gender == "f" ? "female" : nil,  #mailchimp and trak both want the full word
+        firstName: self.name ? self.name.strip.split("\s").first : nil,  #needed for mailChimp
+        lastName: self.name ? self.name.strip.split("\s").last : nil,  #needed for mailChimp
+        gender: self.gender ? (self.gender.downcase  == "m" ? "male" : self.gender.downcase == "f" ? "female" : nil) : nil,  #mailchimp and trak both want the full word
         profile: self.profile,
         image: self.image,
-        avatar_url: self.image  #for trak.io
+        avatar_url: self.image,  #for trak.io
+
+        challenges: self.challenges.count,
+        tracks: self.tracks.count,
+        devices: devices.map { |d| d.manufacturer + " " + d.model }.sort.join(", "),
+        groups: groups.map { |g| g.name }.sort.join(", ")
       },
       timestamp: self.created_at
     )
