@@ -90,9 +90,9 @@ class User < ActiveRecord::Base
         email: self.email,
         username: self.username,  #unique
         name: self.name,  #free text
-        firstName: self.name ? self.name.strip.split("\s").first : nil,  #needed for mailChimp
-        lastName: self.name ? self.name.strip.split("\s").last : nil,  #needed for mailChimp
-        gender: self.gender ? (self.gender.downcase  == "m" ? "male" : self.gender.downcase == "f" ? "female" : nil) : nil,  #mailchimp and trak both want the full word
+        firstName: defined?(self.name) ? self.name.strip.split("\s").first : nil,  #needed for mailChimp
+        lastName: defined?(self.name) ? self.name.strip.split("\s").last : nil,  #needed for mailChimp
+        gender: defined(self.gender) ? (self.gender.downcase  == "m" ? "male" : self.gender.downcase == "f" ? "female" : nil) : nil,  #mailchimp and trak both want the full word
         profile: self.profile,
         image: self.image,
         avatar_url: self.image,  #for trak.io
