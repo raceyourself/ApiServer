@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140509103057) do
+ActiveRecord::Schema.define(version: 20140512104718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -180,6 +180,12 @@ ActiveRecord::Schema.define(version: 20140509103057) do
   end
 
   add_index "invites", ["identity_type", "identity_uid"], name: "index_invites_on_identity_type_and_identity_uid", using: :btree
+
+  create_table "matched_tracks", id: false, force: true do |t|
+    t.integer "user_id",   null: false
+    t.integer "device_id", null: false
+    t.integer "track_id",  null: false
+  end
 
   create_table "menu_items", force: true do |t|
     t.string  "icon",    null: false

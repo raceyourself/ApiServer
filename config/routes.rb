@@ -36,6 +36,7 @@ GfAuthenticate::Application.routes.draw do
       resources :configurations
       resources :games
       resources :invites
+      resources :matches
 
       get 'data', to: 'data#index'
       post 'data', to: 'data#create'
