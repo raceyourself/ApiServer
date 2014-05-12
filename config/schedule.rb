@@ -21,6 +21,6 @@ job_type :sidekiq,  "cd :path && RAILS_ENV=:environment bundle exec sidekiq-clie
 
 # Learn more: http://github.com/javan/whenever
 
-every 1.day, :at => '14:45' do
-  command "echo 'does this work?'"
+every 1.day, :at => '15:39' do
+  sidekiq "push ErrorWorker"
 end
