@@ -3,8 +3,6 @@
 # It's helpful, but not entirely necessary to understand cron before proceeding.
 # http://en.wikipedia.org/wiki/Cron
 
-job_type :sidekiq,  "cd :path && RAILS_ENV=:environment bundle exec sidekiq-client :task :output"
-
 # Example:
 #
 # set :output, "/path/to/my/cron_log.log"
@@ -21,6 +19,6 @@ job_type :sidekiq,  "cd :path && RAILS_ENV=:environment bundle exec sidekiq-clie
 
 # Learn more: http://github.com/javan/whenever
 
-every 1.day, :at => '15:39' do
-  sidekiq "push ErrorWorker"
+every 1.day, :at => '16:18' do
+  runner "ErrorWorker.perform_async"
 end
