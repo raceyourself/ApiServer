@@ -33,7 +33,7 @@ class Authentication < ActiveRecord::Base
     case self.provider
     when 'facebook'
       graph = Koala::Facebook::API.new(self.token)
-      me = graph.get_object('me?fields=id,name,email,picture.type(large),gender,timezone')
+      me = graph.get_object('me?fields=id,name,email,picture.width(256).height(256),gender,timezone')
       self.uid = me['id']
       self.email = me['email'] if me['email']
       if user = self.user

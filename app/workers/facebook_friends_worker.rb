@@ -13,7 +13,7 @@ class FacebookFriendsWorker
     me = me.merge
     ActiveRecord::Base.transaction do
       me.friendships.where(:friend_type => 'FacebookIdentity').destroy_all
-      result = graph.get_connections("me", "friends", :fields=>"name,id,picture.type(large)") || []
+      result = graph.get_connections("me", "friends", :fields=>"name,id,picture.width(256).height(256)") || []
       begin
         result.each do |friend|
           fid = FacebookIdentity.new().update_from_facebook(friend)
