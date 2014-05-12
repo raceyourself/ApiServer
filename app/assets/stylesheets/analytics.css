@@ -13,22 +13,22 @@ div.chart{
 }
 
 div.bar {
-  background-color:Green;
+  background-color:#39bc3c;
   color:white;
   height:3em;
   line-height:3em;
-  padding-right:1em;
-  margin-bottom:2px;
-  margin-left:10px;
+  padding-right:0em;
+  margin-bottom:1em;
+  margin-left:15em;
   text-align:right;
 }
 
-div.label {
+div.bar_label {
   height:3em;
   line-height:3em;
   padding-right:1em;
-  margin-bottom:2px;
+  margin-bottom:1em;
   float:left;
-  width:20em;
+  width:13em;
   text-align:right;
 }
