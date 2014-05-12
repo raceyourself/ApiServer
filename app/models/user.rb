@@ -79,10 +79,12 @@ class User < ActiveRecord::Base
     super(options)
   end
 
-  after_commit :send_analytics, :on => [:create, :update]
+  after_commit :send_analytics, :on => [:create, :update], :if => Proc.new { |record|
+    record.previous_changes.except("updated_at").except("sync_timestamp").length > 0  # don't bother sending if the only update was the timestamp
+  }
 
   def send_analytics
-    logger.info(self.name.to_s + " (userId " + self.id.to_s  + ") profile info updated and sent to segment.io")
+    logger.info(self.name.to_s + " (userId " + self.id.to_s  + ") profile info updated: " + self.previous_changes.inspect)
     
     Analytics.identify(
       user_id: self.id,
@@ -104,6 +106,8 @@ class User < ActiveRecord::Base
       },
       timestamp: self.created_at
     )
+
+    logger.info("New profile info sent to segment.io")
 
   end
 
