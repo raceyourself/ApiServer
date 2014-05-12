@@ -82,7 +82,7 @@ class User < ActiveRecord::Base
   after_commit :send_analytics, :on => [:create, :update]
 
   def send_analytics
-    logger.info(self.name + " (userId " + self.id.to_s  + ") profile info updated and sent to segment.io")
+    logger.info(self.name.to_s + " (userId " + self.id.to_s  + ") profile info updated and sent to segment.io")
     
     Analytics.identify(
       user_id: self.id,
@@ -90,9 +90,9 @@ class User < ActiveRecord::Base
         email: self.email,
         username: self.username,  #unique
         name: self.name,  #free text
-        firstName: defined?(self.name) ? self.name.strip.split("\s").first : nil,  #needed for mailChimp
-        lastName: defined?(self.name) ? self.name.strip.split("\s").last : nil,  #needed for mailChimp
-        gender: defined?(self.gender) ? (self.gender.downcase  == "m" ? "male" : self.gender.downcase == "f" ? "female" : nil) : nil,  #mailchimp and trak both want the full word
+        firstName: self.name.present? ? self.name.strip.split("\s").first : nil,  #needed for mailChimp
+        lastName: self.name.present? ? self.name.strip.split("\s").last : nil,  #needed for mailChimp
+        gender: self.gender.present? ? (self.gender.downcase  == "m" ? "male" : self.gender.downcase == "f" ? "female" : nil) : nil,  #mailchimp and trak both want the full word
         profile: self.profile,
         image: self.image,
         avatar_url: self.image,  #for trak.io

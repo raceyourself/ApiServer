@@ -11,7 +11,7 @@ if defined?(PhusionPassenger)
     if forked # We're in smart spawning mode.
       Analytics = AnalyticsRuby     # Alias for convenience
       Analytics.init({
-        secret: 'YOUR_WRITE_KEY',        # The write key for #{project.owner.login}/#{project.slug}
+        secret: CONFIG[:segment_io][:write_key],        # The write key for #{project.owner.login}/#{project.slug}
         on_error: Proc.new { |status, msg| print msg }  # Optional error handler
       })
     else

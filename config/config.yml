@@ -21,6 +21,9 @@ development:
     apns_host: 'gateway.sandbox.push.apple.com'
     apns_pem: '/etc/ssl/apns/apns.pem'
 
+  segment_io:
+    write_key: 'uw6ekt93ry'
+
 staging:
   facebook:
     client_id: '625999614089605'
@@ -43,6 +46,9 @@ staging:
   apple:
     apns_host: 'gateway.sandbox.push.apple.com'
     apns_pem: '/etc/ssl/apns/apns.pem'
+
+  segment_io:
+    write_key: 'uw6ekt93ry'
 
 production:
   facebook:
@@ -67,6 +73,9 @@ production:
     apns_host: 'gateway.sandbox.push.apple.com'
     apns_pem: '/etc/ssl/apns/apns.pem'
 
+  segment_io:
+    write_key: 'uw6ekt93ry'
+
 test:
   facebook:
     client_id: 'dummyid'
@@ -82,4 +91,7 @@ test:
     client_secret: 'dummysecret'
     scope: 'plus.login'
     request_visible_actions: 'AddActivity'
+
+  segment_io:
+    write_key: 'uw6ekt93ry'
 
