@@ -63,6 +63,8 @@ gem 'rails_admin'
 # worker
 gem 'sinatra'
 gem 'sidekiq'
+gem 'sidekiq-client-cli'
+gem 'whenever', :require => false
 
 # social
 gem 'koala'
