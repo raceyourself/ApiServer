@@ -86,7 +86,7 @@ class User < ActiveRecord::Base
   def send_analytics
     logger.info(self.name.to_s + " (userId " + self.id.to_s  + ") profile info updated: " + self.previous_changes.inspect)
     
-    Analytics.identify(
+    AnalyticsRuby.identify(
       user_id: self.id,
       traits: {
         email: self.email,
