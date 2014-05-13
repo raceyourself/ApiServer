@@ -19,6 +19,6 @@
 
 # Learn more: http://github.com/javan/whenever
 
-every 1.day, :at => '16:18' do
-  runner "ErrorWorker.perform_async"
+every 1.day, :at => '0:13' do
+  runner "BotWorker.wake_up"
 end

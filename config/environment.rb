@@ -18,3 +18,6 @@ if defined?(PhusionPassenger)
     end
   end
 end
+
+BotWorker.initialize
+
