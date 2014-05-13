@@ -5,12 +5,14 @@ class FacebookFriendsWorker
 
   def perform(user_id)
     user = User.where(id: user_id).first
+    return if user.nil?
     auth = Authentication.where(provider: 'facebook', user_id: user.id).last
     graph = Koala::Facebook::API.new(auth.token)
     profile = graph.get_object("me")
     me = FacebookIdentity.new().update_from_facebook(profile)
     me.user_id = user.id
     me = me.merge
+    return if me.updated_at > 5.minutes.ago
     ActiveRecord::Base.transaction do
       me.friendships.where(:friend_type => 'FacebookIdentity').destroy_all
       result = graph.get_connections("me", "friends", :fields=>"name,id,picture.width(256).height(256)") || []

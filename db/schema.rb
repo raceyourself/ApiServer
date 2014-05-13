@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140512104718) do
+ActiveRecord::Schema.define(version: 20140513143726) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -159,13 +159,15 @@ ActiveRecord::Schema.define(version: 20140512104718) do
   add_index "groups_users", ["user_id", "group_id"], name: "index_groups_users_on_user_id_and_group_id", using: :btree
 
   create_table "identities", id: false, force: true do |t|
-    t.integer "user_id"
-    t.boolean "has_glass",   default: false
-    t.string  "type",                        null: false
-    t.string  "uid",                         null: false
-    t.string  "name"
-    t.string  "photo"
-    t.string  "screen_name"
+    t.integer  "user_id"
+    t.boolean  "has_glass",   default: false
+    t.string   "type",                                        null: false
+    t.string   "uid",                                         null: false
+    t.string   "name"
+    t.string   "photo"
+    t.string   "screen_name"
+    t.datetime "created_at",  default: '1970-01-01 00:00:00', null: false
+    t.datetime "updated_at",  default: '1970-01-01 00:00:00', null: false
   end
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree

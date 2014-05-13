@@ -17,11 +17,13 @@ class Identity < ActiveRecord::Base
       hash = self.attributes
       hash.delete('has_glass') if o.has_glass
       hash.delete('user_id') if o.user_id != nil
+      hash['updated_at'] = Time.now
       # Update
       o.update!(hash)
       this = o
     rescue ActiveRecord::RecordNotFound => e
       # Insert
+      self.updated_at = Time.now
       self.save!
     end
     this
