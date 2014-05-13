@@ -90,7 +90,8 @@ module Concerns
         user = nil
         u = auth.user if auth
 
-        unless u
+        AUTO_REGISTER = false
+        if AUTO_REGISTER && !u
           identity = ::Identity.where(uid: uid).first
           u = identity.user if identity
           unless u
