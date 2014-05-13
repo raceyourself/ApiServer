@@ -7,11 +7,12 @@ module Api
       invite = Invite.where(:code => params[:invite_code]).first
       # By invited e-mail
       invite = Invite.where(:identity_type => 'email').where(:identity_uid => params[:email]).first unless invite
-      # By invited identity
+      # By invited identity 
+      # NOTE: authentication[:uid] is provided by client and cannot be trusted.
       authentication = params[:authentication] || {}
       invite = Invite.where(:identity_type => authentication[:provider]).where(:identity_uid => authentication[:uid]).first unless invite
       
-      errors[:invite_code] = ['missing'] unless invite
+      errors[:invite_code] = ['is missing'] unless invite
 
       if errors.empty?
         profile = params[:profile] || {}
@@ -34,7 +35,8 @@ module Api
                   a.provider = authentication[:provider]
                   a.uid = authentication[:uid]
                 end
-                auth.update_from_access_token(server_token)
+                auth.update_from_access_token(authentication[:access_token])
+                raise ArgumentError, 'Wrong uid supplied in request' unless auth.uid == authentication[:uid]
                 auth.save!
 
                 # Update friends list
