@@ -24,19 +24,53 @@ class BotWorker
   def self.wake_up
     Rails.logger.info "Waking up Race Yourself bots.."
     User.where("email LIKE 'bot%@raceyourself.com'").each do |bot|
-      BotWorker.perform_at(Time.parse(bot.profile['wake_up_time']), bot.id, 'wake up') if bot.profile.has_key?('wake_up_time')
+      next unless bot.profile.has_key?('wake_up_time')
+      wake_up_time = Time.parse(bot.profile['wake_up_time'])
+      BotWorker.perform_at(wake_up_time, bot.id, 'wake up') if wake_up_time > Time.now
     end
   end
 
   # Wake up bots on app init if they aren't already running
   def self.initialize
-    wake_up if Sidekiq.redis { |r| r.llen "queue:default" } == 0
+    wake_up if Sidekiq.redis { |r| r.llen("queue:default") == 0 && r.zrange("schedule", 0, -1).empty? }
   end
 
   private
 
   def do_run(bot, fitness_level)
     Rails.logger.info "#{bot.email} is doing a run at #{fitness_level} level"
+    ActiveRecord::Base.transaction do
+      device = Device.where(user_id: bot.id).last
+      device = Device.create!(user_id: bot.id, 
+                              manufacturer: "Mom's Friendly Robot Company", 
+                              model: 'Bot 2000',
+                              glassfit_version: 0) unless device
+
+      speed = 5 # m/s
+      time = (4 + 5 * Random.rand(12)) * 60 + Random.rand(60)
+      distance = speed * time
+      track = Track.create!(device_id: device.id, track_id: Random.rand(99999), user_id: bot.id,
+                            public: true, ts: (Time.now.to_f*1000).to_i,
+                            distance: distance, time: time)
+      id = 0
+      (1..time).step(10) do |t|
+        id = id + 1
+        lng = 0
+        lat = (speed * t)/111229.0
+        bearing = 0
+        Position.create!(device_id: track.device_id, track_id: track.track_id, 
+                         position_id: id, user_id: bot.id,
+                         state_id: 1,
+                         gps_ts: (Time.now.to_f*1000).to_i,
+                         device_ts: (Time.now.to_f*1000).to_i,
+                         lng: lng,
+                         lat: lat,
+                         alt: 0,
+                         bearing: bearing,
+                         speed: speed,
+                         epe: 25)
+      end
+    end
   end
 
   def do_challenge(bot, fitness_level)
