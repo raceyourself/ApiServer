@@ -52,7 +52,7 @@ class BotWorker
       track = Track.create!(device_id: device.id, track_id: Random.rand(99999), user_id: bot.id,
                             public: true, ts: (Time.now.to_f*1000).to_i,
                             distance: distance, time: time)
-      id = 0
+      id = track_id*1000
       (1..time).step(10) do |t|
         id = id + 1
         lng = 0
@@ -75,6 +75,31 @@ class BotWorker
 
   def do_challenge(bot, fitness_level)
     Rails.logger.info "#{bot.email} is doing a challenge at #{fitness_level} level"
+    group = Group.where(name: "Victims").first
+    return unless group
+    victim_id = group.users.pluck(:id).sample
+    return unless victim_id
+    
+    Rails.logger.info "#{bot.email} is challening user #{victim_id}"
+    # TODO: Don't duplicate challenging logic here
+    time = 5 * Random.rand(12)
+    ActiveRecord::Base.transaction do
+      challenge = DurationChallenge.create!(public: true, creator_id: bot.id, duration: time, distance: 0, 
+                                            name: 'Disco fever', 
+                                            description: 'First to the finish line gets to go clubbing baby seals!', 
+                                            points_awarded: 88, prize: 'A fancy new coat')
+      target = User.find(victim_id)
+      target.notifications.create!(:message => {
+                                      :type => 'challenge',
+                                      :from => bot.id,
+                                      :challenge_id => challenge.id,
+                                      :taunt => '001111001010111010010011!'
+                                   })
+      PushNotificationWorker.perform_async(target.id, {
+                                            :title => bot.to_s + ' has challenged you!',
+                                            :text => 'Click to race!'
+                                           })
+    end
   end
 
 end
