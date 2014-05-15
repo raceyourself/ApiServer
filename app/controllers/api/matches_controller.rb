@@ -24,8 +24,8 @@ module Api
       (5..60).step(5) do |duration|
         matches[duration] = Track.where(:public => true)
                                  .where('distance > 0')
-                                 .where('time/distance >= ? AND time/distance < ?', pace['min'], pace['max'])
-                                 .where('time >= ? AND time < ?', duration, duration+5)
+                                 .where('(time*1000/distance)/60 >= ? AND (time*1000/distance)/60 < ?', pace['min'], pace['max'])
+                                 .where('time >= ? AND time < ?', duration*60, (duration+5)*60)
                                  .where(%Q((device_id, track_id) NOT IN (
                                            SELECT device_id, track_id 
                                            FROM matched_tracks WHERE user_id = ?
