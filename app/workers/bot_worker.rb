@@ -39,6 +39,15 @@ class BotWorker
 
   def do_run(bot, fitness_level)
     Rails.logger.info "#{bot.email} is doing a run at #{fitness_level} level"
+    configuration = Configuration.where(type: '_internal', user_id: nil, group_id: nil).first.configuration
+    raise "Fitness levels not configured" unless configuration['fitness_levels']
+    range = configuration['fitness_levels'][fitness_level]
+    raise "Fitness level: #{fitness_level} not configured" unless range && range['max'] && range['min']
+    max = range['max'].to_f
+    min = range['min'].to_f
+    diff = max - min
+    diff = 1 if diff < 0
+    pace = min + Random.rand(diff)
     ActiveRecord::Base.transaction do
       device = Device.where(user_id: bot.id).last
       device = Device.create!(user_id: bot.id, 
@@ -46,7 +55,7 @@ class BotWorker
                               model: 'Bot 2000',
                               glassfit_version: 0) unless device
 
-      speed = 5 # m/s
+      speed = 1000 * 1.0/(pace*60) # min/km -> m/s
       time = (4 + 5 * Random.rand(12)) * 60 + Random.rand(60)
       distance = speed * time
       track = Track.create!(device_id: device.id, track_id: Random.rand(99999), user_id: bot.id,
