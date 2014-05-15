@@ -52,7 +52,7 @@ class BotWorker
       track = Track.create!(device_id: device.id, track_id: Random.rand(99999), user_id: bot.id,
                             public: true, ts: (Time.now.to_f*1000).to_i,
                             distance: distance, time: time)
-      id = track_id*1000
+      id = track.track_id*1000
       (1..time).step(10) do |t|
         id = id + 1
         lng = 0
