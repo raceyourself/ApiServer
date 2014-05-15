@@ -89,7 +89,7 @@ class BotWorker
     victim_id = group.users.pluck(:id).sample
     return unless victim_id
     
-    Rails.logger.info "#{bot.email} is challening user #{victim_id}"
+    Rails.logger.info "#{bot.email} is challenging user #{victim_id}"
     # TODO: Don't duplicate challenging logic here
     time = 5 * Random.rand(12)
     ActiveRecord::Base.transaction do
@@ -98,6 +98,8 @@ class BotWorker
                                             description: 'First to the finish line gets to go clubbing baby seals!', 
                                             points_awarded: 88, prize: 'A fancy new coat')
       target = User.find(victim_id)
+      challenge.subscribers << bot
+      challenge.subscribers << target
       target.notifications.create!(:message => {
                                       :type => 'challenge',
                                       :from => bot.id,
