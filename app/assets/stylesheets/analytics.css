@@ -12,23 +12,25 @@ div.chart{
   font-size:0.7em;
 }
 
-div.bar {
-  background-color:#39bc3c;
-  color:white;
-  height:3em;
-  line-height:3em;
-  padding-right:0em;
+div.line {
   margin-bottom:1em;
-  margin-left:15em;
-  text-align:right;
+}
+
+div.bar {
+  display:inline-block;
+  height:3em;
+  background-color:#39bc3c;
+  color:lightgray;
+  line-height:3em;
+  text-align:center;
+  padding-right:0em;
 }
 
 div.bar_label {
+  display:inline-block;
   height:3em;
+  width:13em;
   line-height:3em;
   padding-right:1em;
-  margin-bottom:1em;
-  float:left;
-  width:13em;
   text-align:right;
 }
