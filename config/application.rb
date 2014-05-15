@@ -51,7 +51,7 @@ module GfAuthenticate
     end
 
     config.after_initialize do
-      OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+      #OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
     end
 
   end
