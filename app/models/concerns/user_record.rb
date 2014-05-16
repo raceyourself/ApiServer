@@ -17,9 +17,11 @@ module Concerns
       #       data validation is the only problem
       hash = self.serializable_hash.except('created_at', 'deleted_at', 'updated_at')
       key = hash.extract!(*self.class.primary_key)
+      id = key.values
+      id = key.values[0] if key.length == 1
       this = self
       begin
-        o = self.class.with_deleted.find(key.values)
+        o = self.class.with_deleted.find(id)
         # Update
         hash['updated_at'] = Time.now
         hash['deleted_at'] = nil
