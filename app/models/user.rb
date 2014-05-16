@@ -79,9 +79,12 @@ class User < ActiveRecord::Base
 
   def serializable_hash(options = {})
     options = {
-      methods: :points
+      methods: :points,
+      except: :image
     }.update(options)
-    super(options)
+    hash = super(options)
+    hash['image'] = self.image.url
+    hash
   end
 
   after_commit :send_analytics, :on => [:create, :update], :if => Proc.new { |record|

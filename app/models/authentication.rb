@@ -39,7 +39,7 @@ class Authentication < ActiveRecord::Base
       if user = self.user
         user.name = me['name'] if user.name.blank? && me['email']
         image = me['picture']['data']['url'] if me['picture']
-        user.image = image if user.image.blank? && image
+        user.remote_image_url = image if user.image.blank? && image
         case me['gender']
         when 'male'
           gender = 'M'

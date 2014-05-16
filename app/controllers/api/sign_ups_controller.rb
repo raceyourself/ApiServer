@@ -22,13 +22,13 @@ module Api
                   name: profile[:name],
                   password: params[:password],
                   email: params[:email],
-                  image: profile[:image],
                   gender: profile[:gender],
                   timezone: profile[:timezone],
                   profile: profile.except(:username, :name, :image, :gender, :timezone)
           )
           if @user.valid?
             begin
+              @user.remote_image_url = profile[:image] if profile[:image].is_a?(String)
               @user.skip_confirmation!
               if authentication.present?
                 auth = @user.authentications.build.tap do |a|

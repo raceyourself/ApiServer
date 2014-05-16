@@ -9,14 +9,29 @@ module Api
     def create
       path_params = request.path_parameters
       post_params = params.except(*path_params.keys)
-      
+    
+      user_id = user.id
+      user = User.find(user_id) # doorkeeper returns a stale user for some reason
+
       user_attributes = post_params.slice(:username, :name, :image, :gender, :timezone, :profile).permit!
       if user_attributes[:profile]
         # Merge profile (potential race condition)
         profile = user.profile || {}
         profile.merge!(user_attributes[:profile])
         profile.delete_if { |k,v| v.nil? }
+
+        # Extract explicit fields from profile
+        [:username, :name, :image, :gender, :timezone].each do |key|
+          user_attributes[key] = profile.delete(key.to_s) if profile[key.to_s]
+        end
+
         user_attributes[:profile] = profile
+      end
+
+      if user_attributes[:image].is_a?(String)
+        url = user_attributes.delete(:image)
+        user.remote_image_url = url
+        user.save!
       end
 
       user.update_attributes!(user_attributes)
