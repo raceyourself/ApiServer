@@ -45,6 +45,8 @@ gem 'doorkeeper', '~> 0.7.0'
 
 # forms
 gem 'simple_form', '~> 3.0.0.beta1'
+gem 'carrierwave'
+gem 'mini_magick'
 
 #caching
 gem 'dalli'

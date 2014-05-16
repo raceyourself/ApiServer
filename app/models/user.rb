@@ -1,3 +1,4 @@
+require 'file_size_validator' 
 class User < ActiveRecord::Base
   include RocketPants::Cacheable
   # Include default devise modules. Others available are:
@@ -16,8 +17,12 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :groups
   has_many :game_states
 
-  # TODO: Add photo field (populate from identities if null)
-
+  mount_uploader :image, AvatarUploader
+  validates :image, 
+    :file_size => { 
+      :maximum => 0.5.megabytes.to_i 
+    }
+ 
   def has_role?(role)
     role = role.to_s.downcase.to_sym
     roles.any?{|r| r.name.to_s.downcase.to_sym == role}
