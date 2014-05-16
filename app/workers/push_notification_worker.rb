@@ -19,8 +19,9 @@ class PushNotificationWorker
     unless reg_ids.empty?
       APNS.host = CONFIG[:apple][:apns_host]
       APNS.pem = CONFIG[:apple][:apns_pem]
+      unread = Notification.where(user_id: user_id).where(:read => false).count
       reg_ids.uniq.each do |device_token| 
-        APNS.send_notification(device_token, :alert => data['title'], :badge => 1, :sound => 'default', :content_available => 1)
+        APNS.send_notification(device_token, :alert => data['title'], :badge => unread, :sound => 'default', :content_available => 1)
         logger.info "Apple push notification sent to " + device_token
       end
       logger.info APNS.feedback
