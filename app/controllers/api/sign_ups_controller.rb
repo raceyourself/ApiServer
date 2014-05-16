@@ -16,18 +16,18 @@ module Api
 
       if errors.empty?
         profile = params[:profile] || {}
-        ActiveRecord::Base.transaction do
-          @user = User.new(
-                  username: profile[:username],
-                  name: profile[:name],
-                  password: params[:password],
-                  email: params[:email],
-                  gender: profile[:gender],
-                  timezone: profile[:timezone],
-                  profile: profile.except(:username, :name, :image, :gender, :timezone)
-          )
-          if @user.valid?
-            begin
+        @user = User.new(
+                username: profile[:username],
+                name: profile[:name],
+                password: params[:password],
+                email: params[:email],
+                gender: profile[:gender],
+                timezone: profile[:timezone],
+                profile: profile.except(:username, :name, :image, :gender, :timezone)
+        )
+        if @user.valid?
+          begin
+            ActiveRecord::Base.transaction do 
               @user.remote_image_url = profile[:image] if profile[:image].is_a?(String)
               @user.skip_confirmation!
               if authentication.present?
@@ -53,15 +53,15 @@ module Api
 
               # Destroy accepted invite
               invite.destroy if invite
-            rescue => e
-              logger.error(e.class.name + ": " + e.message)
-              logger.debug e.backtrace.join("\n")
-              errors[:user] = ["threw exception #{e.class.name}"]
             end
-          else
-            errors.merge! @user.errors.messages
-            errors[:user] = ['is invalid'] if errors.empty?
+          rescue => e
+            logger.error(e.class.name + ": " + e.message)
+            logger.debug e.backtrace.join("\n")
+            errors[:user] = ["threw exception #{e.class.name}"]
           end
+        else
+          errors.merge! @user.errors.messages
+          errors[:user] = ['is invalid'] if errors.empty?
         end
       end
 
