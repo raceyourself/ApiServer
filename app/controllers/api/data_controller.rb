@@ -121,10 +121,14 @@ module Api
             message = { 
               :type => 'challenge', 
               :from => current_resource_owner.id, 
+              :to => target.id,
               :challenge_id => c.id, 
               :taunt => action[:taunt] 
             }
             target.notifications.create( 
+                :message => message
+            )
+            current_resource_owner.notifications.create( 
                 :message => message
             )
             PushNotificationWorker.perform_async(target.id, { 
