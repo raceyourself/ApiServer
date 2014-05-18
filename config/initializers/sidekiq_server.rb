@@ -4,7 +4,3 @@ Sidekiq.configure_server do |config|
     ErrorMailer.sidekiq_error(ex, ctx_hash).deliver
   end
 end
-
-Sidekiq.configure_client do |config|
-  config.redis = { url: 'redis://localhost:6379/1', namespace: 'glassfit' }
-end
