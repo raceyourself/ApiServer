@@ -74,7 +74,7 @@ production:
     apns_pem: '/etc/ssl/apns/apns.pem'
 
   segment_io:
-    write_key: 'uw6ekt93ry'
+    write_key: '1b1bkkaq3s'  # real user data only!
 
 test:
   facebook:
