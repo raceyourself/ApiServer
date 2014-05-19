@@ -1,6 +1,6 @@
 class SurveyBetaInsight < ActiveRecord::Base
 
-  after_commit :create_user, :on => [:create, :update]
+  after_commit :create_user, :on => [:create]
 
   def create_user
 
@@ -11,28 +11,35 @@ class SurveyBetaInsight < ActiveRecord::Base
     u = User.new(:email => self.email, :username => self.email, :name => self.first_name + " " + self.last_name)
     u.gender = if self.gender = "Male" then "m" elsif self.gender = "Female" then "f" else nil end
     u.profile = {
-      :first_name => self.first_name,
-      :last_name => self.last_name,
-      :phone_number => self.phone_number,
-      :url => self.url,
-      :age_group => self.age_group,
-      :latititude => self.latitude,
-      :longitude => self.longitude,
-      :country => self.country_auto,
-      :devices_reported => [self.mobile_device_1, self.mobile_device_2].compact,
-      :running_fitness => self.running_fitness,
-      :cycling_fitness => self.cycling_fitness,
-      :workout => self.workout_fitness,
-      :goals => [self.goal_faster, self.goal_further, self.goal_slimmer, self.goal_stronger, self.goal_happier, self.goal_live_longer, self.goal_manage_condition, self.goal_other].compact
+      "first_name" => self.first_name,
+      "last_name" => self.last_name,
+      "phone_number" => self.phone_number,
+      "url" => self.url,
+      "age_group" => self.age_group,
+      "latitude" => self.latitude,
+      "longitude" => self.longitude,
+      "country" => self.country_auto,
+      "city" => self.city,
+      "post_code" => self.post_code,
+      "devices_reported" => [self.mobile_device_1, self.mobile_device_2, self.wearable_glass, self.wearable_other].compact,
+      "running_fitness" => self.running_fitness,
+      "cycling_fitness" => self.cycling_fitness,
+      "workout_fitness" => self.workout_fitness,
+      "goals" => [self.goal_faster, self.goal_further, self.goal_slimmer, self.goal_stronger, self.goal_happier, self.goal_live_longer, self.goal_manage_condition, self.goal_other].compact
     }
-    puts "ID is " + u.id
     u.skip_confirmation!
-    id = u.save!
 
-    self.contact_id = id  # store the new user_id so we can join things up later
-    self.save!
-
-    logger.info("User account created")
+    begin
+      u.save(:validate => false)
+      self.contact_id = u.id  # store the new user_id so we can join things up later
+      self.save!
+      logger.info("User account created for " + self.email + ", ID is " + self.contact_id.to_s)
+    rescue ActiveRecord::RecordInvalid => e1
+      logger.info("User account creation failed! " + e1.to_s)
+    rescue ActiveRecord::RecordNotUnique => e2
+      # should probably update existing record...
+      logger.info("User account creation failed! " + e2.to_s)
+    end
 
   end
 

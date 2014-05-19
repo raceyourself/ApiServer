@@ -17,5 +17,7 @@ if defined?(PhusionPassenger)
   end
 end
 
-BotWorker.initialize
+# BetWorker should be called by cron, no need to initialize on environment load
+# Calling it here can cause rake db:migrate to fall over as it expects tables to be present
+#BotWorker.initialize
 

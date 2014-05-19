@@ -97,19 +97,40 @@ class User < ActiveRecord::Base
     AnalyticsRuby.identify(
       user_id: self.id,
       traits: {
+        # personal data
         email: self.email,
         username: self.username,  #unique
         name: self.name,  #free text
-        firstName: self.name.present? ? self.name.strip.split("\s").first : nil,  #needed for mailChimp
-        lastName: self.name.present? ? self.name.strip.split("\s").last : nil,  #needed for mailChimp
+        #firstName: self.name.present? ? self.name.strip.split("\s").first : nil,  #needed for mailChimp
+        #lastName: self.name.present? ? self.name.strip.split("\s").last : nil,  #needed for mailChimp
+        fname: self.profile["first_name"],
+        lname: self.profile["last_name"],
         gender: self.gender.present? ? (self.gender.downcase  == "m" ? "male" : self.gender.downcase == "f" ? "female" : nil) : nil,  #mailchimp and trak both want the full word
+        age_group: self.profile["age_group"],
         profile: self.profile,
         image: self.image,
         avatar_url: self.image,  #for trak.io
+        website: self.profile["url"],
+        phone: self.profile["phone_number"],
+        devices_r: self.profile["devices_reported"].present? ? self.profile["devices_reported"].join(", ") : nil,
 
+        # location
+        latlng: self.profile["latitude"].to_s + "," + self.profile["longitude"].to_s,
+        address: { country: self.profile["country"] , city: self.profile["city"], postalCode: self.profile["post_code"] },
+        country: self.profile["country"],
+
+        # reported fitness preferences
+        running: self.profile["running_fitness"],
+        cycling: self.profile["cycling_fitness"],
+        workout: self.profile["workout_fitness"],
+        goals: self.profile["goals"].present? ? self.profile["goals"].join(", ") : nil,
+       
+        # activity in the app
         challenges: self.challenges.count,
         tracks: self.tracks.count,
         devices: devices.map { |d| d.manufacturer + " " + d.model }.sort.join(", "),
+        
+        # groups we've added the user to
         groups: groups.map { |g| g.name }.sort.join(", ")
       },
       timestamp: self.created_at
