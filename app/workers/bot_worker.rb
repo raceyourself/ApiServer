@@ -104,6 +104,7 @@ class BotWorker
                                       :type => 'challenge',
                                       :from => bot.id,
                                       :challenge_id => challenge.id,
+                                      :challenge_type => c.challenge_type,
                                       :taunt => '001111001010111010010011!'
                                    })
       PushNotificationWorker.perform_async(target.id, {

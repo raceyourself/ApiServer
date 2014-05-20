@@ -122,7 +122,8 @@ module Api
               :type => 'challenge', 
               :from => current_resource_owner.id, 
               :to => target.id,
-              :challenge_id => c.id, 
+              :challenge_id => c.id,
+              :challenge_type => c.challenge_type,
               :taunt => action[:taunt] 
             }
             target.notifications.create( 
