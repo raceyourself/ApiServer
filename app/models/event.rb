@@ -31,7 +31,8 @@ class Event < ActiveRecord::Base
 	user_id: self.user_id,
 	name: event,
 	properties: properties,
-	timestamp: self.created_at
+	timestamp: self.created_at,
+	integrations: { "mixpanel" => false }
       )
       when "event" then AnalyticsRuby.track(
 	user_id: self.user_id,
