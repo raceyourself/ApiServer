@@ -10,34 +10,36 @@ class Event < ActiveRecord::Base
 
   def send_analytics
     logger.info("Event.send_analytics called")
-    details = self.data
+
+    event = case self.data["event_type"]
+      when "event" then "E: " + self.data["event_name"]
+      when "screen" then "S: " + self.data["screen_name"]
+      else "unknown"
+    end
     
-    case details["event_type"]
-    when "screen"  # unity screen transition
-      AnalyticsRuby.screen(
-        user_id: self.user_id,
-        name: details["flow_state"],
-        category: "unity",
-        event: "S: " + details["screen_name"],
-        properties: {
-          version: self.version,
-          device_id: self.device_id,
-          session_id: self.session_id
-        }.merge(details),
-        timestamp: self.created_at
+    properties = {
+      version: self.version,
+      user_id: self.user_id,
+      device_id: self.device_id,
+      session_id: self.session_id
+    }.merge(self.data)
+
+    logger.info("Event type " + event + " with properties: " + self.data.inspect)
+
+    case self.data["event_type"]
+      when "screen" then AnalyticsRuby.screen(
+	user_id: self.user_id,
+	event: event,
+	properties: properties,
+	timestamp: self.created_at
       )
-    else  # other event
-      AnalyticsRuby.track(
-        user_id: self.user_id,
-        event: "E: " + details["event_name"],
-        name: "Name", 
-        properties: {
-          version: self.version,
-          device_id: self.device_id,
-          session_id: self.session_id
-        }.merge(details),
-        timestamp: self.created_at
+      when "track" then AnalyticsRuby.track(
+	user_id: self.user_id,
+	event: event,
+	properties: properties,
+	timestamp: self.created_at
       )
+      else logger.error("Unknown analytic event_type")
     end
   end
 
