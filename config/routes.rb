@@ -78,5 +78,9 @@ GfAuthenticate::Application.routes.draw do
     resources :views
   end
 
+  namespace :surveys do
+    get 'beta_insight', to: 'beta_insight#index'
+  end
+
   root to: 'home#index'
 end
