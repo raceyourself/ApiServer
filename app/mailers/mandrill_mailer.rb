@@ -14,11 +14,17 @@ class MandrillMailer < Devise::Mailer
                                       # Template content
                                    ], MESSAGE_DEFAULTS.merge({
                                       'to' => [
-                                        { 'email' => record.email }
+                                        { 'email' => record.email, 
+                                          'name' => record.name }
                                       ],
                                       'global_merge_vars' => [
-                                        { 'name' => 'CONFIRMATION_URL', 
+                                        { 
+                                          'name' => 'CONFIRMATION_URL', 
                                           'content' => confirmation_url(record, :confirmation_token => token)
+                                        },
+                                        { 
+                                          'name' => 'NAME',
+                                          'content' => record.name
                                         }
                                       ]
                                    })
@@ -32,11 +38,17 @@ class MandrillMailer < Devise::Mailer
                                       # Template content
                                    ], MESSAGE_DEFAULTS.merge({
                                       'to' => [
-                                        { 'email' => record.email }
+                                        { 'email' => record.email, 
+                                          'name' => record.name }
                                       ],
                                       'global_merge_vars' => [
-                                        { 'name' => 'RESET_PASSWORD_URL', 
+                                        { 
+                                          'name' => 'RESET_PASSWORD_URL', 
                                           'content' => edit_password_url(record, :reset_password_token => token)
+                                        },
+                                        { 
+                                          'name' => 'NAME',
+                                          'content' => record.name
                                         }
                                       ]
                                    })
@@ -50,11 +62,17 @@ class MandrillMailer < Devise::Mailer
                                       # Template content
                                    ], MESSAGE_DEFAULTS.merge({
                                       'to' => [
-                                        { 'email' => record.email }
+                                        { 'email' => record.email, 
+                                          'name' => record.name }
                                       ],
                                       'global_merge_vars' => [
-                                        { 'name' => 'UNLOCK_URL', 
+                                        { 
+                                          'name' => 'UNLOCK_URL', 
                                           'content' => unlock_url(record, :unlock_token => token)
+                                        },
+                                        { 
+                                          'name' => 'NAME',
+                                          'content' => record.name
                                         }
                                       ]
                                    })
