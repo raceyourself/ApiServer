@@ -83,6 +83,9 @@ gem 'analytics-ruby', '~>1.0'
 gem 'gcm'
 gem 'apns'
 
+# e-mail
+gem 'mandrill-api'
+
 group :development, :test do
   gem 'faker'
   gem 'pry'

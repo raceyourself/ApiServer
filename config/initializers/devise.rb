@@ -26,7 +26,7 @@ Devise.setup do |config|
   config.mailer_sender = '"Race Yourself" <no-reply@raceyourself.com>'
 
   # Configure the class responsible to send e-mails.
-  # config.mailer = "Devise::Mailer"
+  config.mailer = "MandrillMailer"
 
   # ==> ORM configuration
   # Load and configure the ORM. Supports :active_record (default) and
