@@ -8,11 +8,11 @@ module Api
       ['out of shape', 'average', 'athletic', 'elite'].each do |fitness_level|
         matches[fitness_level] = matches(fitness_level, 10)
       end
-      expose matches
+      expose matches, methods: :positions
     end
 
     def show
-      expose matches(params[:id], 25)
+      expose matches(params[:id], 25), methods: :positions
     end
 
     def matches(fitness_level, bucket_size)

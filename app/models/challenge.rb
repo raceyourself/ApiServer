@@ -8,6 +8,8 @@ class Challenge < ActiveRecord::Base
   has_many :challenge_racers, -> { where accepted: true }, :class_name => 'ChallengeSubscriber'
   has_many :racers, :through => :challenge_racers, :source => :user 
 
+  before_save :default_values
+
   def challenge_type
     self.type.downcase.sub('challenge', '')
   end
@@ -47,5 +49,10 @@ class Challenge < ActiveRecord::Base
       this = existing
     end
     this
- end
+  end
+
+  def default_values
+    self.start_time ||= Time.now
+    self.stop_time ||= 48.hours.from_now
+  end
 end
