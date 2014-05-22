@@ -13,12 +13,12 @@ class Event < ActiveRecord::Base
     details = self.data
     
     case details["event_type"]
-    when "Flow state changed"  # unity screen transition
+    when "screen"  # unity screen transition
       AnalyticsRuby.screen(
         user_id: self.user_id,
         name: details["flow_state"],
         category: "unity",
-        event: details["flow_state"],
+        event: "S: " + details["screen_name"],
         properties: {
           version: self.version,
           device_id: self.device_id,
@@ -29,7 +29,7 @@ class Event < ActiveRecord::Base
     else  # other event
       AnalyticsRuby.track(
         user_id: self.user_id,
-        event: details["event_type"],
+        event: "E: " + details["event_name"],
         properties: {
           version: self.version,
           device_id: self.device_id,
