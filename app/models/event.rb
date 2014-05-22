@@ -29,11 +29,11 @@ class Event < ActiveRecord::Base
     case self.data["event_type"]
       when "screen" then AnalyticsRuby.screen(
 	user_id: self.user_id,
-	event: event,
+	name: event,
 	properties: properties,
 	timestamp: self.created_at
       )
-      when "track" then AnalyticsRuby.track(
+      when "event" then AnalyticsRuby.track(
 	user_id: self.user_id,
 	event: event,
 	properties: properties,
