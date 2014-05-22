@@ -30,6 +30,7 @@ class Event < ActiveRecord::Base
       AnalyticsRuby.track(
         user_id: self.user_id,
         event: "E: " + details["event_name"],
+        name: "Name", 
         properties: {
           version: self.version,
           device_id: self.device_id,
