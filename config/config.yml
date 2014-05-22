@@ -24,6 +24,9 @@ development:
   segment_io:
     write_key: 'uw6ekt93ry'
 
+  mandrill:
+    api_key: 'qFa7cvNN5G-bJw0zBZXtFQ'
+
 staging:
   facebook:
     client_id: '625999614089605'
@@ -49,6 +52,9 @@ staging:
 
   segment_io:
     write_key: 'uw6ekt93ry'
+
+  mandrill:
+    api_key: '8cQQ2ufzBLfYw_SbknHTqg'
 
 production:
   facebook:
@@ -76,6 +82,9 @@ production:
   segment_io:
     write_key: '1b1bkkaq3s'  # real user data only!
 
+  mandrill:
+    api_key: '8cQQ2ufzBLfYw_SbknHTqg'
+
 test:
   facebook:
     client_id: 'dummyid'
@@ -94,4 +103,7 @@ test:
 
   segment_io:
     write_key: 'uw6ekt93ry'
+
+  mandrill:
+    api_key: 'qFa7cvNN5G-bJw0zBZXtFQ'
 
