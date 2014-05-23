@@ -30,7 +30,7 @@ module Users
           @user = User.find_for_provider_oauth(request.env["omniauth.auth"], current_user)
         rescue => e
           reason = e.message || 'link to provider failed'
-          set_flash_message(:error, :failure, :kind => request.env["omniauth.auth"]["provider"].humanize, :reason => rason) if is_navigational_format?
+          set_flash_message(:error, :failure, :kind => request.env["omniauth.auth"]["provider"].humanize, :reason => reason) if is_navigational_format?
           redirect_to root_url
         end
 
@@ -69,7 +69,7 @@ module Users
             sign_in_and_redirect @user, :event => :authentication #this will throw if @user is not activated
             set_flash_message(:notice, :success, :kind => request.env["omniauth.auth"]["provider"].humanize) if is_navigational_format?
           end
-        else if false # Disabled atm
+        elsif false # Disabled atm
           data = request.env["omniauth.auth"].except("extra")
           data["x-access-level"] = request.env["omniauth.auth"].extra.access_token.response.header["x-access-level"] if request.env["omniauth.auth"].extra
           session["devise.provider_data"] = data
