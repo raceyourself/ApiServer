@@ -43,7 +43,7 @@ module Users
             unless invite
               identity_type = request.env["omniauth.auth"].provider
               identity_type.capitalize! << 'Identity'
-              identity = ::Identity.where(identity_type: identity_type, uid: request.env["omniauth.auth"].uid).first if request.env["omniauth.auth"]
+              identity = ::Identity.where(type: identity_type, uid: request.env["omniauth.auth"].uid).first if request.env["omniauth.auth"]
               invite = identity.invites.first if identity
             end
 
