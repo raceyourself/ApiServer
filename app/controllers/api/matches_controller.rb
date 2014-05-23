@@ -22,6 +22,7 @@ module Api
       matches = {}
       # Can be rewritten as a single select + group_by if we don't need an exact per-bucket size
       (5..60).step(5) do |duration|
+        # TODO: Prefer real users to bots
         matches[duration] = Track.where(:public => true)
                                  .where('distance > 0')
                                  .where('(time*1000/distance)/60 >= ? AND (time*1000/distance)/60 < ?', pace['min'], pace['max'])

@@ -10,14 +10,4 @@ class ApplicationController < ActionController::Base
     raise Exception.new("You're not an admin")
   end
 
-  def after_sign_in_path_for(user)
-    return confirmation_url(user) unless user.confirmed?
-    return super if user.admin?
-    
-    beta = Doorkeeper::Application.where(:name => 'BetaWeb').first
-    return super unless beta
-    #access_token = Doorkeeper::AccessToken.create!(:application_id => beta.id, :resource_owner_id => user.id, :expires_in => 1.seconds, :use_refresh_token => true)
-    #return 'http://beta.raceyourself.com/login?refresh_token=' + access_token.refresh_token
-    return 'http://beta.raceyourself.com/auth/glassfit'
-  end
 end

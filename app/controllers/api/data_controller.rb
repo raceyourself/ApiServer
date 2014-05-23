@@ -156,9 +156,10 @@ module Api
                          .where('used_at IS NULL')
                          .where('expires_at IS NULL or expires_at < ?', Time.now).first
           if invite
-            provider = action[:provider]
+            identity_type = action[:provider]
+            identity_type.capitalize! << 'Identity' unless identity_type.include? 'Identity'
             uid = action[:uid]
-            invite.update_attributes!({:identity_type => provider, :identity_uid => uid, :used_at => Time.now})
+            invite.update_attributes!({:identity_type => identity_type, :identity_uid => uid, :used_at => Time.now})
           end
         when 'matched_track'
           MatchedTrack.create!(user_id: current_resource_owner.id,

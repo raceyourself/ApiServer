@@ -8,7 +8,7 @@ class RegistrationsController < Devise::RegistrationsController
     # By code
     invite = Invite.where(:code => params[:invite_code]).first
     # By invited e-mail
-    invite = Invite.where(:identity_type => 'email').where(:identity_uid => params[:email]).first unless invite
+    invite = Invite.where(:identity_type => 'EmailIdentity').where(:identity_uid => params[:email]).first unless invite
     # TODO: By invited third-party identity
     raise 'Closed beta' unless invite || params[:invite_code] == 'adminadmin'
 

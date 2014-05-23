@@ -6,11 +6,13 @@ module Api
       # By code
       invite = Invite.where(:code => params[:invite_code]).first
       # By invited e-mail
-      invite = Invite.where(:identity_type => 'email').where(:identity_uid => params[:email]).first unless invite
+      invite = Invite.where(:identity_type => 'EmailIdentity').where(:identity_uid => params[:email]).first unless invite
       # By invited identity 
       # NOTE: authentication[:uid] is provided by client and cannot be trusted.
       authentication = params[:authentication] || {}
-      invite = Invite.where(:identity_type => authentication[:provider]).where(:identity_uid => authentication[:uid]).first unless invite
+      identity_type = authentication[:provider]
+      identity_type.capitalize! << 'Identity' unless identity_type.include? 'Identity'
+      invite = Invite.where(:identity_type => identity_type).where(:identity_uid => authentication[:uid]).first unless invite
       
       errors[:invite_code] = ['is missing'] unless invite
 

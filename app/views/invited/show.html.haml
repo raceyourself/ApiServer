@@ -1,0 +1,29 @@
+.centered-base.race-gradient
+  .centered-container
+    .hex-container
+      %h3 
+        - if @invite && @invite.identity
+          Hello #{@invite.identity.name}!
+        - else
+          Hello!
+        - if @invite && @invite.user
+          #{@invite.user.name} has invited you to Race Yourself' beta test!
+
+      %form{:method => 'POST'}
+        %p 
+          Please sign up to join
+        .form-actions
+          - if @invite
+            %input{:type => 'hidden', :name => 'invite_code', :value => @invite.code}
+          %input{:type => 'hidden', :name => 'provider', :value => 'facebook'}
+          %label{:for => 'device'} I have an
+          %input{:type => 'radio', :name => 'device', :value => 'iPhone'} iPhone
+          %input{:type => 'radio', :name => 'device', :value => 'Android'} Android mobile phone
+          %input{:type => 'radio', :name => 'device', :value => 'Other', :checked => true} Other device
+        = token_tag
+        .form-actions
+          %input{:type => 'submit', :value => 'Sign up using Facebook'}
+
+      - unless @invite
+        %small
+          Race Yourself is currently in a closed beta. An invitation is required to successfully sign up.
