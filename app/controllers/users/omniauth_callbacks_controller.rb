@@ -41,7 +41,9 @@ module Users
             # Send confirmation e-mail if invited and has iOS device
             invite = Invite.where(code: session['invite_code']) if session['invite_code']
             unless invite
-              identity = ::Identity.where(provider: request.env["omniauth.auth"].provider, uid: request.env["omniauth.auth"].uid).first if request.env["omniauth.auth"]
+              identity_type = request.env["omniauth.auth"].provider
+              identity_type.capitalize! << 'Identity'
+              identity = ::Identity.where(identity_type: identity_type, uid: request.env["omniauth.auth"].uid).first if request.env["omniauth.auth"]
               invite = identity.invites.first if identity
             end
 

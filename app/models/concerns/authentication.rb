@@ -91,7 +91,8 @@ module Concerns
 
         auto_register = false
         if auto_register && !u
-          identity = ::Identity.where(uid: uid).first
+          identity_type = provider.capitalize << 'Identity'
+          identity = ::Identity.where(identity_type: identity_type, uid: uid).first
           u = identity.user if identity
           unless u
             invite = identity.invites.first if identity
