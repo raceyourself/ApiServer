@@ -1,6 +1,6 @@
 GfAuthenticate::Application.routes.draw do
   use_doorkeeper
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks', registrations: 'registrations', confirmations: 'confirmations' }, :path => '', :path_names => {:confirmation => 'welcome'}
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks', registrations: 'registrations', confirmations: 'confirmations' }, :path_names => {:confirmation => 'welcome'}
   devise_scope :user do
     patch "/confirm" => "confirmations#confirm"
   end

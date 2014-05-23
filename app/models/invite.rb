@@ -10,12 +10,6 @@ class Invite < ActiveRecord::Base
     return used_at != nil
   end
 
-  def merge
-    # Rewrite provider short-name to class name if needed
-    self.identity_type.capitalize! << 'Identity' unless self.identity_type.include? 'Identity'
-    super
-  end
-
   def self.generate_for(user)
     max_invites = Configuration.for(user, '_internal')[:configuration]['max_invites'] || 0
 
