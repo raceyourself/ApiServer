@@ -1,15 +1,21 @@
 class SurveyBetaInsight < ActiveRecord::Base
 
-  after_commit :create_user, :on => [:create]
+  # try to create a user based on the new survey repsonse
+  before_create :create_user, :on => [:create]
 
   def create_user
 
     return if (self.email == nil)  # can't create user if we don't have their email
 
-    logger.info(self.email + " completed the beta insight survey, creating user account")
+    logger.info("Creating a new user account for survey respondent " + self.email)
 
-    u = User.new(:email => self.email, :username => self.email, :name => self.first_name + " " + self.last_name)
-    u.gender = if self.gender = "Male" then "m" elsif self.gender = "Female" then "f" else nil end
+    u = User.new
+    u.email = self.email
+    u.username = self.email
+    if (!self.first_name.nil? && !self.last_name.nil?)
+      u.name = self.first_name + " " + self.last_name
+    end
+    u.gender = if self.gender == "Male" then "m" elsif self.gender == "Female" then "f" else nil end
     u.profile = {
       "first_name" => self.first_name,
       "last_name" => self.last_name,
@@ -32,7 +38,7 @@ class SurveyBetaInsight < ActiveRecord::Base
     begin
       u.save(:validate => false)
       self.contact_id = u.id  # store the new user_id so we can join things up later
-      self.save!
+      #self.save!
       logger.info("User account created for " + self.email + ", ID is " + self.contact_id.to_s)
     rescue ActiveRecord::RecordInvalid => e1
       logger.info("User account creation failed! " + e1.to_s)
