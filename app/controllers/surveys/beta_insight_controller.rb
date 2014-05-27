@@ -7,7 +7,7 @@ module Surveys
 
       # collect the parameters we require/permit
       params.require(:email)
-      permitted = params.permit(:email, :first_name, :last_name, :phone_number, :url, :gender, :age_group, :country, :mobile_device_1, :mobile_device_2, :wearable_devices, :running_fitness, :cycling_fitness, :workout_fitness, :goals)
+      permitted = params.permit(:email, :first_name, :last_name, :phone_number, :url, :gender, :age_group, :country_as_entered, :mobile_device_1, :mobile_device_2, :wearable_devices, :running_fitness, :cycling_fitness, :workout_fitness, :goals)
  
       # save to db
       i = SurveyBetaInsight.new(permitted)
