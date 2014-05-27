@@ -3,7 +3,7 @@ class Identity < ActiveRecord::Base
   # Bidirectional friend graph
   has_many :friendships, :foreign_key => [:identity_type, :identity_uid], :dependent => :destroy
   has_many :friends, :through => :friendships # TODO: Figure out how to support self.friends.clear
-  has_many :invites, :foreign_key => [:identity_type, :identity_uid]
+  has_many :invites, :foreign_key => [:identity_type, :identity_uid], :dependent => :nullify
   belongs_to :user # Optional
 
   def provider

@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   # associations
   has_and_belongs_to_many :roles
   has_and_belongs_to_many :groups
-  has_many :game_states
+  has_many :game_states, :dependent => :destroy
 
   mount_uploader :image, AvatarUploader
   validates :image, 

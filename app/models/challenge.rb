@@ -1,9 +1,9 @@
 class Challenge < ActiveRecord::Base
   acts_as_paranoid
   has_one :creator
-  has_many :challenge_attempts
+  has_many :challenge_attempts, :dependent => :destroy
   has_many :attempts, :through => :challenge_attempts, :source => :track
-  has_many :challenge_subscribers
+  has_many :challenge_subscribers, :dependent => :destroy
   has_many :subscribers, :through => :challenge_subscribers, :source => :user
   has_many :challenge_racers, -> { where accepted: true }, :class_name => 'ChallengeSubscriber'
   has_many :racers, :through => :challenge_racers, :source => :user 

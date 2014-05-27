@@ -3,5 +3,5 @@ class Game < ActiveRecord::Base
 
   acts_as_paranoid
   has_many :menu_items
-  has_many :game_states
+  has_many :game_states, :dependent => :destroy
 end

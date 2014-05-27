@@ -5,12 +5,13 @@ module Concerns
     COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :events, :games]
 
     included do
-      has_many :devices
-      has_many :tracks
-      has_many :transactions
-      has_many :notifications
-      has_many :events
-      has_many :challenge_subscribers
+      has_many :devices, :dependent => :destroy
+      has_many :tracks, :dependent => :destroy
+      has_many :transactions, :dependent => :destroy
+      has_many :notifications, :dependent => :destroy
+      has_many :events, :dependent => :destroy
+      has_many :challenge_subscribers, :dependent => :destroy
+      has_many :identities, :dependent => :nullify
 
       define_method :challenges do
         self.challenge_subscribers.joins(:challenge)
