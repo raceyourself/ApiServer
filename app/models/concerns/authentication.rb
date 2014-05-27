@@ -23,14 +23,13 @@ module Concerns
 
           if user.nil?
             # create a new user
-            # TODO: Don't during beta and/or fix null e-mail on g+
             user = User.new(
               name: omniauth.extra.raw_info.name,
               password: Devise.friendly_token[0,20],
-              email: omniauth.info.email || omniauth.uid+'-'+omniauth.provider+'@raceyourself.com'
+              email: omniauth.info.email
             )
-            # Skip confirmation for third-party identity providers
-            user.skip_confirmation!
+            # Do not send confirmation until accepted to beta
+            user.skip_confirmation_notification!
             user.save!
           end
           auth = user.authentications.build.tap do |a|
@@ -92,7 +91,8 @@ module Concerns
 
         auto_register = false
         if auto_register && !u
-          identity = ::Identity.where(uid: uid).first
+          identity_type = provider.capitalize << 'Identity'
+          identity = ::Identity.where(type: identity_type, uid: uid).first
           u = identity.user if identity
           unless u
             invite = identity.invites.first if identity

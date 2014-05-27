@@ -1,6 +1,6 @@
 GfAuthenticate::Application.routes.draw do
   use_doorkeeper
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks', registrations: 'registrations', confirmations: 'confirmations' }
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks', registrations: 'registrations', confirmations: 'confirmations' }, :path_names => {:confirmation => 'welcome'}
   devise_scope :user do
     patch "/confirm" => "confirmations#confirm"
   end
@@ -81,6 +81,9 @@ GfAuthenticate::Application.routes.draw do
   namespace :surveys do
     get 'beta_insight', to: 'beta_insight#index'
   end
+
+  get 'invited', to: 'invited#show'
+  post 'invited', to: 'invited#continue'
 
   root to: 'home#index'
 end
