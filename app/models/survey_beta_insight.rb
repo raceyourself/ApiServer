@@ -61,14 +61,27 @@ class SurveyBetaInsight < ActiveRecord::Base
   end
 
   def wearable_devices=(value)
-    self.wearable_glass = value[0]
-    self.wearable_other_title = value[1]
-    self.wearable_other = value[2]
+    # Idiotic surveygizmo format
+    hash = value
+    hash = {0 => value} unless value.is_a?(Hash)
+    hash.each do |key,wearable|
+      case wearable.downcase
+      when 'google glass'
+        self.wearable_glass = wearable
+      when 'smartwatch [please write the model name in the box]'
+          self.wearable_other_title = wearable
+      else
+        self.wearable_other << '; ' unless self.wearable_other.blank?
+        self.wearable_other << wearable
+      end
+    end
   end
 
   def goals=(value)
-    other_title_set = false
-    value.each do |key,goal|
+    # Idiotic surveygizmo format
+    hash = value
+    hash = {0 => value} unless value.is_a?(Hash)
+    hash.each do |key,goal|
       case goal.downcase
       when 'go faster'
         self.goal_faster = goal
@@ -84,15 +97,11 @@ class SurveyBetaInsight < ActiveRecord::Base
         self.goal_faster = goal
       when 'help manage a chronic condition'
         self.goal_manage_condition = goal
-      else
-        unless other_title_set
+      when 'other'
           self.goal_other_title = goal
-          self.goal_other = ''
-          other_title_set = true
-        else
-          self.goal_other << '; ' unless self.goal_other.blank?
-          self.goal_other << goal
-        end
+      else
+        self.goal_other << '; ' unless self.goal_other.blank?
+        self.goal_other << goal
       end
     end
   end
