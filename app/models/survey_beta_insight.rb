@@ -69,8 +69,11 @@ class SurveyBetaInsight < ActiveRecord::Base
       when 'google glass'
         self.wearable_glass = wearable
       when 'smartwatch [please write the model name in the box]'
-          self.wearable_other_title = wearable
+        self.wearable_other_title = wearable
+      when nil
+        # Ignore
       else
+        self.wearable_other = '' if self.wearable_other.nil?
         self.wearable_other << '; ' unless self.wearable_other.blank?
         self.wearable_other << wearable
       end
@@ -98,8 +101,11 @@ class SurveyBetaInsight < ActiveRecord::Base
       when 'help manage a chronic condition'
         self.goal_manage_condition = goal
       when 'other'
-          self.goal_other_title = goal
+        self.goal_other_title = goal
+      when nil
+        # Ignore
       else
+        self.goal_other = '' if self.goal_other.nil?
         self.goal_other << '; ' unless self.goal_other.blank?
         self.goal_other << goal
       end
