@@ -69,20 +69,20 @@ class SurveyBetaInsight < ActiveRecord::Base
   def goals=(value)
     other_title_set = false
     value.each do |key,goal|
-      case goal
-      when 'Go faster'
+      case goal.downcase
+      when 'go faster'
         self.goal_faster = goal
-      when 'Go further'
+      when 'go further'
         self.goal_further = goal
-      when 'Go slimmer'
+      when 'go slimmer'
         self.goal_slimmer = goal
-      when 'Go stronger'
+      when 'get stronger'
         self.goal_stronger = goal
-      when 'Feel happier'
+      when 'feel happier'
         self.goal_happier = goal
-      when 'Live longer'
+      when 'live longer'
         self.goal_faster = goal
-      when 'Help manager a chronic condition'
+      when 'help manage a chronic condition'
         self.goal_manage_condition = goal
       else
         unless other_title_set
