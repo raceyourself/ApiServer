@@ -4,8 +4,13 @@ class SurveyBetaInsight < ActiveRecord::Base
   before_create :create_user, :on => [:create]
 
   def create_user
-
-    return if (self.email == nil)  # can't create user if we don't have their email
+    return true if (self.email == nil)  # can't create user if we don't have their email
+    existing = User.where(email: self.email).first
+    if existing
+      logger.info("Linking to existing user account for survey respondent " + self.email)
+      self.contact_id = existing.id
+      return true
+    end
 
     logger.info("Creating a new user account for survey respondent " + self.email)
 
@@ -15,7 +20,7 @@ class SurveyBetaInsight < ActiveRecord::Base
     if (!self.first_name.nil? && !self.last_name.nil?)
       u.name = self.first_name + " " + self.last_name
     end
-    u.gender = if self.gender == "Male" then "m" elsif self.gender == "Female" then "f" else nil end
+    u.gender = if self.gender == "Male" then "M" elsif self.gender == "Female" then "F" else 'U' end
     u.profile = {
       "first_name" => self.first_name,
       "last_name" => self.last_name,
@@ -31,14 +36,13 @@ class SurveyBetaInsight < ActiveRecord::Base
       "running_fitness" => self.running_fitness,
       "cycling_fitness" => self.cycling_fitness,
       "workout_fitness" => self.workout_fitness,
-      "goals" => [self.goal_faster, self.goal_further, self.goal_slimmer, self.goal_stronger, self.goal_happier, self.goal_live_longer, self.goal_manage_condition, self.goal_other].compact
+      "goals" => [self.goal_faster, self.goal_further, self.goal_slimmer, self.goal_stronger, self.goal_happier, self.goal_live_longer, self.goal_manage_condition, self.goal_other].compact # TODO: goal_other_title?
     }
-    u.skip_confirmation!
+    u.skip_confirmation_notification!
 
     begin
-      u.save(:validate => false)
+      u.save!
       self.contact_id = u.id  # store the new user_id so we can join things up later
-      #self.save!
       logger.info("User account created for " + self.email + ", ID is " + self.contact_id.to_s)
     rescue ActiveRecord::RecordInvalid => e1
       logger.info("User account creation failed! " + e1.to_s)
@@ -47,6 +51,50 @@ class SurveyBetaInsight < ActiveRecord::Base
       logger.info("User account creation failed! " + e2.to_s)
     end
 
+    return true
+  end
+
+  ## Aliased fields
+  
+  def country=(value)
+    self.country_as_entered = value
+  end
+
+  def wearable_devices=(value)
+    self.wearable_glass = value[0]
+    self.wearable_other_title = value[1]
+    self.wearable_other = value[2]
+  end
+
+  def goals=(value)
+    other_title_set = false
+    value.each do |key,goal|
+      case goal
+      when 'Go faster'
+        self.goal_faster = goal
+      when 'Go further'
+        self.goal_further = goal
+      when 'Go slimmer'
+        self.goal_slimmer = goal
+      when 'Go stronger'
+        self.goal_stronger = goal
+      when 'Feel happier'
+        self.goal_happier = goal
+      when 'Live longer'
+        self.goal_faster = goal
+      when 'Help manager a chronic condition'
+        self.goal_manage_condition = goal
+      else
+        unless other_title_set
+          self.goal_other_title = goal
+          self.goal_other = ''
+          other_title_set = true
+        else
+          self.goal_other << '; ' unless self.goal_other.blank?
+          self.goal_other << goal
+        end
+      end
+    end
   end
 
 end
