@@ -99,6 +99,7 @@ class User < ActiveRecord::Base
       traits: {
         # personal data
         email: self.email,
+        cohort: self.cohort,
         username: self.username,  #unique
         name: self.name,  #free text
         #firstName: self.name.present? ? self.name.strip.split("\s").first : nil,  #needed for mailChimp

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140516145937) do
+ActiveRecord::Schema.define(version: 20140529133638) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -347,6 +347,7 @@ ActiveRecord::Schema.define(version: 20140516145937) do
     t.string   "country_as_entered"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "cohort"
   end
 
   create_table "tracks", id: false, force: true do |t|
@@ -422,6 +423,7 @@ ActiveRecord::Schema.define(version: 20140516145937) do
     t.json     "profile",                          default: {}
     t.text     "image"
     t.integer  "timezone"
+    t.string   "cohort"
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree

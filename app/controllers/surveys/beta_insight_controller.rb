@@ -6,6 +6,7 @@ module Surveys
       # collect the parameters we require/permit
       params.require(:email)
       permitted = params.permit(:email, 
+                                :cohort,
                                 :first_name, 
                                 :last_name, 
                                 :phone_number, 

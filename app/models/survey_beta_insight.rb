@@ -16,6 +16,7 @@ class SurveyBetaInsight < ActiveRecord::Base
 
     u = User.new
     u.email = self.email
+    u.cohort = self.cohort
     u.username = self.email
     if (!self.first_name.nil? && !self.last_name.nil?)
       u.name = self.first_name + " " + self.last_name
