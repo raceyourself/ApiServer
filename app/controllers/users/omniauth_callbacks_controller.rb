@@ -2,21 +2,21 @@ module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     def facebook
-      standard_provider
+      standard_provider('facebook')
       if @user.persisted?
         FacebookFriendsWorker.perform_async(@user.id)
       end
     end
 
     def twitter
-      standard_provider
+      standard_provider('twitter')
       if @user.persisted?
         TwitterFriendsWorker.perform_async(@user.id)
       end
     end
 
     def gplus 
-      standard_provider
+      standard_provider('gplus')
       if @user.persisted?
         GplusFriendsWorker.perform_async(@user.id)
       end
@@ -25,12 +25,12 @@ module Users
 
     protected
 
-      def standard_provider
+      def standard_provider(provider)
         begin
           @user = User.find_for_provider_oauth(request.env["omniauth.auth"], current_user)
         rescue => e
           reason = e.message || 'link to provider failed'
-          set_flash_message(:error, :failure, :kind => request.env["omniauth.auth"]["provider"].humanize, :reason => reason) if is_navigational_format?
+          set_flash_message(:error, :failure, :kind => provider.humanize, :reason => reason) if is_navigational_format?
           redirect_to root_url
         end
 
