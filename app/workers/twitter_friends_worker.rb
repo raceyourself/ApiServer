@@ -22,7 +22,9 @@ class TwitterFriendsWorker
     me = TwitterIdentity.new().update_from_twitter(credentials)
     me.user_id = user.id
     me = me.merge
+    return if me.refreshed_at > 5.minutes.ago
     ActiveRecord::Base.transaction do
+      me.update!(:refreshed_at => Time.now)
       me.friendships.where(:friend_type => 'TwitterIdentity').destroy_all
       get_twitter_friends(client).each do |friend|
         fid = TwitterIdentity.new().update_from_twitter(friend)

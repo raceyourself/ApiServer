@@ -29,6 +29,13 @@ module Api
       end
       # update the user record with last sync time (now)
       current_resource_owner.update_attribute(:sync_timestamp, Time.now)
+      # refresh user friends if needed
+      current_resource_owner.identities.where('refreshed_at < ?', 5.minutes.ago).each do |id|
+        if current_resource_owner.authentications.where(provider: id.provider).last.present?
+          # Refresh in background worker
+          "#{id.provider.capitalize}FriendsWorker".constantize.perform_async(current_resource_owner.id)
+        end
+      end
 
       now = Time.now
 

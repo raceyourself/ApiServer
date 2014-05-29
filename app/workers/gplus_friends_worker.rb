@@ -20,7 +20,9 @@ class GplusFriendsWorker
     me = GplusIdentity.new().update_from_gplus(result.data)
     me.user_id = user.id
     me = me.merge
+    return if me.refreshed_at > 5.minutes.ago
     ActiveRecord::Base.transaction do
+      me.update!(:refreshed_at => Time.now)
       me.friendships.where(:friend_type => 'GplusIdentity').destroy_all
       req = {
           :api_method => plus.people.list, 
