@@ -1,9 +1,7 @@
-.centered-base.race-gradient
-  .centered-container
-    .hex-container
-      %h2 Resend confirmation instructions
-      = simple_form_for(resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :method => :post }) do |f|
-        .form-inputs
-          = f.input :email, :required => true, :autofocus => true
-        .form-actions
-          = f.button :submit, "Resend confirmation instructions"
+- if @admin
+  = render 'resend'
+- else
+  - if @invited && @iPhone
+    = render 'holding'
+  - else
+    = render 'waiting'

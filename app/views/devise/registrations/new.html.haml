@@ -5,6 +5,12 @@
       .form-inputs
         = f.input :email, :required => true, :autofocus => true
         = f.input :username
+        .control-group.string.required
+          %label.string.required.control-label{:for => 'invite_code'} 
+            %abbr{:title => 'required'} *
+            Invite code
+          .controls
+            %input.string.required{:name => 'invite_code', :type => 'text'}
       .form-actions
         = f.button :submit, "Sign up", class: 'btn btn-primary'
     = render "devise/shared/links"

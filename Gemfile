@@ -45,6 +45,8 @@ gem 'doorkeeper', '~> 0.7.0'
 
 # forms
 gem 'simple_form', '~> 3.0.0.beta1'
+gem 'carrierwave'
+gem 'mini_magick'
 
 #caching
 gem 'dalli'
@@ -63,6 +65,7 @@ gem 'rails_admin'
 # worker
 gem 'sinatra'
 gem 'sidekiq'
+gem 'whenever', :require => false
 
 # social
 gem 'koala'
@@ -72,11 +75,16 @@ gem 'google-api-client'
 # analytics
 gem 'newrelic_rpm'
 gem 'rocket_pants-rpm'
-gem 'newrelic_moped'
+#gem 'newrelic_moped'
+gem 'staccato'
+gem 'analytics-ruby', '~>1.0'
 
 # push notifications
 gem 'gcm'
 gem 'apns'
+
+# e-mail
+gem 'mandrill-api'
 
 group :development, :test do
   gem 'faker'
@@ -99,6 +107,7 @@ group :development do
   gem 'capistrano-rails', '~> 1.1', require: false
   gem 'capistrano-bundler', '~> 1.1', require: false
   gem 'capistrano-rvm', '~> 0.1', require: false
+  gem 'capistrano-sidekiq'
 end
 
 group :test do

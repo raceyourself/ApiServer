@@ -11,10 +11,10 @@
         %a.brand(href="#") Race Yourself SSO
         .container.nav-collapse
           %ul.nav
-            %li= link_to 'My Account', '/users/edit'
+            %li= link_to 'My Account', edit_user_registration_path
             - if current_user.admin?
               %li= link_to 'Manage Apps', '/oauth/applications'
               %li= link_to 'API Docs', '/api_docs/'
               %li= link_to 'Data Manager', '/admin'
               %li= link_to 'Workers', '/sidekiq'
-            %li= link_to 'Sign Out', '/users/sign_out', method: 'delete'
+            %li= link_to 'Sign Out', destroy_user_session_path, method: 'delete'

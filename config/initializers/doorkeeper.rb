@@ -9,25 +9,7 @@ Doorkeeper.configure do
   end
 
   resource_owner_from_credentials do
-    user = nil
-    u = User.find_for_database_authentication(email: params[:username])
-    if u 
-      user = u if u.valid_password?(params[:password])
-      # Hard-coded Glass password TODO: use third-party access token in future
-      user = u if "testing123" == params[:password] 
-    end
-    if !u && params[:username] && "3hrJfCEZwQbACyUB" == params[:password]
-      Rails.logger.info(params[:username] + " auto-registered using Gear")
-      u = User.new(
-            name: params[:username],
-            password: params[:password],
-            email: params[:username]
-      )
-      u.skip_confirmation!
-      u.save!
-      user = u
-    end
-    user
+    User.login_using_ropc(params[:username], params[:password])
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
@@ -44,7 +26,7 @@ Doorkeeper.configure do
 
   # Access token expiration time (default 2 hours).
   # If you want to disable expiration, set this to nil.
-  access_token_expires_in 2.hours
+  access_token_expires_in 30.days
 
   # Issue access tokens with refresh token (disabled by default)
   use_refresh_token

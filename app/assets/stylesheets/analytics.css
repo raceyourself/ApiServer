@@ -6,3 +6,31 @@
 #analyticscontainer {
   padding: 15px;
 }
+
+div.chart{
+  font-family:sans-serif;
+  font-size:0.7em;
+}
+
+div.line {
+  margin-bottom:1em;
+}
+
+div.bar {
+  display:inline-block;
+  height:3em;
+  background-color:#39bc3c;
+  color:lightgray;
+  line-height:3em;
+  text-align:center;
+  padding-right:0em;
+}
+
+div.bar_label {
+  display:inline-block;
+  height:3em;
+  width:13em;
+  line-height:3em;
+  padding-right:1em;
+  text-align:right;
+}

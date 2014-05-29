@@ -21,6 +21,12 @@ development:
     apns_host: 'gateway.sandbox.push.apple.com'
     apns_pem: '/etc/ssl/apns/apns.pem'
 
+  segment_io:
+    write_key: 'uw6ekt93ry'
+
+  mandrill:
+    api_key: 'qFa7cvNN5G-bJw0zBZXtFQ'
+
 staging:
   facebook:
     client_id: '625999614089605'
@@ -43,6 +49,12 @@ staging:
   apple:
     apns_host: 'gateway.sandbox.push.apple.com'
     apns_pem: '/etc/ssl/apns/apns.pem'
+
+  segment_io:
+    write_key: 'uw6ekt93ry'
+
+  mandrill:
+    api_key: '8cQQ2ufzBLfYw_SbknHTqg'
 
 production:
   facebook:
@@ -67,6 +79,12 @@ production:
     apns_host: 'gateway.sandbox.push.apple.com'
     apns_pem: '/etc/ssl/apns/apns.pem'
 
+  segment_io:
+    write_key: '1b1bkkaq3s'  # real user data only!
+
+  mandrill:
+    api_key: '8cQQ2ufzBLfYw_SbknHTqg'
+
 test:
   facebook:
     client_id: 'dummyid'
@@ -82,4 +100,10 @@ test:
     client_secret: 'dummysecret'
     scope: 'plus.login'
     request_visible_actions: 'AddActivity'
+
+  segment_io:
+    write_key: 'uw6ekt93ry'
+
+  mandrill:
+    api_key: 'qFa7cvNN5G-bJw0zBZXtFQ'
 

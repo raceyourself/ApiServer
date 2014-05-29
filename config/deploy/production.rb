@@ -37,3 +37,6 @@ server 'api.raceyourself.com', user: 'deployer', roles: %w{web app}, my_property
 #     # password: 'please use keys'
 #   }
 # setting per server overrides global ssh_options
+
+# use master branch for production deploys
+set :branch, "master"

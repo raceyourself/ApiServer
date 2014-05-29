@@ -1,6 +1,6 @@
 GfAuthenticate::Application.routes.draw do
   use_doorkeeper
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks', registrations: 'registrations', confirmations: 'confirmations' }
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks', registrations: 'registrations', confirmations: 'confirmations' }, :path_names => {:confirmation => 'welcome'}
   devise_scope :user do
     patch "/confirm" => "confirmations#confirm"
   end
@@ -23,7 +23,10 @@ GfAuthenticate::Application.routes.draw do
   namespace :api do
     api version: 1 do
       match 'me', to: 'credentials#show', via: 'get'
-      resource :credentials, only: [:show]
+      match 'me', to: 'credentials#create', via: 'post'
+      resource :credentials
+      resource :sign_up
+      resources :providers
       resources :devices
       resources :transactions
       resources :tracks
@@ -32,6 +35,8 @@ GfAuthenticate::Application.routes.draw do
       resources :challenges
       resources :configurations
       resources :games
+      resources :invites
+      resources :matches
 
       get 'data', to: 'data#index'
       post 'data', to: 'data#create'
@@ -72,6 +77,13 @@ GfAuthenticate::Application.routes.draw do
     resources :queries
     resources :views
   end
+
+  namespace :surveys do
+    get 'beta_insight', to: 'beta_insight#index'
+  end
+
+  get 'invited', to: 'invited#show'
+  post 'invited', to: 'invited#continue'
 
   root to: 'home#index'
 end

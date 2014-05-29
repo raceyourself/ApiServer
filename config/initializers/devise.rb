@@ -5,7 +5,7 @@ Devise.setup do |config|
   require 'omniauth-facebook'
   require 'omniauth-twitter'
   require File.expand_path('lib/omniauth/strategies/gplus', Rails.root)
-  OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE if Rails.env.development? 
+  #OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE if Rails.env.development? 
 
   config.omniauth :facebook, CONFIG[:facebook][:client_id], CONFIG[:facebook][:client_secret], {
     scope: CONFIG[:facebook][:scope]
@@ -26,7 +26,7 @@ Devise.setup do |config|
   config.mailer_sender = '"Race Yourself" <no-reply@raceyourself.com>'
 
   # Configure the class responsible to send e-mails.
-  # config.mailer = "Devise::Mailer"
+  config.mailer = "MandrillMailer"
 
   # ==> ORM configuration
   # Load and configure the ORM. Supports :active_record (default) and
@@ -119,7 +119,7 @@ Devise.setup do |config|
   # able to access the website for two days without confirming his account,
   # access will be blocked just in the third day. Default is 0.days, meaning
   # the user cannot access the website without confirming his account.
-  config.allow_unconfirmed_access_for = 1.year
+  config.allow_unconfirmed_access_for = 0.days
 
   # A period that the user is allowed to confirm their account before their
   # token becomes invalid. For example, if set to 3.days, the user can confirm

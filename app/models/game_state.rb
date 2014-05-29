@@ -1,5 +1,7 @@
 class GameState < ActiveRecord::Base
   belongs_to :game
+  belongs_to :user
+  belongs_to :group
 
   def self.last_modified
     GameState.maximum(:updated_at)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140417083312) do
+ActiveRecord::Schema.define(version: 20140529133638) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,8 @@ ActiveRecord::Schema.define(version: 20140417083312) do
     t.string   "permissions"
   end
 
+  add_index "authentications", ["provider", "uid"], name: "index_authentications_on_provider_and_uid", unique: true, using: :btree
+
   create_table "challenge_attempts", id: false, force: true do |t|
     t.integer "challenge_id", null: false
     t.integer "device_id",    null: false
@@ -53,14 +55,15 @@ ActiveRecord::Schema.define(version: 20140417083312) do
   end
 
   create_table "challenge_subscribers", id: false, force: true do |t|
-    t.integer "challenge_id", null: false
-    t.integer "user_id",      null: false
+    t.integer "challenge_id",                 null: false
+    t.integer "user_id",                      null: false
+    t.boolean "accepted",     default: false
   end
 
   create_table "challenges", force: true do |t|
     t.datetime "start_time"
     t.datetime "stop_time"
-    t.boolean  "public",     default: false
+    t.boolean  "public",         default: false
     t.integer  "creator_id"
     t.string   "type"
     t.integer  "distance"
@@ -70,6 +73,10 @@ ActiveRecord::Schema.define(version: 20140417083312) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
+    t.string   "name"
+    t.text     "description"
+    t.integer  "points_awarded", default: 0,     null: false
+    t.string   "prize"
   end
 
   create_table "configurations", force: true do |t|
@@ -92,12 +99,12 @@ ActiveRecord::Schema.define(version: 20140417083312) do
   end
 
   create_table "events", force: true do |t|
-    t.integer  "ts",         limit: 8
-    t.integer  "version"
-    t.integer  "device_id"
-    t.integer  "session_id"
-    t.integer  "user_id"
-    t.json     "data"
+    t.integer  "ts",         limit: 8, null: false
+    t.integer  "version",              null: false
+    t.integer  "device_id",            null: false
+    t.integer  "session_id",           null: false
+    t.integer  "user_id",              null: false
+    t.json     "data",                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -125,14 +132,16 @@ ActiveRecord::Schema.define(version: 20140417083312) do
   add_index "game_states", ["game_id"], name: "index_game_states_on_game_id", using: :btree
 
   create_table "games", id: false, force: true do |t|
-    t.string  "id",              null: false
-    t.string  "name",            null: false
-    t.string  "description",     null: false
-    t.integer "tier",            null: false
-    t.integer "price_in_points", null: false
-    t.integer "price_in_gems",   null: false
-    t.string  "scene_name",      null: false
-    t.string  "type",            null: false
+    t.string   "id",              null: false
+    t.string   "name",            null: false
+    t.string   "description",     null: false
+    t.integer  "tier",            null: false
+    t.integer  "price_in_points", null: false
+    t.integer  "price_in_gems",   null: false
+    t.string   "scene_name",      null: false
+    t.string   "type",            null: false
+    t.datetime "deleted_at"
+    t.string   "activity"
   end
 
   create_table "groups", force: true do |t|
@@ -150,16 +159,34 @@ ActiveRecord::Schema.define(version: 20140417083312) do
   add_index "groups_users", ["user_id", "group_id"], name: "index_groups_users_on_user_id_and_group_id", using: :btree
 
   create_table "identities", id: false, force: true do |t|
-    t.integer "user_id"
-    t.boolean "has_glass",   default: false
-    t.string  "type",                        null: false
-    t.string  "uid",                         null: false
-    t.string  "name"
-    t.string  "photo"
-    t.string  "screen_name"
+    t.integer  "user_id"
+    t.boolean  "has_glass",    default: false
+    t.string   "type",                                         null: false
+    t.string   "uid",                                          null: false
+    t.string   "name"
+    t.string   "photo"
+    t.string   "screen_name"
+    t.datetime "refreshed_at", default: '1970-01-01 00:00:00', null: false
   end
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
+
+  create_table "invites", id: false, force: true do |t|
+    t.string   "code",          null: false
+    t.datetime "expires_at"
+    t.datetime "used_at"
+    t.integer  "user_id"
+    t.string   "identity_type"
+    t.string   "identity_uid"
+  end
+
+  add_index "invites", ["identity_type", "identity_uid"], name: "index_invites_on_identity_type_and_identity_uid", using: :btree
+
+  create_table "matched_tracks", id: false, force: true do |t|
+    t.integer "user_id",   null: false
+    t.integer "device_id", null: false
+    t.integer "track_id",  null: false
+  end
 
   create_table "menu_items", force: true do |t|
     t.string  "icon",    null: false
@@ -272,6 +299,57 @@ ActiveRecord::Schema.define(version: 20140417083312) do
 
   add_index "roles_users", ["user_id", "role_id"], name: "index_roles_users_on_user_id_and_role_id", using: :btree
 
+  create_table "survey_beta_insights", force: true do |t|
+    t.integer  "response_id"
+    t.datetime "time_started"
+    t.datetime "time_submitted"
+    t.string   "status"
+    t.text     "contact_id"
+    t.text     "legacy_comments"
+    t.text     "comments"
+    t.text     "language"
+    t.text     "referrer"
+    t.text     "extended_referrer"
+    t.text     "session_id"
+    t.text     "user_agent"
+    t.text     "extended_user_agent"
+    t.string   "ip_address"
+    t.float    "longitude"
+    t.float    "latitude"
+    t.string   "country_auto"
+    t.string   "city"
+    t.string   "region"
+    t.string   "post_code"
+    t.string   "mobile_device_1"
+    t.string   "mobile_device_2"
+    t.string   "wearable_glass"
+    t.string   "wearable_other_title"
+    t.string   "wearable_other"
+    t.string   "running_fitness"
+    t.string   "cycling_fitness"
+    t.string   "workout_fitness"
+    t.string   "goal_faster"
+    t.string   "goal_further"
+    t.string   "goal_slimmer"
+    t.string   "goal_stronger"
+    t.string   "goal_happier"
+    t.string   "goal_live_longer"
+    t.string   "goal_manage_condition"
+    t.string   "goal_other_title"
+    t.string   "goal_other"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "email"
+    t.string   "phone_number"
+    t.string   "url"
+    t.string   "gender"
+    t.string   "age_group"
+    t.string   "country_as_entered"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "cohort"
+  end
+
   create_table "tracks", id: false, force: true do |t|
     t.integer  "device_id",                               null: false
     t.integer  "track_id",                                null: false
@@ -341,6 +419,11 @@ ActiveRecord::Schema.define(version: 20140417083312) do
     t.integer  "sync_key",                         default: 0,     null: false
     t.datetime "sync_timestamp"
     t.string   "gender",                 limit: 1
+    t.integer  "invites",                          default: 0
+    t.json     "profile",                          default: {}
+    t.text     "image"
+    t.integer  "timezone"
+    t.string   "cohort"
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree

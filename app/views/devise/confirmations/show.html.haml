@@ -1,18 +1,28 @@
-.centered-base.race-gradient
+.centered-base
   .centered-container
     .hex-container
-      %h2 Thank you for joining the Race Yourself beta
+      %h2 Thank you for joining Race Yourself
       %p Please enter your details below:
       = simple_form_for(resource, :as => resource_name, :url => confirm_path) do |form|
         = form.error_notification
         .form-inputs
-          = form.input :username
-          = form.input :name
           = form.input :password, :input_html => {:autofocus => true}
           = form.input :password_confirmation
-          .inline-group
-            %p Gender
-            = form.collection_radio_buttons :gender, [['M', 'male'], ['F', 'female'], ['U', 'undisclosed']], :first, :last, :default => 'U'
+          .inline-group{:class => ("error" if @privacy_confirmed == false)}
+            %input{:type => 'checkbox', :name => 'privacy_confirmed', :id => 'privacy_confirmed', :checked => @privacy_confirmed}
+            %label{:for => 'age_confirmed'} 
+              I agree to the 
+              %a{:href => "http://www.raceyourself.com/privacy_policy", :target => 'popover'} Privacy Policy
+          .inline-group{:class => ("error" if @disclaimer_confirmed == false)}
+            %input{:type => 'checkbox', :name => 'disclaimer_confirmed', :id => 'disclaimer_confirmed', :checked => @disclaimer_confirmed}
+            %label{:for => 'age_confirmed'} 
+              I agree to the 
+              %a{:href => "http://www.raceyourself.com/medical_disclaimer", :target => 'popover'} Medical Disclaimer
+          .inline-group{:class => ("error" if @eula_confirmed == false)}
+            %input{:type => 'checkbox', :name => 'eula_confirmed', :id => 'eula_confirmed', :checked => @eula_confirmed}
+            %label{:for => 'age_confirmed'} 
+              I agree to the 
+              %a{:href => "http://www.raceyourself.com/eula", :target => 'popover'} End User License Agreement
           .inline-group{:class => ("error" if @age_confirmed == false)}
             %input{:type => 'checkbox', :name => 'age_confirmed', :id => 'age_confirmed', :checked => @age_confirmed}
             %label{:for => 'age_confirmed'} I confirm that I am over 16 years of age

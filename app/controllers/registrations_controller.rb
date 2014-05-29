@@ -4,6 +4,14 @@ class RegistrationsController < Devise::RegistrationsController
  
 
   def create
+    Rails.logger.info(params[:invite_code])
+    # By code
+    invite = Invite.where(:code => params[:invite_code]).first
+    # By invited e-mail
+    invite = Invite.where(:identity_type => 'EmailIdentity').where(:identity_uid => params[:email]).first unless invite
+    # TODO: By invited third-party identity
+    raise 'Closed beta' unless invite || params[:invite_code] == 'adminadmin'
+
     build_resource(sign_up_params)
 
     if resource.save
@@ -16,6 +24,9 @@ class RegistrationsController < Devise::RegistrationsController
         end
         auth.save
       end
+
+      # Destroy accepted invite
+      invite.destroy if invite
 
       if resource.active_for_authentication?
         set_flash_message :notice, :signed_up if is_navigational_format?
@@ -39,11 +50,11 @@ class RegistrationsController < Devise::RegistrationsController
     def configure_permitted_parameters
       
       devise_parameter_sanitizer.for(:sign_up) do |u|
-        u.permit(:name, :username, :email)
+        u.permit(:name, :username, :email, :image, :image_cache)
       end
 
       devise_parameter_sanitizer.for(:account_update) do |u|
-        u.permit(:name, :username, :email, :password, :password_confirmation, :current_password)
+        u.permit(:name, :username, :email, :password, :password_confirmation, :current_password, :image, :image_cache)
       end
     end
 end

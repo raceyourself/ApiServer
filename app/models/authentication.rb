@@ -24,6 +24,37 @@ class Authentication < ActiveRecord::Base
 
   end
 
+  def update_from_access_token(token)
+    self.token = token
+    self.token_secret = nil
+    self.token_expires = false
+    self.token_expires_at = nil
+
+    case self.provider
+    when 'facebook'
+      graph = Koala::Facebook::API.new(self.token)
+      me = graph.get_object('me?fields=id,name,email,picture.width(256).height(256),gender,timezone')
+      self.uid = me['id']
+      self.email = me['email'] if me['email']
+      if user = self.user
+        user.name = me['name'] if user.name.blank? && me['email']
+        image = me['picture']['data']['url'] if me['picture']
+        user.remote_image_url = image if user.image.blank? && image
+        case me['gender']
+        when 'male'
+          gender = 'M'
+        when 'female'
+          gender = 'F'
+        end
+        user.gender = gender if user.gender == 'U' && gender
+        user.timezone = me['timezone'] if user.timezone.blank? && me['timezone']
+        user.save if user.persisted?
+      end
+    end
+
+    update_permissions_from_provider()
+  end
+
   def update_permissions_from_provider
     perms = []
 
@@ -45,5 +76,16 @@ class Authentication < ActiveRecord::Base
     self.permissions = perms.join(',')
   end
 
+   def self.exchange_access_token(provider, token)
+    server_token = nil
+
+    case provider
+    when 'facebook'
+      oauth = Koala::Facebook::OAuth.new(CONFIG[:facebook][:client_id], CONFIG[:facebook][:client_secret])
+      server_token = oauth.exchange_access_token_info(token)
+    end
+
+    server_token
+  end 
 
 end
