@@ -6,7 +6,19 @@ class Event < ActiveRecord::Base
     self
   end
 
-  after_commit :send_analytics, :on => [:create, :update]
+  after_commit :after_commit_callback, :on => [:create, :update]
+
+  def after_commit_callback
+    
+    # send event analytics
+    send_analytics
+    
+    # if the event has type "event", it might be a user milestone - save to user profile
+    if (self.data["event_type"] == "event" && !self.data["event_name"].nil?)
+      self.user.update_ux_milestones([self.data["event_name"]])  # update_ux_milestones expects an array of milestone names to be passed
+    end
+    
+  end
 
   def send_analytics
     logger.info("Event.send_analytics called")
@@ -42,8 +54,9 @@ class Event < ActiveRecord::Base
       )
       else logger.error("Unknown analytic event_type")
     end
-  end
 
-  logger.info("Event.send_analytics completed")
+    logger.info("Event.send_analytics completed")
+
+  end
 
 end
