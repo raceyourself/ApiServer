@@ -420,7 +420,7 @@ ActiveRecord::Schema.define(version: 20140529133638) do
     t.datetime "sync_timestamp"
     t.string   "gender",                 limit: 1
     t.integer  "invites",                          default: 0
-    t.json     "profile",                          default: {}
+    t.json     "profile",                          default: "{}"
     t.text     "image"
     t.integer  "timezone"
     t.string   "cohort"
