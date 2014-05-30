@@ -21,7 +21,7 @@ module Api
       Rails.logger.error "No min/max pace configured for fitness level #{fitness_level}!" and return {} unless pace
       matches = {}
       # Can be rewritten as a single select + group_by if we don't need an exact per-bucket size
-      (5..60).step(5) do |duration|
+      (5..30).step(5) do |duration|
         # TODO: Prefer real users to bots
         matches[duration] = Track.where(:public => true)
                                  .where('distance > 0')
@@ -32,6 +32,8 @@ module Api
                                            FROM matched_tracks WHERE user_id = ?
                                  )), user.id)
                                  .limit(bucket_size)
+
+        # TODO: Recycle matched tracks if matches[duration].length < 3
       end
       matches
     end
