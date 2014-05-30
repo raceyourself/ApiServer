@@ -59,18 +59,20 @@ module Api
         User::COLLECTIONS.each do |collection_key|
           if data[collection_key]
             if collection_key == :devices
-              begin
-                d = current_resource_owner.devices.new(record)
-                d.merge
-                # Assume first device is the syncing device
-                # TODO: Only ever sync one device
-                device_id = d.id if device_id.nil?
-              rescue => e
-                logger.error(e.class.name + ": " + e.message)
-                logger.debug e.backtrace.join("\n")
-                errors << e.class.name
+              data[collection_key].each do |record|
+                begin
+                  d = current_resource_owner.devices.new(record)
+                  d.merge
+                  # Assume first device is the syncing device
+                  # TODO: Only ever sync one device
+                  device_id = d.id if device_id.nil?
+                rescue => e
+                  logger.error(e.class.name + ": " + e.message)
+                  logger.debug e.backtrace.join("\n")
+                  errors << e.class.name
+                end
+                next
               end
-              next
             end
             if collection_key == :transactions
               begin
