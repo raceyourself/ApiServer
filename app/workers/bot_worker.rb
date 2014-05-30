@@ -62,16 +62,18 @@ class BotWorker
                             public: true, ts: (Time.now.to_f*1000).to_i,
                             distance: distance, time: time)
       id = track.track_id*1000
+      timestamp = Time.now
       (1..time).step(10) do |t|
         id = id + 1
+        timestamp = timestamp + t.seconds
         lng = 0
         lat = (speed * t)/111229.0
         bearing = 0
         Position.create!(device_id: track.device_id, track_id: track.track_id, 
                          position_id: id, user_id: bot.id,
                          state_id: 1,
-                         gps_ts: (Time.now.to_f*1000).to_i,
-                         device_ts: (Time.now.to_f*1000).to_i,
+                         gps_ts: (timestamp.to_f*1000).to_i,
+                         device_ts: (timestamp.to_f*1000).to_i,
                          lng: lng,
                          lat: lat,
                          alt: 0,
