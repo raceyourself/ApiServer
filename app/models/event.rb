@@ -58,8 +58,9 @@ class Event < ActiveRecord::Base
       )
       else logger.error("Unknown analytic event_type")
     end
-  end
 
-  logger.info("Event.send_analytics completed")
+    logger.info("Event.send_analytics completed")
+
+  end
 
 end
