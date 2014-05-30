@@ -1,6 +1,13 @@
 class Device < ActiveRecord::Base
   belongs_to :user # may be null
 
+  def pretty_segmentation_characteristics
+    d = {
+      "Device Manufacturer" => self.manufacturer,
+      "Device Model" => self.model
+    }
+  end
+
   def merge
     if self.id
       device = Device.find(self.id)

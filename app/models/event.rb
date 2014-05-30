@@ -1,15 +1,34 @@
 class Event < ActiveRecord::Base
   belongs_to :user
+  belongs_to :device
 
   def merge
     self.save!
     self
   end
 
-  after_commit :send_analytics, :on => [:create, :update]
+  def pretty_segmentation_characteristics
+    d = {
+      "Software version" => self.version,
+      "username" => self.user.name
+    }
+  end
+
+  after_commit :after_commit_callback, :on => [:create, :update]
+
+  def after_commit_callback
+    
+    # send event analytics
+    send_analytics
+    
+    # if the event has type "event", it might be a user milestone - save to user profile
+    if (self.data["event_type"] == "event" && !self.data["event_name"].nil?)
+      self.user.update_ux_milestones([self.data["event_name"]])  # update_ux_milestones expects an array of milestone names to be passed
+    end
+    
+  end
 
   def send_analytics
-    logger.info("Event.send_analytics called")
 
     event = case self.data["event_type"]
       when "event" then "E: " + self.data["event_name"]
@@ -17,14 +36,11 @@ class Event < ActiveRecord::Base
       else "unknown"
     end
     
-    properties = {
-      version: self.version,
-      user_id: self.user_id,
-      device_id: self.device_id,
-      session_id: self.session_id
-    }.merge(self.data)
+    properties = self.pretty_segmentation_characteristics
+               .merge(self.device.pretty_segmentation_characteristics)
+               .merge(self.user.pretty_segmentation_characteristics)
 
-    logger.info("Event type " + event + " with properties: " + self.data.inspect)
+    logger.info("Sending event to segment.io: " + event + " " + properties.inspect)
 
     case self.data["event_type"]
       when "screen" then AnalyticsRuby.screen(

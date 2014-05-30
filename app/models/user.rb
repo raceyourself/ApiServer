@@ -87,6 +87,15 @@ class User < ActiveRecord::Base
     hash
   end
 
+  def pretty_segmentation_characteristics
+    d = {
+      "Age group" => self.profile["age_group"],
+      "Gender" => self.gender.present? ? (self.gender.downcase  == "m" ? "male" : self.gender.downcase == "f" ? "female" : nil) : nil,
+      "Country" => self.profile["country"],
+      "Cohort" => self.cohort
+    }
+  end
+
   after_commit :send_analytics, :on => [:create, :update], :if => Proc.new { |record|
     record.previous_changes.except("updated_at").except("sync_timestamp").length > 0  # don't bother sending if the only update was the timestamp
   }
@@ -104,6 +113,8 @@ class User < ActiveRecord::Base
         name: self.name,  #free text
         #firstName: self.name.present? ? self.name.strip.split("\s").first : nil,  #needed for mailChimp
         #lastName: self.name.present? ? self.name.strip.split("\s").last : nil,  #needed for mailChimp
+        firstname: self.profile["first_name"],
+        lastname: self.profile["last_name"],
         fname: self.profile["first_name"],
         lname: self.profile["last_name"],
         gender: self.gender.present? ? (self.gender.downcase  == "m" ? "male" : self.gender.downcase == "f" ? "female" : nil) : nil,  #mailchimp and trak both want the full word
