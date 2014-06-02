@@ -1,7 +1,7 @@
 class BotWorker
   include Sidekiq::Worker
     
-  def perform(bot_id, activity)
+  def perform(bot_id, activity, opts={})
     bot = User.find(bot_id)
     return unless bot
     raise 'I am not a bot!' if /bot[^@]+@raceyourself.com/.match(bot.email).nil?
@@ -11,12 +11,12 @@ class BotWorker
 
     case activity
     when 'wake up'
-      BotWorker.perform_in(Random.rand(8).hours, bot.id, 'run')
-      BotWorker.perform_in(Random.rand(8).hours, bot.id, 'challenge')
+      BotWorker.perform_in(Random.rand(8).hours, bot.id, 'run', opts)
+      BotWorker.perform_in(Random.rand(8).hours, bot.id, 'challenge', opts)
     when 'run'
-      do_run(bot, fitness_level)
+      do_run(bot, fitness_level, opts)
     when 'challenge'
-      do_challenge(bot, fitness_level)
+      do_challenge(bot, fitness_level, opts)
     end
   end
     
@@ -37,7 +37,7 @@ class BotWorker
 
   private
 
-  def do_run(bot, fitness_level)
+  def do_run(bot, fitness_level, opts={})
     Rails.logger.info "#{bot.email} is doing a run at #{fitness_level} level"
     configuration = Configuration.where(type: '_internal', user_id: nil, group_id: nil).first.configuration
     raise "Fitness levels not configured" unless configuration['fitness_levels']
@@ -56,7 +56,9 @@ class BotWorker
                               glassfit_version: 0) unless device
 
       speed = 1000 * 1.0/(pace*60) # min/km -> m/s
-      time = (4 + 5 * Random.rand(12)) * 60 + Random.rand(60)
+      mins = 3 + 5 * Random.rand(6)
+      mins = opts['time'] if opts.has_key?('time')
+      time = mins * 60 + Random.rand(120)
       distance = speed * time
       track = Track.create!(device_id: device.id, track_id: Random.rand(99999), user_id: bot.id,
                             public: true, ts: (Time.now.to_f*1000).to_i,
@@ -84,7 +86,7 @@ class BotWorker
     end
   end
 
-  def do_challenge(bot, fitness_level)
+  def do_challenge(bot, fitness_level, opts={})
     Rails.logger.info "#{bot.email} is doing a challenge at #{fitness_level} level"
     group = Group.where(name: "Victims").first
     return unless group
@@ -93,7 +95,7 @@ class BotWorker
     
     Rails.logger.info "#{bot.email} is challenging user #{victim_id}"
     # TODO: Don't duplicate challenging logic here
-    time = 5 * Random.rand(12)
+    time = 5 * Random.rand(7)
     ActiveRecord::Base.transaction do
       challenge = DurationChallenge.create!(public: true, creator_id: bot.id, duration: time, distance: 0, 
                                             name: 'Disco fever', 
