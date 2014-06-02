@@ -7,6 +7,7 @@ class FacebookFriendsWorker
     user = User.where(id: user_id).first
     return if user.nil?
     auth = Authentication.where(provider: 'facebook', user_id: user.id).last
+    return if auth.nil?
     graph = Koala::Facebook::API.new(auth.token)
     begin
       profile = graph.get_object("me")
