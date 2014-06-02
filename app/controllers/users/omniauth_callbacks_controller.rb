@@ -3,21 +3,21 @@ module Users
 
     def facebook
       standard_provider('facebook')
-      if @user.persisted?
+      if @user && @user.persisted?
         FacebookFriendsWorker.perform_async(@user.id)
       end
     end
 
     def twitter
       standard_provider('twitter')
-      if @user.persisted?
+      if @user && @user.persisted?
         TwitterFriendsWorker.perform_async(@user.id)
       end
     end
 
     def gplus 
       standard_provider('gplus')
-      if @user.persisted?
+      if @user && @user.persisted?
         GplusFriendsWorker.perform_async(@user.id)
       end
     end
@@ -34,7 +34,7 @@ module Users
           redirect_to root_url
         end
 
-        if @user.persisted?
+        if @user && @user.persisted?
           if current_user
             redirect_to root_url
           else

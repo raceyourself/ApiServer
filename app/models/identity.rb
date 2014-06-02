@@ -17,6 +17,7 @@ class Identity < ActiveRecord::Base
       hash = self.attributes
       hash.delete('has_glass') if o.has_glass
       hash.delete('user_id') if o.user_id != nil
+      hash.delete('refreshed_at') if o.refreshed_at > self.refreshed_at
       # Update
       o.update!(hash)
       this = o

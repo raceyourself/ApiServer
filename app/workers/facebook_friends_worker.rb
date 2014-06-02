@@ -8,7 +8,12 @@ class FacebookFriendsWorker
     return if user.nil?
     auth = Authentication.where(provider: 'facebook', user_id: user.id).last
     graph = Koala::Facebook::API.new(auth.token)
-    profile = graph.get_object("me")
+    begin
+      profile = graph.get_object("me")
+    rescue => Koala::Facebook::AuthenticationError
+      auth.destroy
+      return
+    end
     me = FacebookIdentity.new().update_from_facebook(profile)
     me.user_id = user.id
     me = me.merge
