@@ -35,6 +35,17 @@ module Surveys
       i = SurveyBetaInsight.new(permitted.merge(merged))
       i.save!
 
+      if params[:cohort]
+        configuration = ::Configuration.where(type: '_internal', user_id: nil, group_id: nil).first
+        user = User.where(email: params[:email).first
+        if user && configuration && configuration.configuration && 
+           configuration.configuration.has_key?('confirmed_cohorts') && 
+           configuration.configuration['confirmed_cohorts'].include?(params[:cohort])
+          redirect_to confirmation_url(user, user.generate_confirmation_token!)
+          return
+        end
+      end
+
       redirect_to "http://www.raceyourself.com/signed_up"
     end
 
