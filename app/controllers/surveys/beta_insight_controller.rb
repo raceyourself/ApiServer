@@ -37,11 +37,16 @@ module Surveys
 
       if params[:cohort]
         configuration = ::Configuration.where(type: '_internal', user_id: nil, group_id: nil).first
-        user = User.where(email: params[:email).first
-        if user && configuration && configuration.configuration && 
+        u = User.where(email: params[:email).first
+        if u && configuration && configuration.configuration && 
            configuration.configuration.has_key?('confirmed_cohorts') && 
            configuration.configuration['confirmed_cohorts'].include?(params[:cohort])
-          redirect_to confirmation_url(user, user.generate_confirmation_token!)
+
+          raw, enc = Devise.token_generator.generate(User, :confirmation_token)
+          u.confirmation_token = enc
+          u.confirmation_sent_at = Time.now.utc
+          u.save(validate: false)
+          redirect_to confirmation_url(u, raw)
           return
         end
       end
