@@ -63,7 +63,7 @@ module Users
             end if @user.profile && @user.profile['devices_reported']
 
             if invite && iPhone.present?
-              user.send_confirmation_instructions
+              @user.send_confirmation_instructions
             end
 
             invite.destroy if invite
