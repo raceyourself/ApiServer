@@ -12,8 +12,8 @@ class Friendship < ActiveRecord::Base
     this = self
     begin
       o = self.class.with_deleted.find(key.values)
-      # Treat updated_at as created_at
-      hash['updated_at'] = o.created_at
+      # Use old updated_at if restoring
+      hash['updated_at'] = o.updated_at if o.destroyed?
       hash['deleted_at'] = nil
       o.update!(hash)
       this = o

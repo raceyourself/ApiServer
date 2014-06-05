@@ -36,5 +36,8 @@ class FacebookFriendsWorker
       end while not result.empty?
       logger.info "Refreshed user #{user_id}'s #{count} facebook friends"
     end
+    # Touch all changed friendships outside of transaction in case a sync happened while isolated
+    me.friendships.where(:friend_type => 'FacebookIdentity')
+                  .where('updated_at >= ?', me.refreshed_at).update_all(updated_at: Time.now)
   end
 end
