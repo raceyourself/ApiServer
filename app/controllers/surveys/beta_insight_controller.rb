@@ -46,7 +46,7 @@ module Surveys
           u.confirmation_token = enc
           u.confirmation_sent_at = Time.now.utc
           u.save(validate: false)
-          redirect_to confirmation_url(u, raw)
+          redirect_to confirmation_url(u, :confirmation_token => raw)
           return
         end
       end
