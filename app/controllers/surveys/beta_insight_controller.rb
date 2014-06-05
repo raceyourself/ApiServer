@@ -37,7 +37,7 @@ module Surveys
 
       if params[:cohort]
         configuration = ::Configuration.where(type: '_internal', user_id: nil, group_id: nil).first
-        u = User.where(email: params[:email).first
+        u = User.where(email: params[:email]).first
         if u && configuration && configuration.configuration && 
            configuration.configuration.has_key?('confirmed_cohorts') && 
            configuration.configuration['confirmed_cohorts'].include?(params[:cohort])
