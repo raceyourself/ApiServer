@@ -35,6 +35,22 @@ module Surveys
       i = SurveyBetaInsight.new(permitted.merge(merged))
       i.save!
 
+      if params[:cohort]
+        configuration = ::Configuration.where(type: '_internal', user_id: nil, group_id: nil).first
+        u = User.where(email: params[:email]).first
+        if u && configuration && configuration.configuration && 
+           configuration.configuration.has_key?('confirmed_cohorts') && 
+           configuration.configuration['confirmed_cohorts'].include?(params[:cohort])
+
+          raw, enc = Devise.token_generator.generate(User, :confirmation_token)
+          u.confirmation_token = enc
+          u.confirmation_sent_at = Time.now.utc
+          u.save(validate: false)
+          redirect_to confirmation_url(u, :confirmation_token => raw)
+          return
+        end
+      end
+
       redirect_to "http://www.raceyourself.com/signed_up"
     end
 

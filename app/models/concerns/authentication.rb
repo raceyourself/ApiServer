@@ -15,30 +15,33 @@ module Concerns
 
         if auth
           raise "This account has already been used by another system user" if signed_in_resource && signed_in_resource != auth.user
+          Rails.logger.error 'Cucumber error! Please reset universe'
           auth.update_from_omniauth(omniauth)
           auth.save
           return auth.user
         else
-          user = signed_in_resource
+          u = signed_in_resource
 
-          if user.nil?
+          if u.nil?
             # create a new user
-            user = User.new(
+            u = User.new(
               name: omniauth.extra.raw_info.name,
               password: Devise.friendly_token[0,20],
               email: omniauth.info.email
             )
             # Do not send confirmation until accepted to beta
-            user.skip_confirmation_notification!
-            user.save!
+            u.skip_confirmation_notification!
+            u.save!
+            Rails.logger.error "Created user #{u.id} from oauth details"
           end
-          auth = user.authentications.build.tap do |a|
+          auth = u.authentications.build.tap do |a|
             a.provider  = omniauth.provider
             a.uid       = omniauth.uid
           end
           auth.update_from_omniauth(omniauth)
           auth.save!
-          return user
+          Rails.logger.error "Created authentication for user #{u.id} from oauth details"
+          return u
         end
       end #find_for_facebook_oauth
 

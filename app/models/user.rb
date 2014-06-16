@@ -141,7 +141,7 @@ class User < ActiveRecord::Base
         challenges: self.challenges.count,
         tracks: self.tracks.count,
         devices: devices.map { |d| d.manufacturer + " " + d.model }.sort.join(", "),
-        milestones: self.ux_milestones.nil? ? "" : self.ux_milestones.keys.map{|k| k.split("_").map{|w| w.capitalize}.join(" ")}.join(", "),  # snake_case to Caps And Spaces
+        milestones: self.ux_milestones.nil? || !self.ux_milestones.is_a?(Hash) ? "" : self.ux_milestones.keys.map{|k| k.titleize}.join(", "),  # snake_case to Caps And Spaces
  
         # groups we've added the user to
         groups: groups.map { |g| g.name }.sort.join(", ")
@@ -156,14 +156,14 @@ class User < ActiveRecord::Base
   def update_ux_milestones(milestone_names = [])
     
     # initialize if nil
-    self.ux_milestones = {} if self.ux_milestones.nil?
+    self.ux_milestones = {} if self.ux_milestones.nil? || !self.ux_milestones.is_a?(Hash)
     
     # just the ones we don't already have
     for m in (milestone_names - self.ux_milestones.keys)
       # get the first event of type m
       e = self.events.where("data::json->>'event_name' = ?", m).order("ts asc").first
       if (!e.nil?)
-        logger.info(self.email + " acheived milestone " + m + ", updating their profile")
+        logger.info(self.email + " achieved milestone " + m + ", updating their profile")
         self.ux_milestones_will_change!  # updating variable in place, so need to flag change for activerecord to notice it
         self.ux_milestones = {} if self.ux_milestones.nil?  # initialize to empty hash
         self.ux_milestones[m] = Time.at(e.ts.to_f/1000.0)

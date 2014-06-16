@@ -54,9 +54,26 @@ module Api
     protected
 
       def import_data(data)
+        device_id = nil
         errors = []
         User::COLLECTIONS.each do |collection_key|
           if data[collection_key]
+            if collection_key == :devices
+              data[collection_key].each do |record|
+                begin
+                  d = current_resource_owner.devices.new(record)
+                  d.merge
+                  # Assume first device is the syncing device
+                  # TODO: Only ever sync one device
+                  device_id = d.id if device_id.nil?
+                rescue => e
+                  logger.error(e.class.name + ": " + e.message)
+                  logger.debug e.backtrace.join("\n")
+                  errors << e.class.name
+                end
+                next
+              end
+            end
             if collection_key == :transactions
               begin
                 Transaction.import(data[collection_key], current_resource_owner)
@@ -91,7 +108,7 @@ module Api
             # Ignore bad data and continue
             # TODO: Notify admin?
             begin
-              handle_action(action)
+              handle_action(action, device_id)
             rescue => e
               logger.error(e.class.name + ": " + e.message)
               logger.debug e.backtrace.join("\n")
@@ -102,7 +119,7 @@ module Api
         errors
       end
 
-      def handle_action(action)
+      def handle_action(action, device_id)
         type = action[:action]
         case type
         when 'challenge'
@@ -153,6 +170,7 @@ module Api
           challenge_id = action[:challenge_id][:$oid] if action[:challenge_id].is_a?(Hash) && action[:challenge_id][:$oid]
           challenge = Challenge.find(challenge_id)
           track_cid = action[:track_id]
+          track_cid[0] = device_id if track_cid[0] == 0
           track = Track.where(device_id: track_cid[0], track_id: track_cid[1]).first
           challenge.attempts << track
           challenge.save!
@@ -169,9 +187,12 @@ module Api
             invite.update_attributes!({:identity_type => identity_type, :identity_uid => uid, :used_at => Time.now})
           end
         when 'matched_track'
+          track_did = action[:device_id]
+          track_tid = action[:track_id]
+          track_did = device_id if track_did == 0
           MatchedTrack.create!(user_id: current_resource_owner.id,
-                               device_id: action[:device_id],
-                               track_id: action[:track_id])
+                               device_id: track_did,
+                               track_id: track_tid)
         when 'share'
           provider = action[:provider]
           case provider
