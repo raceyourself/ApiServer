@@ -37,3 +37,5 @@ server 'staging.raceyourself.com', user: 'deployer', roles: %w{web app}, my_prop
 #     # password: 'please use keys'
 #   }
 # setting per server overrides global ssh_options
+
+set :branch, "develop"

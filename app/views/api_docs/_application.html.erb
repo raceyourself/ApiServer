@@ -1,10 +1,10 @@
 <div class='input'>
   <ul class="nav nav-pills">
     <li class="dropdown">
-      <a id="token" href="#" data-toggle="dropdown" class="dropdown-toggle">Applications <i class="icon-caret-down"></i></a>
+      <a id="token" href="#" data-toggle="dropdown" class="dropdown-toggle">Applications <i class="fa fa-caret-down"></i></a>
       <ul class="dropdown-menu" id="menu">
         <% accessible_applications do |app| %>
-          <li><a href='#'><%= app.name %><i class='icon-arrow-right'></i></a>
+          <li><a href='#'><%= app.name %><i class='fa fa-arrow-right'></i></a>
             <ul class='dropdown-menu sub-menu'>
               <li><a href='#' class='app' data-scope="public" id='<%= app.uid %>' >Public</a></li>
               <li><a href='#' class='app' data-scope="public write" id='<%= app.uid %>' >Write</a></li>
