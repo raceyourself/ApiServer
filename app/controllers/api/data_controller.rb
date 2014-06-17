@@ -216,7 +216,7 @@ module Api
       end
 
       def export_data(head_date, tail_date, tail_skip)
-        data = SerHash.new
+        data = Hash.new
         data[:sync_timestamp] = Time.now.to_i
 
         ### Head forward
