@@ -38,7 +38,7 @@ class Identity < ActiveRecord::Base
   def serializable_hash(options = {})
     options = {
       methods: :provider
-    }.update(options)
+    }.update(options || {})
     super(options)
   end
 

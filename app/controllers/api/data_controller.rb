@@ -216,7 +216,8 @@ module Api
       end
 
       def export_data(head_date, tail_date, tail_skip)
-        data = {sync_timestamp: Time.now.to_i}
+        data = SerHash.new
+        data[:sync_timestamp] = Time.now.to_i
 
         ### Head forward
         data[:devices] = current_resource_owner.send(:devices)

@@ -28,7 +28,7 @@ class Friendship < ActiveRecord::Base
     options = {
        include: :friend, 
        except: [:friend_type, :friend_uid] 
-    }.update(options)
+    }.update(options || {})
     super(options)
   end
 
