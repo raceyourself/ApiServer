@@ -18,6 +18,7 @@ staging:
   adapter: postgresql
   encoding: unicode
   database: gf_core
+  pool: 16
   host: localhost
   username: gfauth
   password: ex171aY555
@@ -26,6 +27,7 @@ production:
   adapter: postgresql
   encoding: unicode
   database: gf_core
+  pool: 64
   host: localhost
   username: gfauth
   password: ex171aY555
