@@ -14,7 +14,19 @@ class SerHash < Hash
       self
     end
 
-    Hash[subset.map { |k, v| [k.to_s, v.respond_to?(:serializable_hash) ? v.serializable_hash(options) : v] }]
+    Hash[subset.map { |k, v| [k.to_s, serialize_value(v, options)] }]
+  end
+
+  def serialize_value(v, options)
+    if v.respond_to?(:serializable_hash)
+      v.serializable_hash(options)
+    elsif v.is_a?(Array)
+      v.map { |e| serialize_value(e, options) }
+    elsif v.respond_to?(:entries)
+      serialize_value(v.entries, options)
+    else
+      v
+    end
   end
 
 end
