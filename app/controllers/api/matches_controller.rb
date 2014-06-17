@@ -8,11 +8,11 @@ module Api
       ['out of shape', 'average', 'athletic', 'elite'].each do |fitness_level|
         matches[fitness_level] = matches(fitness_level, 10)
       end
-      expose matches, methods: :positions
+      expose matches, include: :positions
     end
 
     def show
-      expose matches(params[:id], 25), methods: :positions
+      expose matches(params[:id], 25), include: :positions
     end
 
     def matches(fitness_level, bucket_size)
@@ -31,6 +31,7 @@ module Api
                                            SELECT device_id, track_id 
                                            FROM matched_tracks WHERE user_id = ?
                                  )), user.id)
+                                 .includes(:positions)
                                  .limit(bucket_size)
 
         # TODO: Recycle matched tracks if matches[duration].length < 3
