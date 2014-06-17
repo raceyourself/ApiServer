@@ -7,6 +7,8 @@ module Api
 
     map_error! ActiveRecord::RecordNotFound, RocketPants::NotFound
 
+    around_filter :profile if Rails.env != 'production'
+
     # For the api to always revalidate on expiry.
     caching_options[:must_revalidate] = true
 
@@ -25,6 +27,19 @@ module Api
 
     def encode_to_json(object)
       MultiJson.encode object
+    end
+
+    def profile
+      if params[:profile] && result = RubyProf.profile { yield }
+        out = StringIO.new
+        RubyProf::GraphHtmlPrinter.new(result).print out, :min_percent => 0
+        body = out.string
+        self.response_body = body
+        self.response.headers['Content-Type'] = 'text/html'
+        self.response.headers['Content-Length'] = body.length.to_s
+      else
+        yield
+      end
     end
 
   end

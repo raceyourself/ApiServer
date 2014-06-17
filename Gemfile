@@ -86,6 +86,9 @@ gem 'apns'
 # e-mail
 gem 'mandrill-api'
 
+# profiling
+gem 'ruby-prof'
+
 group :development, :test do
   gem 'faker'
   gem 'pry'
@@ -94,7 +97,6 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'letter_opener'
   gem 'shoulda-matchers'
-  gem 'ruby-prof'
 end
 
 group :development do
