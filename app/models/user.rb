@@ -81,7 +81,7 @@ class User < ActiveRecord::Base
     options = {
       methods: :points,
       except: :image
-    }.update(options)
+    }.update(options || {})
     hash = super(options)
     hash['image'] = self.image.url
     hash

@@ -17,7 +17,7 @@ class ChallengeSubscriber < ActiveRecord::Base
       include: :challenge,
       except: [:id, :challenge_id, :user_id],
       methods: [:friends]
-    }.update(options)
+    }.update(options || {})
     hash = super(options)
     hash.merge!(hash.delete('challenge')) if hash
     hash

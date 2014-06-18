@@ -20,7 +20,7 @@ class Challenge < ActiveRecord::Base
       include: {
         attempts: { only: [ :device_id, :track_id, :user_id ] }
       }
-    }.update(options)
+    }.update(options || {})
     hash = super(options)
     hash['type'] = challenge_type() if hash
     hash
