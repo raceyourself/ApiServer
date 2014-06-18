@@ -43,6 +43,12 @@ h1,h2,h3 {
   color: black;
 }
 
+@media (max-width: 500px) {
+  .hex-container {
+    padding: 0px;
+  }
+}
+
 .hex-container form {
   margin: 15px;
   .control-group {

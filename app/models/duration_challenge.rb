@@ -4,7 +4,7 @@ class DurationChallenge < Challenge
   def serializable_hash(options = {})
     options = {
       except: [:time, :pace]
-    }.update(options)
+    }.update(options || {})
     super(options)
   end
 end

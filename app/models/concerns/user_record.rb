@@ -43,5 +43,23 @@ module Concerns
       end
     end
 
+    def cache_key
+      if deleted_at = self[:deleted_at]
+        "#{super}-#{deleted_at.utc.to_s(:number)}"
+      else
+        super
+      end
+    end
+
+    def as_json(options={})
+      exopts = options.except(:url_options, :_recall, :script_name)
+      unless exopts.except(:include, :version, :root).empty?
+        return super(options)
+      end
+      Rails.cache.fetch("#{cache_key}/as_json/#{Digest::MD5.hexdigest(options.to_s)}") do
+        super(options)
+      end
+    end
+
   end
 end

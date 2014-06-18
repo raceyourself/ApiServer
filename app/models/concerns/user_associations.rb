@@ -69,7 +69,7 @@ module Concerns
       end
       
       define_method :friends do
-        Friendship.joins(:identity).where(:identities => {:user_id => id})
+        Friendship.joins(:identity).includes(:friend).where(:identities => {:user_id => id})
       end
 
       define_method :registered_friend_ids do

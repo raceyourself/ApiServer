@@ -2,7 +2,7 @@
   .centered-container
     .hex-container
       %h2 Thank you for joining Race Yourself
-      %p Please enter your details below:
+      %p Please set your password below:
       = simple_form_for(resource, :as => resource_name, :url => confirm_path) do |form|
         = form.error_notification
         .form-inputs

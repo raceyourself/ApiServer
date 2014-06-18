@@ -1,8 +1,9 @@
 .row-fluid
-  .span8.well
+  .span10.offset1.well
     %h2
       Edit #{resource_name.to_s.humanize}
-    = simple_form_for resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: 'form-horizontal', :multipart => true } do |f|
+    = image_tag current_user.image.url, :style => 'float:right; margin: 10px' if current_user.image.url.present?
+    = simple_form_for resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: 'form-horizontal', style: 'clear:both', :multipart => true } do |f|
       .form-inputs
         = f.input :email, required: true, autofocus: true, autocomplete: 'off'
 
@@ -11,9 +12,9 @@
             Currently waiting confirmation for: #{resource.unconfirmed_email}
         = f.input :username, autocomplete: 'off'
         = f.input :name, autocomplete: 'off'
-        = f.file_field :image
+
+        = f.input :image, as: :file
         = f.hidden_field :image_cache
-        = image_tag current_user.image.url if current_user.image.url.present?
         = f.input :password, autocomplete: 'off', hint: "leave it blank if you don't want to change it", required: false
         = f.input :password_confirmation, required: false
         = f.input :current_password, hint: "we need your current password to confirm your changes", required: true
