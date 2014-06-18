@@ -14,6 +14,14 @@ class Event < ActiveRecord::Base
     }
   end
 
+  # add device/user/challenge characteristics too
+  def pretty_segmentation_characteristics2
+    properties = self.pretty_segmentation_characteristics
+                 .merge(self.device.pretty_segmentation_characteristics)
+                 .merge(self.user.pretty_segmentation_characteristics)
+    properties.merge!(Challenge.find(self.data["challenge_id"]).pretty_segmentation_characteristics) if self.data.keys.include?("challenge_id")
+  end
+
   after_commit :after_commit_callback, :on => [:create, :update]
 
   def after_commit_callback
@@ -22,7 +30,7 @@ class Event < ActiveRecord::Base
     send_analytics
     
     # if the event has type "event", it might be a user milestone - save to user profile
-    if (self.data["event_type"] == "event" && !self.data["event_name"].nil?)
+    if (self.data["event_type"] == "event" && !self.user.ux_milestones.include?(self.data["event_name"]))
       self.user.update_ux_milestones([self.data["event_name"]])  # update_ux_milestones expects an array of milestone names to be passed
     end
     
@@ -36,9 +44,7 @@ class Event < ActiveRecord::Base
       else "unknown"
     end
     
-    properties = self.pretty_segmentation_characteristics
-               .merge(self.device.pretty_segmentation_characteristics)
-               .merge(self.user.pretty_segmentation_characteristics)
+    properties = pretty_segmentation_characteristics2
 
     logger.info("Sending event to segment.io: " + event + " " + properties.inspect)
 
@@ -58,6 +64,23 @@ class Event < ActiveRecord::Base
       )
       else logger.error("Unknown analytic event_type")
     end
+
+    # if the event concerns a challenge, and the action is not done by the challenge's creator, fire a new event
+    # under the challenge creator's ID so we can track the challenge lifecycle under the original user
+    challenge_event_name_mapping = {
+      "open_challenge" => "recipient_open_challenge",
+      "start_race" => "recipient_start_attempt",
+      "complete_race" => "recipient_complete_attempt"
+    }
+    if ((challenge_event_name_mapping.keys.include?self.data["event_name"]) && (self.data.keys.include?("challenge_id"))) then
+      c = Challenge.find(self.data["challenge_id"])
+      return nil if c.creator_id == self.user_id  # no action if the creator attempts their own challenge
+      e = self.dup
+      e.user_id = c.creator_id  # something happened to the creator's challenge
+      e.data["event_name"] = challenge_event_name_mapping[self.data["event_name"]]
+      #TODO: add e.data["recipient_id"]
+      e.save!
+    end 
 
     logger.info("Event.send_analytics completed")
 

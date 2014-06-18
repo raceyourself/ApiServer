@@ -10,6 +10,17 @@ class Challenge < ActiveRecord::Base
 
   before_save :default_values
 
+  def pretty_segmentation_characteristics
+    d = {
+      "Challenge Type" => self.type,
+      "Challenge Duration" => self.duration,
+      "Challenge Distance" => self.distance,
+      "Challenge Time" => self.time,
+      "Challenge Pace" => self.pace
+    }
+  end
+
+
   def challenge_type
     self.type.downcase.sub('challenge', '')
   end
