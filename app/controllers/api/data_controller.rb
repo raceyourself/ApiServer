@@ -128,7 +128,6 @@ module Api
             c = Challenge.find(challenge_id)
             begin
               c.subscribers << current_resource_owner
-              c.touch
             rescue
               # Already subscribed
             end
@@ -160,6 +159,7 @@ module Api
                                                   :title => current_resource_owner.to_s + " has challenged you!",
                                                   :text => "Click to race!"
                                                  })
+            c.touch
           end
         when 'accept_challenge'
           challenge_id = action[:challenge_id]
@@ -173,7 +173,7 @@ module Api
           track_cid[0] = device_id if track_cid[0] == 0
           track = Track.where(device_id: track_cid[0], track_id: track_cid[1]).first
           challenge.attempts << track
-          challenge.save!
+          challenge.touch
         when 'invite'
           code = action[:code]
           invite = Invite.where(:code => code)
