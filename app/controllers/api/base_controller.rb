@@ -30,7 +30,7 @@ module Api
     end
 
     def profile
-      if params[:profile] && result = RubyProf.profile { yield }
+      if params[:profile_ruby] && result = RubyProf.profile { yield }
         out = StringIO.new
         RubyProf::GraphHtmlPrinter.new(result).print out, :min_percent => 0
         body = out.string
