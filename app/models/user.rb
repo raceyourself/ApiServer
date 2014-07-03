@@ -77,6 +77,10 @@ class User < ActiveRecord::Base
     server_token
   end
 
+  def self.with_deleted
+    all
+  end
+
   def serializable_hash(options = {})
     options = {
       methods: :points,

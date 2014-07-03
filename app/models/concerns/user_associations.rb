@@ -2,7 +2,7 @@ module Concerns
   module UserAssociations
     extend ActiveSupport::Concern
 
-    COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :events, :games]
+    COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :events, :games, :users]
 
     included do
       has_many :devices, :dependent => :destroy
@@ -83,6 +83,10 @@ module Concerns
         Position.where(user_id: id).where('state_id >= 0')
       end
       
+      define_method :users do
+        User.where(id: registered_friend_ids) 
+      end
+
     end #included
 
   end
