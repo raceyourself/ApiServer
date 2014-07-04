@@ -10,7 +10,7 @@ class FacebookFriendsWorker
     return if auth.nil?
     graph = Koala::Facebook::API.new(auth.token)
     begin
-      profile = graph.get_object("me")
+      profile = graph.get_object('me?fields=id,name,email,picture.width(256).height(256),gender,timezone')
     rescue Koala::Facebook::AuthenticationError => e
       auth.destroy
       return
