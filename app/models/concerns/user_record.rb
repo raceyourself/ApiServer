@@ -35,12 +35,16 @@ module Concerns
     end
 
     def serializable_hash(options = {})
+      hash = nil
       # Return plain attributes if no options or default rocket_pants options
       if options.nil? || options.except(:url_options, :root, :compact).empty?
-        attributes
+        hash = attributes
       else
-        super(options)
+        hash = super(options)
       end
+      # guids for ORMs that don't support compound PKs
+      hash['guid'] = self.guid if self.respond_to? :guid
+      hash
     end
 
     def cache_key

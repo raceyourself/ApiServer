@@ -6,6 +6,10 @@ class Track < ActiveRecord::Base
 
   after_commit :send_analytics, :on => [:create, :update]
 
+  def guid
+    (device_id << 32) + track_id 
+  end
+
   def send_analytics
     user.send_analytics
   end
