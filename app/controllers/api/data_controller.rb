@@ -56,7 +56,7 @@ module Api
       def import_data(data)
         device_id = nil
         errors = []
-        User::COLLECTIONS.each do |collection_key|
+        User::IMPORT_COLLECTIONS.each do |collection_key|
           if data[collection_key]
             if collection_key == :devices
               data[collection_key].each do |record|
@@ -93,7 +93,7 @@ module Api
                 deleted = record[:deleted_at]
                 d = relation.new(record)
                 d.merge
-                d.delete if deleted && deleted != 0
+                d.merge_delete(current_resource_owner) if deleted && deleted != 0
               rescue => e
                 logger.error(e.class.name + ": " + e.message)
                 logger.debug e.backtrace.join("\n")
@@ -123,19 +123,11 @@ module Api
         type = action[:action]
         case type
         when 'challenge'
-          if action[:challenge][:id]
-            challenge_id = action[:challenge][:id]
-            c = Challenge.find(challenge_id)
-            begin
-              c.subscribers << current_resource_owner
-            rescue
-              # Already subscribed
-            end
-          else
-            c = Challenge.build(action[:challenge])
-            c.creator_id = current_resource_owner.id
+          c = Challenge.find(action[:challenge_id])
+          begin
             c.subscribers << current_resource_owner
-            c.save!
+          rescue
+            # Already subscribed
           end
         
           # Notify target of challenge if registered (unregistered are notified client-side)
@@ -147,7 +139,7 @@ module Api
               :to => target.id,
               :challenge_id => c.id,
               :challenge_type => c.challenge_type,
-              :taunt => action[:taunt] 
+              :taunt => action[:taunt]
             }
             target.notifications.create( 
                 :message => message
@@ -162,30 +154,17 @@ module Api
             c.touch
           end
         when 'accept_challenge'
-          challenge_id = action[:challenge_id]
-          current_resource_owner.challenge_subscribers.find(challenge_id).update!(accepted: true)
+          challenge_cid = action[:challenge_id]
+          current_resource_owner.challenge_subscribers.find(challenge_cid).update!(accepted: true)
         when 'challenge_attempt'
-          challenge_id = action[:challenge_id]
-          # Dirty hack to fix broken mongoid
-          challenge_id = action[:challenge_id][:$oid] if action[:challenge_id].is_a?(Hash) && action[:challenge_id][:$oid]
-          challenge = Challenge.find(challenge_id)
+          challenge_cid = action[:challenge_id]
+          challenge_cid[0] = device_id if challenge_cid[0] == 0 # Deferred device registration
+          challenge = Challenge.find(challenge_cid)
           track_cid = action[:track_id]
-          track_cid[0] = device_id if track_cid[0] == 0
-          track = Track.where(device_id: track_cid[0], track_id: track_cid[1]).first
+          track_cid[0] = device_id if track_cid[0] == 0 # Deferred device registration
+          track = Track.find(track_cid)
           challenge.attempts << track
           challenge.touch
-        when 'invite'
-          code = action[:code]
-          invite = Invite.where(:code => code)
-                         .where(:user_id => current_resource_owner.id)
-                         .where('used_at IS NULL')
-                         .where('expires_at IS NULL or expires_at < ?', Time.now).first
-          if invite
-            identity_type = action[:provider]
-            identity_type.capitalize! << 'Identity' unless identity_type.include? 'Identity'
-            uid = action[:uid]
-            invite.update_attributes!({:identity_type => identity_type, :identity_uid => uid, :used_at => Time.now})
-          end
         when 'matched_track'
           track_did = action[:device_id]
           track_tid = action[:track_id]
@@ -220,17 +199,10 @@ module Api
         data[:sync_timestamp] = Time.now.to_i
 
         ### Head forward
-        data[:devices] = current_resource_owner.send(:devices)
-                                                     .where('updated_at > :head', 
-                                                            {head: head_date})
-                                                     .entries()
         data[:transactions] = []
         transaction = current_resource_owner.latest_transaction 
         data[:transactions] << transaction if transaction
-        User::COLLECTIONS.each do |collection_key|
-          next if collection_key == :transactions
-          next if collection_key == :events
-          next if collection_key == :devices
+        User::EXPORT_COLLECTIONS.each do |collection_key|
           data[collection_key] = current_resource_owner.send(collection_key).with_deleted
                                                        .where('updated_at > :head OR deleted_at > :head', 
                                                               {head: head_date})
@@ -240,19 +212,14 @@ module Api
         ### Tail backward if head is small
         if tail_date && tail_date.to_i > 0
           count = 0
-          User::COLLECTIONS.each do |collection_key|
-            next if collection_key == :transactions
-            next if collection_key == :events
+          User::EXPORT_COLLECTIONS.each do |collection_key|
             count += data[collection_key].length
           end
 
           if count < 5000
             limit = (5000 - count)/5
             tail_skip = 0 unless tail_skip
-            User::COLLECTIONS.each do |collection_key|
-              next if collection_key == :transactions
-              next if collection_key == :events
-              next if collection_key == :devices
+            User::EXPORT_COLLECTIONS.each do |collection_key|
               data[collection_key].concat current_resource_owner.send(collection_key).with_deleted
                                                                  .where('updated_at <= :tail or deleted_at <= :tail', 
                                                                         {tail: tail_date})
@@ -260,9 +227,7 @@ module Api
             end
 
             tail_count = 0
-            User::COLLECTIONS.each do |collection_key|
-              next if collection_key == :transactions
-              next if collection_key == :events
+            User::EXPORT_COLLECTIONS.each do |collection_key|
               tail_count += data[collection_key].length
             end
             if tail_count > 0

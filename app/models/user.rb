@@ -84,7 +84,7 @@ class User < ActiveRecord::Base
   def serializable_hash(options = {})
     options = {
       methods: :points,
-      except: :image
+      except: [:image, :generated_invites, :ux_milestones]
     }.update(options || {})
     hash = super(options)
     hash['image'] = self.image.url

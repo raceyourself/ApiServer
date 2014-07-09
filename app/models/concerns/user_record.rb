@@ -34,6 +34,10 @@ module Concerns
       this
     end
 
+    def merge_delete(user)
+      # Do not allow merge deletes by default
+    end
+
     def serializable_hash(options = {})
       hash = nil
       # Return plain attributes if no options or default rocket_pants options

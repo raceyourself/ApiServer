@@ -2,7 +2,8 @@ module Concerns
   module UserAssociations
     extend ActiveSupport::Concern
 
-    COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :events, :games, :users]
+    IMPORT_COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :events, :games, :users, :invites, :matched_tracks]
+    EXPORT_COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :games, :users, :invites]
 
     included do
       has_many :devices, :dependent => :destroy
@@ -85,6 +86,10 @@ module Concerns
       
       define_method :users do
         User.where(id: registered_friend_ids) 
+      end
+
+      define_method :invites do
+        Invite.generate_for(self)
       end
 
     end #included

@@ -7,4 +7,10 @@ class Position < ActiveRecord::Base
   def guid
     (device_id << 32) + position_id
   end
+
+  def merge_delete(user)
+    # Allow user to delete
+    device = Device.find(device_id)
+    delete if (device.present? && device.user_id = user.id)
+  end
 end

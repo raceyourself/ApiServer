@@ -1,11 +1,12 @@
 class Challenge < ActiveRecord::Base
+  self.primary_keys = :device_id, :challenge_id
   acts_as_paranoid
   has_one :creator
-  has_many :challenge_attempts, :dependent => :destroy
+  has_many :challenge_attempts, :foreign_key => [:challenge_device_id, :challenge_id], :dependent => :destroy
   has_many :attempts, :through => :challenge_attempts, :source => :track
-  has_many :challenge_subscribers, :dependent => :destroy
+  has_many :challenge_subscribers, :foreign_key => [:device_id, :challenge_id], :dependent => :destroy
   has_many :subscribers, :through => :challenge_subscribers, :source => :user
-  has_many :challenge_racers, -> { where accepted: true }, :class_name => 'ChallengeSubscriber'
+  has_many :challenge_racers, -> { where accepted: true }, :foreign_key => [:device_id, :challenge_id], :class_name => 'ChallengeSubscriber'
   has_many :racers, :through => :challenge_racers, :source => :user 
 
   before_save :default_values
