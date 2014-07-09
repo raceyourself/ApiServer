@@ -6,6 +6,10 @@ class Friendship < ActiveRecord::Base
   belongs_to :identity, :foreign_key => [:identity_type, :identity_uid]
   belongs_to :friend, :foreign_key => [:friend_type, :friend_uid], :class_name => Identity
 
+  def guid
+    [identity_type, identity_uid, friend_type, friend_uid].join('-')
+  end
+
   def merge
     hash = self.attributes.except('created_at', 'deleted_at', 'updated_at')
     key = hash.extract!(*self.class.primary_key)
@@ -27,7 +31,8 @@ class Friendship < ActiveRecord::Base
   def serializable_hash(options = {})
     options = {
        include: :friend, 
-       except: [:friend_type, :friend_uid] 
+       except: [:friend_type, :friend_uid],
+       methods: :guid
     }.update(options || {})
     super(options)
   end
