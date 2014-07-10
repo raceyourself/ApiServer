@@ -9,7 +9,7 @@ module Api
 
     def show
       # TODO: ACL, serialization_hash in subtype
-      expose Challenge.find(params[:id])
+      expose Challenge.find(params[:id].match(/(-?\d+)-(\d+)/)[1..2])
     end
 
   end
