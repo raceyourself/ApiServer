@@ -21,6 +21,9 @@ class Challenge < ActiveRecord::Base
     }
   end
 
+  def guid
+    (device_id << 32) + challenge_id
+  end
 
   def challenge_type
     self.type.downcase.sub('challenge', '')
@@ -50,6 +53,16 @@ class Challenge < ActiveRecord::Base
       end
     end
     return c
+  end
+
+  def self.import(challenges, user)
+    challenges.each do |challenge|
+      challenge[:creator_id] = user.id
+      challenge[:attempts].delete_if do |attempt|
+        Device.find(attempt[:device_id]).user_id == user.id
+      end if challenge[:attempts]
+      Challenge.build(challenge)
+    end
   end
 
   def merge

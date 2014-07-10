@@ -58,6 +58,7 @@ module Api
         errors = []
         User::IMPORT_COLLECTIONS.each do |collection_key|
           if data[collection_key]
+            # Special case for getting syncing device
             if collection_key == :devices
               data[collection_key].each do |record|
                 begin
@@ -74,9 +75,11 @@ module Api
                 next
               end
             end
-            if collection_key == :transactions
+            # Import collection
+            clazz = collection_key.singularize.capitalize.constantize
+            if clazz.respond_to? :import
               begin
-                Transaction.import(data[collection_key], current_resource_owner)
+                clazz.import(data[collection_key], current_resource_owner)
               rescue => e
                 logger.error(e.class.name + ": " + e.message)
                 logger.debug e.backtrace.join("\n")
@@ -84,16 +87,17 @@ module Api
               end
               next
             end
+            # Merge records individually
             data[collection_key].each do |record|
               relation = current_resource_owner.send(collection_key)
               # Ignore bad data and continue
               # TODO: Notify admin?
               begin
-                record.delete(:user_id)
-                deleted = record[:deleted_at]
-                d = relation.new(record)
-                d.merge
-                d.merge_delete(current_resource_owner) if deleted && deleted != 0
+                  record.delete(:user_id)
+                  deleted = record[:deleted_at]
+                  d = relation.new(record)
+                  d.merge
+                  d.merge_delete(current_resource_owner) if deleted && deleted != 0
               rescue => e
                 logger.error(e.class.name + ": " + e.message)
                 logger.debug e.backtrace.join("\n")
