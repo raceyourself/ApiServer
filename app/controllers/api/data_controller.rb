@@ -142,7 +142,8 @@ module Api
               :type => 'challenge', 
               :from => current_resource_owner.id, 
               :to => target.id,
-              :challenge_id => c.id,
+              :device_id => c.device_id,
+              :challenge_id => c.challenge_id,
               :challenge_type => c.challenge_type,
               :taunt => action[:taunt]
             }

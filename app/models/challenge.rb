@@ -34,7 +34,8 @@ class Challenge < ActiveRecord::Base
       except: :attempt_ids,
       include: {
         attempts: { only: [ :device_id, :track_id, :user_id ] }
-      }
+      },
+      methods: :guid
     }.update(options || {})
     hash = super(options)
     hash['type'] = challenge_type() if hash
