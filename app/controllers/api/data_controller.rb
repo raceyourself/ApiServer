@@ -196,7 +196,8 @@ module Api
                                         action[:friend_id],
                                         action[:track], action[:message])
         else
-          EchoWorker.perform_async(current_resource_owner.id, action)
+          #EchoWorker.perform_async(current_resource_owner.id, action)
+          logger.error("Unknown action: #{action.to_s}");
         end
       end
 

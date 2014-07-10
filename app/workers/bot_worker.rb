@@ -107,7 +107,8 @@ class BotWorker
       target.notifications.create!(:message => {
                                       :type => 'challenge',
                                       :from => bot.id,
-                                      :challenge_id => challenge.id,
+                                      :device_id => challenge.device_id
+                                      :challenge_id => challenge.challenge_id,
                                       :challenge_type => challenge.challenge_type,
                                       :taunt => '001111001010111010010011!'
                                    })
