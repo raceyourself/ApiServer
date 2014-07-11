@@ -7,7 +7,9 @@ module Api
     end
 
     def show
-      expose User.find(params[:id])
+      if stale?(:last_modified => User.where(id: params[:id]).pluck(:updated_at).first)
+        expose User.find(params[:id])
+      end
     end
 
   end
