@@ -15,7 +15,7 @@ module Concerns
       # NOTE: update_all should bypass object instantiation
       #       activerecord-import could work similarly for inserts
       #       data validation is the only problem
-      hash = self.serializable_hash.except('created_at', 'deleted_at', 'updated_at')
+      hash = self.serializable_hash.except('created_at', 'deleted_at', 'updated_at', 'guid')
       key = hash.extract!(*self.class.primary_key)
       id = key.values
       id = key.values[0] if key.length == 1

@@ -29,7 +29,10 @@ class User < ActiveRecord::Base
   end
 
   def to_s
-    username.present? ? username : email
+    display_name = name
+    display_name = username unless display_name.present?
+    display_name = email unless display_name.present?
+    display_name
   end
 
   def password_required?
