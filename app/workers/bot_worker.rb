@@ -56,9 +56,9 @@ class BotWorker
                               glassfit_version: 0) unless device
 
       speed = 1000 * 1.0/(pace*60) # min/km -> m/s
-      mins = 3 + 5 * Random.rand(6)
+      mins = 5 + 5 * Random.rand(6)
       mins = opts['time'] if opts.has_key?('time')
-      time = mins * 60 + Random.rand(120)
+      time = mins * 60 + Random.rand(300)
       distance = speed * time
       track = Track.create!(device_id: device.id, track_id: Random.rand(99999), user_id: bot.id,
                             public: true, ts: (Time.now.to_f*1000).to_i,

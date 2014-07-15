@@ -89,6 +89,9 @@ gem 'mandrill-api'
 # profiling
 gem 'ruby-prof'
 
+# geo
+gem 'geo-distance'
+
 group :development, :test do
   gem 'faker'
   gem 'pry'
