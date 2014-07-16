@@ -77,7 +77,7 @@ module Api
               next
             end
             # Import collection
-            clazz = collection_key.to_s.singularize.capitalize.constantize
+            clazz = collection_key.to_s.singularize.camelize.constantize
             if clazz.respond_to? :import
               begin
                 clazz.import(data[collection_key], current_resource_owner)
