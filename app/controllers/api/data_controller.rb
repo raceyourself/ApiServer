@@ -209,6 +209,7 @@ module Api
         data[:transactions] = []
         transaction = current_resource_owner.latest_transaction 
         data[:transactions] << transaction if transaction
+        data[:counters] = current_resource_owner.accumulators
         User::EXPORT_COLLECTIONS.each do |collection_key|
           data[collection_key] = current_resource_owner.send(collection_key).with_deleted
                                                        .where('updated_at > :head OR deleted_at > :head', 

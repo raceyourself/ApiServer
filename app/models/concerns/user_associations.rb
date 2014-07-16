@@ -3,7 +3,7 @@ module Concerns
     extend ActiveSupport::Concern
 
     IMPORT_COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :events, :games, :users, :invites, :matched_tracks]
-    EXPORT_COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :games, :users, :invites]
+    EXPORT_COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :games, :users, :invites, :missions]
 
     included do
       has_many :devices, :dependent => :destroy
@@ -13,6 +13,7 @@ module Concerns
       has_many :events, :dependent => :destroy
       has_many :challenge_subscribers, :dependent => :destroy
       has_many :identities, :dependent => :nullify
+      has_many :accumulators, :dependent => :destroy
 
       define_method :challenges do
         self.challenge_subscribers.joins(:challenge)
@@ -67,6 +68,10 @@ module Concerns
           ) global_games
           on group_user_games.game_id = global_games.game_id
         ) merged_states on game_states.id = merged_states.state_id" % [id, id]).select("games.id, games.name, games.description, games.tier, games.price_in_points, games.price_in_gems, games.scene_name, games.type, game_states.created_at, game_states.updated_at, games.deleted_at, merged_states.enabled, merged_states.locked, menu_items.icon, menu_items.column, menu_items.row")
+      end
+
+      define_method :missions do
+        Mission.all.includes(:levels)
       end
       
       define_method :friends do

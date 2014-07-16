@@ -11,10 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140715104921) do
+ActiveRecord::Schema.define(version: 20140715162936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "accumulators", id: false, force: true do |t|
+    t.string  "name",                  null: false
+    t.integer "user_id",               null: false
+    t.float   "value",   default: 0.0, null: false
+  end
 
   create_table "analytics_queries", id: false, force: true do |t|
     t.string   "id",         null: false
@@ -205,6 +211,20 @@ ActiveRecord::Schema.define(version: 20140715104921) do
   end
 
   add_index "menu_items", ["game_id"], name: "index_menu_items_on_game_id", using: :btree
+
+  create_table "mission_levels", id: false, force: true do |t|
+    t.string  "mission_id",   null: false
+    t.integer "level",        null: false
+    t.integer "device_id",    null: false
+    t.integer "challenge_id", null: false
+  end
+
+  create_table "missions", id: false, force: true do |t|
+    t.string   "id",         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
 
   create_table "notifications", force: true do |t|
     t.boolean  "read",       default: false, null: false
