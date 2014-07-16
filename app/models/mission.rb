@@ -4,7 +4,7 @@ class Mission < ActiveRecord::Base
 
   def serializable_hash(options = {})
     options = {
-      include: :levels
+      include: { :levels => { include: :challenge } }
     }.update(options || {})
     super(options)
   end
