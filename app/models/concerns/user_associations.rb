@@ -13,6 +13,7 @@ module Concerns
       has_many :events, :dependent => :destroy
       has_many :challenge_subscribers, :dependent => :destroy
       has_many :identities, :dependent => :nullify
+      has_many :matched_tracks, :dependent => :destroy
       has_many :accumulators, :dependent => :destroy
 
       define_method :challenges do

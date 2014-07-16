@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140715162936) do
+ActiveRecord::Schema.define(version: 20140716084536) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -87,6 +87,8 @@ ActiveRecord::Schema.define(version: 20140715162936) do
     t.integer  "points_awarded", default: 0,     null: false
     t.string   "prize"
     t.integer  "device_id",      default: -1,    null: false
+    t.string   "counter"
+    t.integer  "value"
   end
 
   create_table "configurations", force: true do |t|

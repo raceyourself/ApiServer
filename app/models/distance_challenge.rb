@@ -3,7 +3,7 @@ class DistanceChallenge < Challenge
   
   def serializable_hash(options = {})
     options = {
-      except: [:duration, :pace]
+      except: [:duration, :pace, :counter, :value]
     }.update(options || {})
     super(options)
   end
