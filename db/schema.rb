@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140716084536) do
+ActiveRecord::Schema.define(version: 20140717154000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -213,6 +213,14 @@ ActiveRecord::Schema.define(version: 20140716084536) do
   end
 
   add_index "menu_items", ["game_id"], name: "index_menu_items_on_game_id", using: :btree
+
+  create_table "mission_claims", id: false, force: true do |t|
+    t.string   "mission_id", null: false
+    t.integer  "level",      null: false
+    t.integer  "user_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "mission_levels", id: false, force: true do |t|
     t.string  "mission_id",   null: false

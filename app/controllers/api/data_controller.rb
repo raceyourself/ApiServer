@@ -171,30 +171,6 @@ module Api
           track = Track.find(track_cid)
           challenge.attempts << track
           challenge.touch
-        when 'matched_track'
-          track_did = action[:device_id]
-          track_tid = action[:track_id]
-          track_did = device_id if track_did == 0
-          MatchedTrack.create!(user_id: current_resource_owner.id,
-                               device_id: track_did,
-                               track_id: track_tid)
-        when 'share'
-          provider = action[:provider]
-          case provider
-          when 'facebook'
-            FacebookShareTrackWorker.perform_async(current_resource_owner.id,
-                                                   action[:track], action[:message])
-          when 'twitter'
-            TwitterShareTrackWorker.perform_async(current_resource_owner.id,
-                                                  action[:track], action[:message])
-          when 'google+'
-            GplusShareTrackWorker.perform_async(current_resource_owner.id,
-                                                action[:track], action[:message])
-          end
-        when 'link'
-          LinkTrackWorker.perform_async(current_resource_owner.id,
-                                        action[:friend_id],
-                                        action[:track], action[:message])
         else
           #EchoWorker.perform_async(current_resource_owner.id, action)
           logger.error("Unknown action: #{action.to_s}");

@@ -2,8 +2,8 @@ module Concerns
   module UserAssociations
     extend ActiveSupport::Concern
 
-    IMPORT_COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :events, :games, :users, :invites, :matched_tracks]
-    EXPORT_COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :games, :users, :invites, :missions]
+    IMPORT_COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :events, :games, :users, :invites, :matched_tracks, :mission_claims]
+    EXPORT_COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :games, :users, :invites, :missions, :mission_claims]
 
     included do
       has_many :devices, :dependent => :destroy
@@ -15,6 +15,7 @@ module Concerns
       has_many :identities, :dependent => :nullify
       has_many :matched_tracks, :dependent => :destroy
       has_many :accumulators, :dependent => :destroy
+      has_many :mission_claims, :dependent => :destroy
 
       define_method :challenges do
         self.challenge_subscribers.joins(:challenge)
@@ -72,7 +73,7 @@ module Concerns
       end
 
       define_method :missions do
-        Mission.all.includes(:levels)
+        Mission.includes(:levels)
       end
       
       define_method :friends do
