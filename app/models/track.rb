@@ -19,7 +19,7 @@ class Track < ActiveRecord::Base
   def calculate_rank
     if distance.present? && distance > 0 && time.present? && time > 0
       pace = (time/1000/60)/(distance/1000) # min/km
-      if pace >= 3 || pace <= 15 # Ignore invalid values
+      if pace >= 3 && pace <= 15 # Ignore invalid values
         rank = [15 - pace.to_i, 1].max
         user = self.user
         if user.rank < rank
