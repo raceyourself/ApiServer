@@ -158,6 +158,7 @@ module Api
                                                   :text => "Click to race!"
                                                  })
             c.touch
+            Accumulator.add('challenges_sent', current_resource_owner.id, 1)
           end
         when 'accept_challenge'
           challenge_cid = action[:challenge_id]
