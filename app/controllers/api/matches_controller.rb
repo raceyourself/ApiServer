@@ -25,8 +25,8 @@ module Api
         # TODO: Prefer real users to bots
         matches[duration] = Track.where(:public => true)
                                  .where('distance > 0')
-                                 .where('(time*1000/distance)/60 >= ? AND (time*1000/distance)/60 < ?', pace['min'], pace['max'])
-                                 .where('time >= ? AND time < ?', duration*60, (duration+5)*60)
+                                 .where('(time/distance)/60 >= ? AND (time/distance)/60 < ?', pace['min'], pace['max'])
+                                 .where('time >= ? AND time < ?', duration*60*1000, (duration+5)*60*1000)
                                  .where(%Q((device_id, track_id) NOT IN (
                                            SELECT device_id, track_id 
                                            FROM matched_tracks WHERE user_id = ?
