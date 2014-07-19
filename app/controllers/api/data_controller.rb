@@ -172,6 +172,20 @@ module Api
           track = Track.find(track_cid)
           challenge.attempts << track
           challenge.touch
+          if action[:notification_id]
+            notification = Notification.find(action[:notification])
+            other_id = notification.message['from']
+            PushNotificationWorker.perform_async(other_id, { 
+              :title => current_resource_owner.to_s + " has logged an attempt against your challenge!",
+              :text => "Click to respond!"
+            }) if current_resource_owner.id != other_id
+          end
+        when 'share_activity'
+          notification = Notification.find(action[:notification_id])
+          notification.user.friends.each do |friendship|
+            friend = friendship.friend.user
+            friend.notifications.create(message: notification.message) if friend
+          end
         else
           #EchoWorker.perform_async(current_resource_owner.id, action)
           logger.error("Unknown action: #{action.to_s}");
