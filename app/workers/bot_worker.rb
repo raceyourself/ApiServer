@@ -58,13 +58,13 @@ class BotWorker
       speed = 1000 * 1.0/(pace*60) # min/km -> m/s
       mins = 5 + 5 * Random.rand(6)
       mins = opts['time'] if opts.has_key?('time')
-      time = mins * 60 + Random.rand(300)
+      time = mins * 60 + Random.rand(300) # seconds
       distance = speed * time
       track = Track.create!(device_id: device.id, track_id: Random.rand(99999), user_id: bot.id,
                             public: true, ts: (Time.now.to_f*1000).to_i,
-                            distance: distance, time: time)
+                            distance: distance, time: time*1000)
       id = track.track_id*1000
-      timestamp = Time.now
+      timestamp = Time.now - time.seconds # backdate so that we don't end up with times in the future
       (1..time).step(10) do |t|
         id = id + 1
         timestamp = timestamp + t.seconds
