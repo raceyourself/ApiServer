@@ -183,7 +183,7 @@ module Api
         when 'share_activity'
           notification = Notification.find(action[:notification_id])
           challenge = nil
-          challenge = Challenge.find([notification['device_id'], notification['challenge_id']) if notification['type'] = 'challenge'
+          challenge = Challenge.find([notification.message['device_id'], notification.message['challenge_id']) if notification.message['type'] = 'challenge'
           notification.user.friends.each do |friendship|
             friend = friendship.friend.user
             if friend
