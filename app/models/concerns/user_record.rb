@@ -22,6 +22,7 @@ module Concerns
       this = self
       begin
         o = self.class.with_deleted.find(id)
+        self.class.before_merge(o, self) if self.class.respond_to? :before_merge
         # Update
         hash['updated_at'] = Time.now
         hash['deleted_at'] = nil

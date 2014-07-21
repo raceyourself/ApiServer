@@ -2,7 +2,7 @@ module Concerns
   module UserAssociations
     extend ActiveSupport::Concern
 
-    IMPORT_COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :events, :games, :users, :invites, :matched_tracks, :mission_claims]
+    IMPORT_COLLECTIONS = [:devices, :friends, :positions, :tracks, :transactions, :notifications, :challenges, :events, :games, :users, :invites, :matched_tracks, :mission_claims]
     EXPORT_COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :games, :users, :invites, :missions, :mission_claims]
 
     included do
