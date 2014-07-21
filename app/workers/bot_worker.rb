@@ -48,6 +48,7 @@ class BotWorker
     diff = max - min
     diff = 1 if diff < 0
     pace = min + Random.rand(diff)
+    track = nil
     ActiveRecord::Base.transaction do
       device = Device.where(user_id: bot.id).last
       device = Device.create!(user_id: bot.id, 
@@ -84,6 +85,7 @@ class BotWorker
                          epe: 25)
       end
     end
+    track
   end
 
   def do_challenge(bot, fitness_level, opts={})
@@ -96,12 +98,15 @@ class BotWorker
     Rails.logger.info "#{bot.email} is challenging user #{victim_id}"
     # TODO: Don't duplicate challenging logic here
     time = 5 * Random.rand(7)
+    track = do_run(bot, fitness_level, {time: time})
+    return unless track
     ActiveRecord::Base.transaction do
-      challenge = DurationChallenge.create!(public: true, creator_id: bot.id, duration: time, distance: 0, 
+      challenge = DurationChallenge.create!(public: true, creator_id: bot.id, duration: time*60, distance: 0, 
                                             name: 'Disco fever', 
                                             description: 'First to the finish line gets to go clubbing baby seals!', 
                                             points_awarded: 88, prize: 'A fancy new coat')
       target = User.find(victim_id)
+      challenge.attempts << track
       challenge.subscribers << bot
       challenge.subscribers << target
       target.notifications.create!(:message => {
