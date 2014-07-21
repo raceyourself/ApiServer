@@ -163,6 +163,7 @@ module Api
         when 'accept_challenge'
           challenge_cid = action[:challenge_id]
           current_resource_owner.challenge_subscribers.find(challenge_cid).update!(accepted: true)
+          Challenge.find(challenge_cid).touch
         when 'challenge_attempt'
           challenge_cid = action[:challenge_id]
           challenge_cid[0] = device_id if challenge_cid[0] == 0 # Deferred device registration
@@ -191,6 +192,7 @@ module Api
               friend.notifications.create(message: notification.message)
             end
           end
+          challenge.touch
         else
           #EchoWorker.perform_async(current_resource_owner.id, action)
           logger.error("Unknown action: #{action.to_s}");
