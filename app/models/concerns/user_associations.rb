@@ -92,7 +92,7 @@ module Concerns
       end
       
       define_method :users do
-        User.where(id: registered_friend_ids) 
+        User.where(id: [id].concat(registered_friend_ids)) 
       end
 
       define_method :invites do
