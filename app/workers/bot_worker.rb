@@ -97,7 +97,7 @@ class BotWorker
     
     Rails.logger.info "#{bot.email} is challenging user #{victim_id}"
     # TODO: Don't duplicate challenging logic here
-    time = 5 * Random.rand(7)
+    time = 5 + 5 * Random.rand(6)
     track = do_run(bot, fitness_level, {time: time})
     return unless track
     ActiveRecord::Base.transaction do
