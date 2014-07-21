@@ -182,9 +182,14 @@ module Api
           end
         when 'share_activity'
           notification = Notification.find(action[:notification_id])
+          challenge = nil
+          challenge = Challenge.find([notification['device_id'], notification['challenge_id']) if notification['type'] = 'challenge'
           notification.user.friends.each do |friendship|
             friend = friendship.friend.user
-            friend.notifications.create(message: notification.message) if friend
+            if friend
+              challenge.subscribers << friend if challenge
+              friend.notifications.create(message: notification.message)
+            end
           end
         else
           #EchoWorker.perform_async(current_resource_owner.id, action)
