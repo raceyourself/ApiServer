@@ -174,11 +174,11 @@ module Api
           challenge.attempts << track
           challenge.touch
           if action[:notification_id]
-            notification = Notification.find(action[:notification])
+            notification = Notification.find(action[:notification_id])
             other_id = notification.message['from']
             PushNotificationWorker.perform_async(other_id, { 
-              :title => current_resource_owner.to_s + " has logged an attempt against your challenge!",
-              :text => "Click to respond!"
+              :title => current_resource_owner.to_s + " has responded to your challenge!",
+              :text => "Click to open app!"
             }) if current_resource_owner.id != other_id
           end
         when 'share_activity'

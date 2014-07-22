@@ -15,6 +15,8 @@ class TwitterFriendsWorker
     begin
       credentials = client.verify_credentials
     rescue Twitter::Error::TooManyRequests => error
+      logger.warn "Twitter rate limited and fail-fast enabled, aborting!" if @@FAIL_FAST
+      return if @@FAIL_FAST
       logger.warn "Rate limit error, sleeping for #{error.rate_limit.reset_in} seconds..."
       sleep error.rate_limit.reset_in
       retry
@@ -23,8 +25,8 @@ class TwitterFriendsWorker
     me.user_id = user.id
     me = me.merge
     return if me.refreshed_at > 5.minutes.ago
+    me.update!(:refreshed_at => Time.now)
     ActiveRecord::Base.transaction do
-      me.update!(:refreshed_at => Time.now)
       me.friendships.where(:friend_type => 'TwitterIdentity').destroy_all
       get_twitter_friends(client).each do |friend|
         fid = TwitterIdentity.new().update_from_twitter(friend)
@@ -40,7 +42,7 @@ class TwitterFriendsWorker
       client.friends.to_a
     rescue Twitter::Error::TooManyRequests => error
       logger.warn "Twitter rate limited and fail-fast enabled, aborting!" if @@FAIL_FAST
-      return []
+      return [] if @@FAIL_FAST
       logger.warn "Rate limit error, sleeping for #{error.rate_limit.reset_in} seconds..."
       sleep error.rate_limit.reset_in
       retry
