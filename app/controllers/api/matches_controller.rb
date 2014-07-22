@@ -6,13 +6,13 @@ module Api
       # Return a matrix of public track matches (N per bucket)
       matches = Hash.new
       ['out of shape', 'average', 'athletic', 'elite'].each do |fitness_level|
-        matches[fitness_level] = matches(fitness_level, 5)
+        matches[fitness_level] = matches(fitness_level, 2)
       end
       expose matches, include: :positions
     end
 
     def show
-      expose matches(params[:id], 10), include: :positions
+      expose matches(params[:id], 5), include: :positions
     end
 
     def matches(fitness_level, bucket_size)
