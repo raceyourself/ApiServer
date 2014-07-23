@@ -37,8 +37,8 @@ class Event < ActiveRecord::Base
     # Trigger hello worker from UX milestone: 'first_tutorial'
     # TODO: Add !ux_milestones.include? check after demo
     if (self.data['event_type'] == 'event' && self.data['event_name'] == 'first_tutorial')
-      HelloWorker.perform_in(1.minute, User.where(email: 'ben@raceyourself.com'), self.user)
-      HelloWorker.perform_in(10.minute, User.where(email: 'ben@raceyourself.com'), self.user)
+      HelloWorker.perform_in(1.minute, User.where(email: 'ben@raceyourself.com').first.id, self.user.id)
+      HelloWorker.perform_in(10.minute, User.where(email: 'ben@raceyourself.com').first.id, self.user.id)
     end
 
   end
