@@ -3,7 +3,7 @@ class HelloWorker
     
   def perform(from_id, to_id)
     from = User.find(from_id)
-    user = User.find(to_id)
+    to = User.find(to_id)
     return unless from && to
 
     do_challenge(from, to)
