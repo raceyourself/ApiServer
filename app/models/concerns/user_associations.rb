@@ -19,7 +19,8 @@ module Concerns
       # TODO: :dependent => destroy for associations with custom getters
 
       define_method :tracks do
-        Track.includes(:track_subscribers).references(:track_subscribers).where('tracks.user_id = ? OR track_subscribers.user_id = ?', self.id, self.id)
+        # Track.includes(:track_subscribers).references(:track_subscribers).where('tracks.user_id = ? OR track_subscribers.user_id = ?', self.id, self.id)
+        Track.where(user_id: self.id)
       end
 
       define_method :challenges do
