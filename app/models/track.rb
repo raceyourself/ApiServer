@@ -3,7 +3,7 @@ class Track < ActiveRecord::Base
 
   self.primary_keys = :device_id, :track_id
   has_many :positions, :foreign_key => [:device_id, :track_id], :dependent => :destroy
-  has_many :challenge_attempts, :foreign_key => [:device_id, :track_id], :dependent => :destroy
+  has_many :challenge_attempts, :foreign_key => [:track_device_id, :track_id], :dependent => :destroy
   has_many :track_subscribers, :foreign_key => [:device_id, :track_id], :dependent => :destroy
   has_many :subscribers, :through => :track_subscribers, :source => :user
 

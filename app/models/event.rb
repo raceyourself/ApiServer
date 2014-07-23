@@ -33,7 +33,14 @@ class Event < ActiveRecord::Base
     if (self.data["event_type"] == "event" && !self.user.ux_milestones.include?(self.data["event_name"]))
       self.user.update_ux_milestones([self.data["event_name"]])  # update_ux_milestones expects an array of milestone names to be passed
     end
-    
+
+    # Trigger hello worker from UX milestone: 'first_tutorial'
+    # TODO: Add !ux_milestones.include? check after demo
+    if (self.data['event_type'] == 'event' && self.data['event_name'] == 'first_tutorial')
+      HelloWorker.perform_in(1.minute, User.where(email: 'ben@raceyourself.com'), self.user)
+      HelloWorker.perform_in(10.minute, User.where(email: 'ben@raceyourself.com'), self.user)
+    end
+
   end
 
   def send_analytics
