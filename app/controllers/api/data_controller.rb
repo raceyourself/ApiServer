@@ -191,7 +191,7 @@ module Api
                 challenge.subscribers << friend rescue nil
                 to = notification.message['to']
                 from = notification.message['from']
-                tracks = challenge.attempts.where(user_id: [to, from].compact[)
+                tracks = challenge.attempts.where(user_id: [to, from].compact)
                 tracks.each do |track|
                   track.subscribers << friend rescue nil
                 end
