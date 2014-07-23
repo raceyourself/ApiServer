@@ -26,8 +26,8 @@ class HelloWorker
       challenge.subscribers << to
       to.notifications.create!(:message => {
                                       :type => 'challenge',
-                                      :from => bot.id,
-                                      :to => victim_id,
+                                      :from => from.id,
+                                      :to => to.id,
                                       :device_id => challenge.device_id,
                                       :challenge_id => challenge.challenge_id,
                                       :challenge_type => challenge.challenge_type,
