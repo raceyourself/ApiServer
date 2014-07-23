@@ -129,15 +129,11 @@ module Api
         case type
         when 'challenge'
           c = Challenge.find(action[:challenge_id])
-          begin
-            c.subscribers << current_resource_owner
-          rescue
-            # Already subscribed
-          end
+          c.subscribers << current_resource_owner rescue nil
         
           # Notify target of challenge if registered (unregistered are notified client-side)
           if action[:target] && target = User.where(id: action[:target]).first
-            c.subscribers << target unless target.id == current_resource_owner.id
+            c.subscribers << target unless target.id == current_resource_owner.id rescue nil
             message = { 
               :type => 'challenge', 
               :from => current_resource_owner.id, 
@@ -171,15 +167,18 @@ module Api
           track_cid = action[:track_id]
           track_cid[0] = device_id if track_cid[0] == 0 # Deferred device registration
           track = Track.find(track_cid)
-          challenge.attempts << track
+          challenge.attempts << track rescue nil
           challenge.touch
           if action[:notification_id]
             notification = Notification.find(action[:notification_id])
             other_id = notification.message['from']
-            PushNotificationWorker.perform_async(other_id, { 
-              :title => current_resource_owner.to_s + " has responded to your challenge!",
-              :text => "Click to open app!"
-            }) if current_resource_owner.id != other_id
+            if current_resource_owner.id != other_id
+              PushNotificationWorker.perform_async(other_id, { 
+                :title => current_resource_owner.to_s + " has responded to your challenge!",
+                :text => "Click to open app!"
+              }) 
+              track.track_subscribers.create(user_id: other_id) rescue nil
+            end
           end
         when 'share_activity'
           notification = Notification.find(action[:notification_id])
@@ -188,7 +187,15 @@ module Api
           notification.user.friends.each do |friendship|
             friend = friendship.friend.user
             if friend
-              challenge.subscribers << friend if challenge
+              if challenge
+                challenge.subscribers << friend rescue nil
+                to = notification.message['to']
+                from = notification.message['from']
+                tracks = challenge.attempts.where(user_id: [to, from].compact[)
+                tracks.each do |track|
+                  track.subscribers << friend rescue nil
+                end
+              end
               friend.notifications.create(message: notification.message)
             end
           end

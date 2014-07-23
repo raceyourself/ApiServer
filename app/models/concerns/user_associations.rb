@@ -7,7 +7,6 @@ module Concerns
 
     included do
       has_many :devices, :dependent => :destroy
-      has_many :tracks, :dependent => :destroy
       has_many :transactions, :dependent => :destroy
       has_many :notifications, :dependent => :destroy
       has_many :events, :dependent => :destroy
@@ -16,6 +15,12 @@ module Concerns
       has_many :matched_tracks, :dependent => :destroy
       has_many :accumulators, :dependent => :destroy
       has_many :mission_claims, :dependent => :destroy
+
+      # TODO: :dependent => destroy for associations with custom getters
+
+      define_method :tracks do
+        Track.includes(:track_subscribers).references(:track_subscribers).where('tracks.user_id = ? OR track_subscribers.user_id = ?', self.id, self.id)
+      end
 
       define_method :challenges do
         self.challenge_subscribers.joins(:challenge)
