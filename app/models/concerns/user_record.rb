@@ -15,13 +15,14 @@ module Concerns
       # NOTE: update_all should bypass object instantiation
       #       activerecord-import could work similarly for inserts
       #       data validation is the only problem
-      hash = self.serializable_hash.except('created_at', 'deleted_at', 'updated_at')
+      hash = self.serializable_hash.except('created_at', 'deleted_at', 'updated_at', 'guid')
       key = hash.extract!(*self.class.primary_key)
       id = key.values
       id = key.values[0] if key.length == 1
       this = self
       begin
         o = self.class.with_deleted.find(id)
+        self.class.before_merge(o, self) if self.class.respond_to? :before_merge
         # Update
         hash['updated_at'] = Time.now
         hash['deleted_at'] = nil
@@ -34,13 +35,21 @@ module Concerns
       this
     end
 
+    def merge_delete(user)
+      # Do not allow merge deletes by default
+    end
+
     def serializable_hash(options = {})
+      hash = nil
       # Return plain attributes if no options or default rocket_pants options
       if options.nil? || options.except(:url_options, :root, :compact).empty?
-        attributes
+        hash = attributes
       else
-        super(options)
+        hash = super(options)
       end
+      # guids for ORMs that don't support compound PKs
+      hash['guid'] = self.guid if self.respond_to? :guid
+      hash
     end
 
     def cache_key

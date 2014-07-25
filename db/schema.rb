@@ -11,10 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140530111605) do
+ActiveRecord::Schema.define(version: 20140723134650) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "accumulators", id: false, force: true do |t|
+    t.string  "name",                  null: false
+    t.integer "user_id",               null: false
+    t.float   "value",   default: 0.0, null: false
+  end
 
   create_table "analytics_queries", id: false, force: true do |t|
     t.string   "id",         null: false
@@ -49,18 +55,21 @@ ActiveRecord::Schema.define(version: 20140530111605) do
   add_index "authentications", ["provider", "uid"], name: "index_authentications_on_provider_and_uid", unique: true, using: :btree
 
   create_table "challenge_attempts", id: false, force: true do |t|
-    t.integer "challenge_id", null: false
-    t.integer "device_id",    null: false
-    t.integer "track_id",     null: false
+    t.integer "challenge_id",                     null: false
+    t.integer "track_device_id",                  null: false
+    t.integer "track_id",                         null: false
+    t.integer "challenge_device_id", default: -1, null: false
   end
 
   create_table "challenge_subscribers", id: false, force: true do |t|
     t.integer "challenge_id",                 null: false
     t.integer "user_id",                      null: false
     t.boolean "accepted",     default: false
+    t.integer "device_id",    default: -1,    null: false
   end
 
-  create_table "challenges", force: true do |t|
+  create_table "challenges", id: false, force: true do |t|
+    t.integer  "challenge_id",                   null: false
     t.datetime "start_time"
     t.datetime "stop_time"
     t.boolean  "public",         default: false
@@ -77,6 +86,9 @@ ActiveRecord::Schema.define(version: 20140530111605) do
     t.text     "description"
     t.integer  "points_awarded", default: 0,     null: false
     t.string   "prize"
+    t.integer  "device_id",      default: -1,    null: false
+    t.string   "counter"
+    t.integer  "value"
   end
 
   create_table "configurations", force: true do |t|
@@ -96,6 +108,7 @@ ActiveRecord::Schema.define(version: 20140530111605) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "deleted_at"
   end
 
   create_table "events", force: true do |t|
@@ -178,14 +191,18 @@ ActiveRecord::Schema.define(version: 20140530111605) do
     t.integer  "user_id"
     t.string   "identity_type"
     t.string   "identity_uid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
   end
 
   add_index "invites", ["identity_type", "identity_uid"], name: "index_invites_on_identity_type_and_identity_uid", using: :btree
 
   create_table "matched_tracks", id: false, force: true do |t|
-    t.integer "user_id",   null: false
-    t.integer "device_id", null: false
-    t.integer "track_id",  null: false
+    t.integer  "user_id",    null: false
+    t.integer  "device_id",  null: false
+    t.integer  "track_id",   null: false
+    t.datetime "deleted_at"
   end
 
   create_table "menu_items", force: true do |t|
@@ -196,6 +213,29 @@ ActiveRecord::Schema.define(version: 20140530111605) do
   end
 
   add_index "menu_items", ["game_id"], name: "index_menu_items_on_game_id", using: :btree
+
+  create_table "mission_claims", id: false, force: true do |t|
+    t.string   "mission_id", null: false
+    t.integer  "level",      null: false
+    t.integer  "user_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
+
+  create_table "mission_levels", id: false, force: true do |t|
+    t.string  "mission_id",   null: false
+    t.integer "level",        null: false
+    t.integer "device_id",    null: false
+    t.integer "challenge_id", null: false
+  end
+
+  create_table "missions", id: false, force: true do |t|
+    t.string   "id",         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
 
   create_table "notifications", force: true do |t|
     t.boolean  "read",       default: false, null: false
@@ -350,6 +390,12 @@ ActiveRecord::Schema.define(version: 20140530111605) do
     t.string   "cohort"
   end
 
+  create_table "track_subscribers", id: false, force: true do |t|
+    t.integer "device_id", null: false
+    t.integer "track_id",  null: false
+    t.integer "user_id",   null: false
+  end
+
   create_table "tracks", id: false, force: true do |t|
     t.integer  "device_id",                               null: false
     t.integer  "track_id",                                null: false
@@ -419,12 +465,14 @@ ActiveRecord::Schema.define(version: 20140530111605) do
     t.integer  "sync_key",                         default: 0,     null: false
     t.datetime "sync_timestamp"
     t.string   "gender",                 limit: 1
-    t.integer  "invites",                          default: 0
+    t.integer  "generated_invites",                default: 0
     t.json     "profile",                          default: "{}"
     t.text     "image"
     t.integer  "timezone"
     t.string   "cohort"
     t.json     "ux_milestones",                    default: "{}"
+    t.datetime "deleted_at"
+    t.integer  "rank",                             default: 1
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree

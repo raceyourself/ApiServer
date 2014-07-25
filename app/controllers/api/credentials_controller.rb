@@ -33,8 +33,13 @@ module Api
 
       user.update_attributes!(attributes)
 
-      # TODO: Move params to a more relevant json path: ie. authentications/{provider, uid, access_token}
+      # Legacy path TODO: Remove once not used
       link_provider(post_params[:provider], post_params[:uid], post_params[:access_token]) if post_params[:access_token]
+
+      # Canonical path
+      post_params[:authentications].each do |authentication|
+        link_provider(authentication[:provider], authentication[:uid], authentication[:access_token])
+      end if post_params[:authentications]
 
       show()
     end

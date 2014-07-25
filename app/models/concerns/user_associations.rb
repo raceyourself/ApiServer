@@ -2,16 +2,26 @@ module Concerns
   module UserAssociations
     extend ActiveSupport::Concern
 
-    COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :events, :games]
+    IMPORT_COLLECTIONS = [:devices, :friends, :positions, :tracks, :transactions, :notifications, :challenges, :events, :games, :users, :invites, :matched_tracks, :mission_claims]
+    EXPORT_COLLECTIONS = [:devices, :friends, :positions, :tracks, :notifications, :challenges, :games, :users, :invites, :missions, :mission_claims]
 
     included do
       has_many :devices, :dependent => :destroy
-      has_many :tracks, :dependent => :destroy
       has_many :transactions, :dependent => :destroy
       has_many :notifications, :dependent => :destroy
       has_many :events, :dependent => :destroy
       has_many :challenge_subscribers, :dependent => :destroy
       has_many :identities, :dependent => :nullify
+      has_many :matched_tracks, :dependent => :destroy
+      has_many :accumulators, :dependent => :destroy
+      has_many :mission_claims, :dependent => :destroy
+
+      # TODO: :dependent => destroy for associations with custom getters
+
+      define_method :tracks do
+        # Track.includes(:track_subscribers).references(:track_subscribers).where('tracks.user_id = ? OR track_subscribers.user_id = ?', self.id, self.id)
+        Track.where(user_id: self.id)
+      end
 
       define_method :challenges do
         self.challenge_subscribers.joins(:challenge)
@@ -67,6 +77,10 @@ module Concerns
           on group_user_games.game_id = global_games.game_id
         ) merged_states on game_states.id = merged_states.state_id" % [id, id]).select("games.id, games.name, games.description, games.tier, games.price_in_points, games.price_in_gems, games.scene_name, games.type, game_states.created_at, game_states.updated_at, games.deleted_at, merged_states.enabled, merged_states.locked, menu_items.icon, menu_items.column, menu_items.row")
       end
+
+      define_method :missions do
+        Mission.includes(:levels)
+      end
       
       define_method :friends do
         Friendship.joins(:identity).includes(:friend).where(:identities => {:user_id => id})
@@ -83,6 +97,14 @@ module Concerns
         Position.where(user_id: id).where('state_id >= 0')
       end
       
+      define_method :users do
+        User.where(id: [id].concat(registered_friend_ids)) 
+      end
+
+      define_method :invites do
+        Invite.generate_for(self)
+      end
+
     end #included
 
   end

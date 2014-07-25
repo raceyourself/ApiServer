@@ -9,7 +9,10 @@ module Api
 
     def show
       # TODO: ACL, serialization_hash in subtype
-      expose Challenge.find(params[:id])
+      composite = params[:id].match(/(-?\d+)-(\d+)/)[1..2]
+      if stale?(:last_modified => Challenge.where(device_id: composite[0], challenge_id: composite[1]).pluck(:updated_at).first)
+        expose Challenge.find(composite)
+      end
     end
 
   end

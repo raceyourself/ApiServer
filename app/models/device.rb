@@ -1,5 +1,6 @@
 class Device < ActiveRecord::Base
-  belongs_to :user # may be null
+  include Concerns::UserRecord
+  # user association may be null until claimed
 
   def pretty_segmentation_characteristics
     d = {

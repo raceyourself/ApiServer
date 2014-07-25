@@ -158,6 +158,20 @@ GEM
     gcm (0.0.7)
       httparty
       json
+    geo-distance (0.2.0)
+      geo_point (~> 0.2.5)
+      geo_units (~> 0.2.4.1)
+    geo_calc (0.7.6)
+      activesupport (>= 3.0.1)
+      geo_units (~> 0.2.1)
+      i18n
+      require_all (~> 1.2.0)
+      sugar-high (~> 0.4.6.3)
+    geo_point (0.2.5)
+      geo_calc (~> 0.7.5)
+      geo_units (~> 0.2.1)
+    geo_units (0.2.4.1)
+      sugar-high (~> 0.4.6.2)
     gherkin (2.12.2)
       multi_json (~> 1.3)
     google-api-client (0.7.1)
@@ -326,6 +340,7 @@ GEM
       redis (~> 3.0.4)
     ref (1.0.5)
     remotipart (1.2.1)
+    require_all (1.2.1)
     retriable (1.4.1)
     rocket_pants (1.9.2)
       actionpack (>= 3.0, < 5.0)
@@ -408,6 +423,7 @@ GEM
       term-ansicolor
     staccato (0.0.4)
     subexec (0.2.3)
+    sugar-high (0.4.6.4)
     term-ansicolor (1.3.0)
       tins (~> 1.0)
     therubyracer (0.12.1)
@@ -491,6 +507,7 @@ DEPENDENCIES
   faker
   fakeweb
   gcm
+  geo-distance
   google-api-client
   haml
   headless

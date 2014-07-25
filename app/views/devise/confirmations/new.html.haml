@@ -1,7 +1,7 @@
 - if @admin
   = render 'resend'
 - else
-  - if @invited && @iPhone
+  - if @invited
     = render 'holding'
   - else
     = render 'waiting'

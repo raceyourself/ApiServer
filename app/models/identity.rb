@@ -10,6 +10,10 @@ class Identity < ActiveRecord::Base
     self.type.downcase.sub('identity', '')
   end
 
+  def guid
+    [type, uid].join('-')
+  end
+
   def merge
     this = self
     begin
@@ -37,7 +41,7 @@ class Identity < ActiveRecord::Base
 
   def serializable_hash(options = {})
     options = {
-      methods: :provider
+      methods: [:provider, :guid]
     }.update(options || {})
     super(options)
   end

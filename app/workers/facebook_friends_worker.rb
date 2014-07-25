@@ -10,7 +10,7 @@ class FacebookFriendsWorker
     return if auth.nil?
     graph = Koala::Facebook::API.new(auth.token)
     begin
-      profile = graph.get_object("me")
+      profile = graph.get_object('me?fields=id,name,email,picture.width(256).height(256),gender,timezone')
     rescue Koala::Facebook::AuthenticationError => e
       auth.destroy
       return
@@ -19,9 +19,9 @@ class FacebookFriendsWorker
     me.user_id = user.id
     me = me.merge
     return if me.refreshed_at > 5.minutes.ago
+    me.update!(:refreshed_at => Time.now)
     ActiveRecord::Base.transaction do
       count = 0
-      me.update!(:refreshed_at => Time.now)
       me.friendships.where(:friend_type => 'FacebookIdentity').destroy_all
       result = graph.get_connections("me", "friends", :fields=>"name,id,picture.width(256).height(256)") || []
       begin

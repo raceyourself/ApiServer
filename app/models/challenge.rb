@@ -1,14 +1,29 @@
 class Challenge < ActiveRecord::Base
+  self.primary_keys = :device_id, :challenge_id
   acts_as_paranoid
   has_one :creator
-  has_many :challenge_attempts, :dependent => :destroy
+  has_many :challenge_attempts, :foreign_key => [:challenge_device_id, :challenge_id], :dependent => :destroy
   has_many :attempts, :through => :challenge_attempts, :source => :track
-  has_many :challenge_subscribers, :dependent => :destroy
+  has_many :challenge_subscribers, :foreign_key => [:device_id, :challenge_id], :dependent => :destroy
   has_many :subscribers, :through => :challenge_subscribers, :source => :user
-  has_many :challenge_racers, -> { where accepted: true }, :class_name => 'ChallengeSubscriber'
+  has_many :challenge_racers, -> { where accepted: true }, :foreign_key => [:device_id, :challenge_id], :class_name => 'ChallengeSubscriber'
   has_many :racers, :through => :challenge_racers, :source => :user 
 
   before_save :default_values
+
+  def pretty_segmentation_characteristics
+    d = {
+      "Challenge Type" => self.type,
+      "Challenge Duration" => self.duration,
+      "Challenge Distance" => self.distance,
+      "Challenge Time" => self.time,
+      "Challenge Pace" => self.pace
+    }
+  end
+
+  def guid
+    (device_id << 32) + challenge_id
+  end
 
   def challenge_type
     self.type.downcase.sub('challenge', '')
@@ -19,7 +34,8 @@ class Challenge < ActiveRecord::Base
       except: :attempt_ids,
       include: {
         attempts: { only: [ :device_id, :track_id, :user_id ] }
-      }
+      },
+      methods: :guid
     }.update(options || {})
     hash = super(options)
     hash['type'] = challenge_type() if hash
@@ -38,6 +54,16 @@ class Challenge < ActiveRecord::Base
       end
     end
     return c
+  end
+
+  def self.import(challenges, user)
+    challenges.each do |challenge|
+      challenge[:creator_id] = user.id
+      challenge[:attempts].delete_if do |attempt|
+        Device.find(attempt[:device_id]).user_id == user.id
+      end if challenge[:attempts]
+      Challenge.build(challenge)
+    end
   end
 
   def merge

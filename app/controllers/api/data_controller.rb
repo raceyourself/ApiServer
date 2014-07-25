@@ -56,8 +56,9 @@ module Api
       def import_data(data)
         device_id = nil
         errors = []
-        User::COLLECTIONS.each do |collection_key|
+        User::IMPORT_COLLECTIONS.each do |collection_key|
           if data[collection_key]
+            # Special case for getting syncing device
             if collection_key == :devices
               data[collection_key].each do |record|
                 begin
@@ -73,10 +74,13 @@ module Api
                 end
                 next
               end
+              next
             end
-            if collection_key == :transactions
+            # Import collection
+            clazz = collection_key.to_s.singularize.camelize.constantize
+            if clazz.respond_to? :import
               begin
-                Transaction.import(data[collection_key], current_resource_owner)
+                clazz.import(data[collection_key], current_resource_owner)
               rescue => e
                 logger.error(e.class.name + ": " + e.message)
                 logger.debug e.backtrace.join("\n")
@@ -84,16 +88,17 @@ module Api
               end
               next
             end
+            # Merge records individually
             data[collection_key].each do |record|
               relation = current_resource_owner.send(collection_key)
               # Ignore bad data and continue
               # TODO: Notify admin?
               begin
-                record.delete(:user_id)
-                deleted = record[:deleted_at]
-                d = relation.new(record)
-                d.merge
-                d.delete if deleted && deleted != 0
+                  record.delete(:user_id)
+                  deleted = record[:deleted_at]
+                  d = relation.new(record)
+                  d.merge
+                  d.merge_delete(current_resource_owner) if deleted && deleted != 0
               rescue => e
                 logger.error(e.class.name + ": " + e.message)
                 logger.debug e.backtrace.join("\n")
@@ -116,6 +121,11 @@ module Api
             end
           end
         end
+        if data[:crash_reports]
+          data[:crash_reports].each do |report|
+            AcraMailer.report_crash(current_resource_owner, report).deliver
+          end
+        end
         errors
       end
 
@@ -123,31 +133,20 @@ module Api
         type = action[:action]
         case type
         when 'challenge'
-          if action[:challenge][:id]
-            challenge_id = action[:challenge][:id]
-            c = Challenge.find(challenge_id)
-            begin
-              c.subscribers << current_resource_owner
-            rescue
-              # Already subscribed
-            end
-          else
-            c = Challenge.build(action[:challenge])
-            c.creator_id = current_resource_owner.id
-            c.subscribers << current_resource_owner
-            c.save!
-          end
+          c = Challenge.find(action[:challenge_id])
+          c.subscribers << current_resource_owner rescue nil
         
           # Notify target of challenge if registered (unregistered are notified client-side)
           if action[:target] && target = User.where(id: action[:target]).first
-            c.subscribers << target unless target.id == current_resource_owner.id
+            c.subscribers << target unless target.id == current_resource_owner.id rescue nil
             message = { 
               :type => 'challenge', 
               :from => current_resource_owner.id, 
               :to => target.id,
-              :challenge_id => c.id,
+              :device_id => c.device_id,
+              :challenge_id => c.challenge_id,
               :challenge_type => c.challenge_type,
-              :taunt => action[:taunt] 
+              :taunt => action[:taunt]
             }
             target.notifications.create( 
                 :message => message
@@ -157,61 +156,60 @@ module Api
             )
             PushNotificationWorker.perform_async(target.id, { 
                                                   :title => current_resource_owner.to_s + " has challenged you!",
-                                                  :text => "Click to race!"
+                                                  :text => "Click to race!",
+                                                  :image => current_resource_owner.image_url
                                                  })
             c.touch
+            Accumulator.add('challenges_sent', current_resource_owner.id, 1)
           end
         when 'accept_challenge'
-          challenge_id = action[:challenge_id]
-          current_resource_owner.challenge_subscribers.find(challenge_id).update!(accepted: true)
+          challenge_cid = action[:challenge_id]
+          current_resource_owner.challenge_subscribers.find(challenge_cid).update!(accepted: true)
+          Challenge.find(challenge_cid).touch
         when 'challenge_attempt'
-          challenge_id = action[:challenge_id]
-          # Dirty hack to fix broken mongoid
-          challenge_id = action[:challenge_id][:$oid] if action[:challenge_id].is_a?(Hash) && action[:challenge_id][:$oid]
-          challenge = Challenge.find(challenge_id)
+          challenge_cid = action[:challenge_id]
+          challenge_cid[0] = device_id if challenge_cid[0] == 0 # Deferred device registration
+          challenge = Challenge.find(challenge_cid)
           track_cid = action[:track_id]
-          track_cid[0] = device_id if track_cid[0] == 0
-          track = Track.where(device_id: track_cid[0], track_id: track_cid[1]).first
-          challenge.attempts << track
+          track_cid[0] = device_id if track_cid[0] == 0 # Deferred device registration
+          track = Track.find(track_cid)
+          challenge.attempts << track rescue nil
           challenge.touch
-        when 'invite'
-          code = action[:code]
-          invite = Invite.where(:code => code)
-                         .where(:user_id => current_resource_owner.id)
-                         .where('used_at IS NULL')
-                         .where('expires_at IS NULL or expires_at < ?', Time.now).first
-          if invite
-            identity_type = action[:provider]
-            identity_type.capitalize! << 'Identity' unless identity_type.include? 'Identity'
-            uid = action[:uid]
-            invite.update_attributes!({:identity_type => identity_type, :identity_uid => uid, :used_at => Time.now})
+          if action[:notification_id]
+            notification = Notification.find(action[:notification_id])
+            other_id = notification.message['from']
+            if current_resource_owner.id != other_id
+              PushNotificationWorker.perform_async(other_id, { 
+                :title => current_resource_owner.to_s + " has responded to your challenge!",
+                :text => "Click to open app!",
+                :image => current_resource_owner.image_url
+              }) 
+              track.track_subscribers.create(user_id: other_id) rescue nil
+            end
           end
-        when 'matched_track'
-          track_did = action[:device_id]
-          track_tid = action[:track_id]
-          track_did = device_id if track_did == 0
-          MatchedTrack.create!(user_id: current_resource_owner.id,
-                               device_id: track_did,
-                               track_id: track_tid)
-        when 'share'
-          provider = action[:provider]
-          case provider
-          when 'facebook'
-            FacebookShareTrackWorker.perform_async(current_resource_owner.id,
-                                                   action[:track], action[:message])
-          when 'twitter'
-            TwitterShareTrackWorker.perform_async(current_resource_owner.id,
-                                                  action[:track], action[:message])
-          when 'google+'
-            GplusShareTrackWorker.perform_async(current_resource_owner.id,
-                                                action[:track], action[:message])
+        when 'share_activity'
+          notification = Notification.find(action[:notification_id])
+          challenge = nil
+          challenge = Challenge.find([notification.message['device_id'], notification.message['challenge_id']]) if notification.message['type'] = 'challenge'
+          notification.user.friends.each do |friendship|
+            friend = friendship.friend.user
+            if friend
+              if challenge
+                challenge.subscribers << friend rescue nil
+                to = notification.message['to']
+                from = notification.message['from']
+                tracks = challenge.attempts.where(user_id: [to, from].compact)
+                tracks.each do |track|
+                  track.subscribers << friend rescue nil
+                end
+              end
+              friend.notifications.create(message: notification.message)
+            end
           end
-        when 'link'
-          LinkTrackWorker.perform_async(current_resource_owner.id,
-                                        action[:friend_id],
-                                        action[:track], action[:message])
+          challenge.touch
         else
-          EchoWorker.perform_async(current_resource_owner.id, action)
+          #EchoWorker.perform_async(current_resource_owner.id, action)
+          logger.error("Unknown action: #{action.to_s}");
         end
       end
 
@@ -220,17 +218,11 @@ module Api
         data[:sync_timestamp] = Time.now.to_i
 
         ### Head forward
-        data[:devices] = current_resource_owner.send(:devices)
-                                                     .where('updated_at > :head', 
-                                                            {head: head_date})
-                                                     .entries()
         data[:transactions] = []
         transaction = current_resource_owner.latest_transaction 
         data[:transactions] << transaction if transaction
-        User::COLLECTIONS.each do |collection_key|
-          next if collection_key == :transactions
-          next if collection_key == :events
-          next if collection_key == :devices
+        data[:counters] = current_resource_owner.accumulators
+        User::EXPORT_COLLECTIONS.each do |collection_key|
           data[collection_key] = current_resource_owner.send(collection_key).with_deleted
                                                        .where('updated_at > :head OR deleted_at > :head', 
                                                               {head: head_date})
@@ -240,19 +232,14 @@ module Api
         ### Tail backward if head is small
         if tail_date && tail_date.to_i > 0
           count = 0
-          User::COLLECTIONS.each do |collection_key|
-            next if collection_key == :transactions
-            next if collection_key == :events
+          User::EXPORT_COLLECTIONS.each do |collection_key|
             count += data[collection_key].length
           end
 
           if count < 5000
             limit = (5000 - count)/5
             tail_skip = 0 unless tail_skip
-            User::COLLECTIONS.each do |collection_key|
-              next if collection_key == :transactions
-              next if collection_key == :events
-              next if collection_key == :devices
+            User::EXPORT_COLLECTIONS.each do |collection_key|
               data[collection_key].concat current_resource_owner.send(collection_key).with_deleted
                                                                  .where('updated_at <= :tail or deleted_at <= :tail', 
                                                                         {tail: tail_date})
@@ -260,9 +247,7 @@ module Api
             end
 
             tail_count = 0
-            User::COLLECTIONS.each do |collection_key|
-              next if collection_key == :transactions
-              next if collection_key == :events
+            User::EXPORT_COLLECTIONS.each do |collection_key|
               tail_count += data[collection_key].length
             end
             if tail_count > 0

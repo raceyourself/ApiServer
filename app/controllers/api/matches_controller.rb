@@ -6,13 +6,13 @@ module Api
       # Return a matrix of public track matches (N per bucket)
       matches = Hash.new
       ['out of shape', 'average', 'athletic', 'elite'].each do |fitness_level|
-        matches[fitness_level] = matches(fitness_level, 10)
+        matches[fitness_level] = matches(fitness_level, 2)
       end
       expose matches, include: :positions
     end
 
     def show
-      expose matches(params[:id], 25), include: :positions
+      expose matches(params[:id], 5), include: :positions
     end
 
     def matches(fitness_level, bucket_size)
@@ -25,8 +25,8 @@ module Api
         # TODO: Prefer real users to bots
         matches[duration] = Track.where(:public => true)
                                  .where('distance > 0')
-                                 .where('(time*1000/distance)/60 >= ? AND (time*1000/distance)/60 < ?', pace['min'], pace['max'])
-                                 .where('time >= ? AND time < ?', duration*60, (duration+5)*60)
+                                 .where('(time/distance)/60 >= ? AND (time/distance)/60 < ?', pace['min'], pace['max'])
+                                 .where('time >= ? AND time < ?', duration*60*1000, (duration+5)*60*1000)
                                  .where(%Q((device_id, track_id) NOT IN (
                                            SELECT device_id, track_id 
                                            FROM matched_tracks WHERE user_id = ?

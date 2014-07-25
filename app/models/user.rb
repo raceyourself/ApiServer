@@ -29,7 +29,10 @@ class User < ActiveRecord::Base
   end
 
   def to_s
-    username.present? ? username : email
+    display_name = name
+    display_name = username unless display_name.present?
+    display_name = email unless display_name.present?
+    display_name
   end
 
   def password_required?
@@ -77,10 +80,14 @@ class User < ActiveRecord::Base
     server_token
   end
 
+  def self.with_deleted
+    all
+  end
+
   def serializable_hash(options = {})
     options = {
       methods: :points,
-      except: :image
+      except: [:image, :generated_invites, :ux_milestones]
     }.update(options || {})
     hash = super(options)
     hash['image'] = self.image.url

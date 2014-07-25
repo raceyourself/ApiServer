@@ -36,6 +36,7 @@ module Surveys
       i.save!
 
       if params[:cohort]
+        # Confirmed cohorts
         configuration = ::Configuration.where(type: '_internal', user_id: nil, group_id: nil).first
         u = User.where(email: params[:email]).first
         if u && configuration && configuration.configuration && 
@@ -48,6 +49,25 @@ module Surveys
           u.save(validate: false)
           redirect_to confirmation_url(u, :confirmation_token => raw)
           return
+        end
+      else
+        # Invited friends
+        # By code
+        invite = Invite.where(:code => params[:invite_code]).first if params[:invite_code]
+        # By invited e-mail
+        invite = Invite.where(:identity_type => 'EmailIdentity').where(:identity_uid => params[:email]).first unless invite
+
+        if invite.present?
+          u = User.where(email: params[:email]).first
+          if u
+            raw, enc = Devise.token_generator.generate(User, :confirmation_token)
+            u.confirmation_token = enc
+            u.confirmation_sent_at = Time.now.utc
+            u.save(validate: false)
+            invite.destroy
+            redirect_to confirmation_url(u, :confirmation_token => raw)
+            return
+          end
         end
       end
 

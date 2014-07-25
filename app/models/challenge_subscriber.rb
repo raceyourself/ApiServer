@@ -1,6 +1,6 @@
 class ChallengeSubscriber < ActiveRecord::Base
-  self.primary_keys = :challenge_id, :user_id
-  belongs_to :challenge
+  self.primary_keys = :device_id, :challenge_id, :user_id
+  belongs_to :challenge, :foreign_key => [:device_id, :challenge_id]
   belongs_to :user
 
   def self.with_deleted
@@ -15,7 +15,7 @@ class ChallengeSubscriber < ActiveRecord::Base
     # Acts as a decorated challenge
     options = {
       include: :challenge,
-      except: [:id, :challenge_id, :user_id],
+      except: [:id, :device_id, :challenge_id, :user_id],
       methods: [:friends]
     }.update(options || {})
     hash = super(options)
