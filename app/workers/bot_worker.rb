@@ -120,7 +120,8 @@ class BotWorker
                                    })
       PushNotificationWorker.perform_async(target.id, {
                                             :title => bot.to_s + ' has challenged you!',
-                                            :text => 'Click to race!'
+                                            :text => 'Click to race!',
+                                            :image => bot.image_url
                                            })
     end
   end

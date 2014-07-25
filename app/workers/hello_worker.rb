@@ -35,7 +35,8 @@ class HelloWorker
                                    })
       PushNotificationWorker.perform_async(to.id, {
                                             :title => from.to_s + ' has challenged you!',
-                                            :text => 'Click to race!'
+                                            :text => 'Click to race!',
+                                            :image => from.image_url
                                            })
     end
   end
