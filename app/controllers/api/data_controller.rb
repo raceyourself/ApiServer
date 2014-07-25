@@ -151,7 +151,8 @@ module Api
             )
             PushNotificationWorker.perform_async(target.id, { 
                                                   :title => current_resource_owner.to_s + " has challenged you!",
-                                                  :text => "Click to race!"
+                                                  :text => "Click to race!",
+                                                  :image => current_resource_owner.image_url
                                                  })
             c.touch
             Accumulator.add('challenges_sent', current_resource_owner.id, 1)
@@ -175,7 +176,8 @@ module Api
             if current_resource_owner.id != other_id
               PushNotificationWorker.perform_async(other_id, { 
                 :title => current_resource_owner.to_s + " has responded to your challenge!",
-                :text => "Click to open app!"
+                :text => "Click to open app!",
+                :image => current_resource_owner.image_url
               }) 
               track.track_subscribers.create(user_id: other_id) rescue nil
             end
