@@ -121,6 +121,11 @@ module Api
             end
           end
         end
+        if data[:crash_reports]
+          data[:crash_reports].each do |report|
+            AcraMailer.crash_report(current_resource_owner, report).deliver
+          end
+        end
         errors
       end
 
