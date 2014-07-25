@@ -5,6 +5,6 @@ class AcraMailer < ActionMailer::Base
   def report_crash(user, report)
     @user = user
     @report = report
-    mail(subject: 'Crash reprot from ' + user.to_s)
+    mail(subject: 'Crash report from ' + user.to_s)
   end
 end
