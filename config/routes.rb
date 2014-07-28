@@ -38,6 +38,8 @@ GfAuthenticate::Application.routes.draw do
       resources :invites
       resources :matches
 
+      post 'reset/:email', to: 'reset#password', :constraints => { :email => /[^\/]+/ }
+
       get 'data', to: 'data#index'
       post 'data', to: 'data#create'
       post 'delayed_data', to: 'data#delayed_create'
