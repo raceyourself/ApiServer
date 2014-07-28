@@ -17,7 +17,11 @@ class Friendship < ActiveRecord::Base
     begin
       o = self.class.with_deleted.find(key.values)
       # Use old updated_at unless restoring. Identity will cascade touch when needed.
-      hash['updated_at'] = o.updated_at unless o.destroyed?
+      unless o.destroyed?
+        hash['updated_at'] = o.updated_at
+      else
+        hash['updated_at'] = Time.now
+      end
       hash['deleted_at'] = nil
       o.update!(hash)
       this = o
