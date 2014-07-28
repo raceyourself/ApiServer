@@ -29,6 +29,7 @@ module Concerns
         o.update!(hash)
         this = o
       rescue ActiveRecord::RecordNotFound => e
+        self.class.before_merge(nil, self) if self.class.respond_to? :before_merge
         # Insert
         self.save!
       end

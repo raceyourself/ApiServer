@@ -67,7 +67,7 @@ class Track < ActiveRecord::Base
   end
 
   def self.before_merge(previous, current)
-    if !previous.completed && current.completed
+    if (previous.nil? || !previous.completed) && current.completed
 
       logger.info "Track #{current.id} was completed"
       current.calculate_user_rank
