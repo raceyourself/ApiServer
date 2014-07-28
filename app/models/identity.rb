@@ -25,12 +25,16 @@ class Identity < ActiveRecord::Base
       cascade_touch = false
       cascade_touch = true if hash['has_glass'].present? && hash['has_glass'] != o.has_glass
       cascade_touch = true if hash['user_id'].present? && hash['user_id'] != o.user_id
+      cascade_touch = true if hash['name'].present? && hash['name'] != o.name
+      cascade_touch = true if hash['photo'].present? && hash['photo'] != o.photo
       # Update
       o.update!(hash)
       this = o
       if cascade_touch
+        logger.info "Cascading changes to identity #{self.id}"
         # Touch friendships links of this identity so that the sync catches the change
         Friendship.where(:identity_type => this.type).where(:identity_uid => this.uid).update_all(updated_at: Time.now)
+        Friendship.where(:friend_type => this.type).where(:friend_uid => this.uid).update_all(updated_at: Time.now)
       end
     rescue ActiveRecord::RecordNotFound => e
       # Insert
